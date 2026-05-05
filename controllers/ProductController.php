@@ -259,6 +259,9 @@ class ProductController extends BaseController
 
     public function store()
     {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect('product/add');
+        }
 
         // 1. Check for POST Max Size Limit Exceeded
         // If the user uploads files larger than php.ini 'post_max_size', both $_POST and $_FILES will be empty.
@@ -383,6 +386,8 @@ class ProductController extends BaseController
             }
 
         }
+
+        $this->redirect('product/index');
     }
 
     public function edit($id)
@@ -423,6 +428,9 @@ class ProductController extends BaseController
 
     public function update()
     {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect('product/index');
+        }
 
         // 1. Check for POST Max Size Limit Exceeded
         // Mirrors logic from store() to prevent silent failures on large uploads
@@ -593,6 +601,8 @@ class ProductController extends BaseController
             }
 
         }
+
+        $this->redirect('product/index');
     }
         public function toggleActive($id)
     {
