@@ -1,0 +1,4 @@
+{"time":"2026-04-11T19:51:27+08:00","event":"checkout_redirect_ready","ip":"172.71.99.224","context":{"order_id":122,"order_number":"ORD-260411-9690","source":"cart_payhere","amount":"1000.00","currency":"LKR","items":"STYLE1 Clothing Order","endpoint":"https://sandbox.payhere.lk/pay/checkout"}}
+{"time":"2026-04-11T19:56:38+08:00","event":"checkout_redirect_ready","ip":"104.23.168.28","context":{"order_id":128,"order_number":"ORD-260411-2471","source":"cart_payhere","amount":"2000.00","currency":"LKR","items":"STYLE1 Clothing Order","endpoint":"https://sandbox.payhere.lk/pay/checkout"}}
+{"time":"2026-04-11T19:56:50+08:00","event":"notify_received","ip":"104.23.239.41","context":{"order_number":"ORD-260411-2471","payment_id":"320032590665","status_code":"2"}}
+{"time":"2026-04-11T19:56:50+08:00","event":"notify_processed","ip":"104.23.239.41","context":{"order_number":"ORD-260411-2471","payment_id":"320032590665","payment_status":"paid","status_code":"2"}}

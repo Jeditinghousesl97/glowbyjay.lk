@@ -1,0 +1,135 @@
+Payment Method Integration  
+Merchant Order View API 
+Documentation  
+V1.0 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+API Endpoint  
+ 
+POST  https://prodapi.paykoko.com/api/merchants/orderView  
+ 
+Description  
+This API allows merchants to view payment status by providing the Merchant ID, Plugin Name, 
+and Order ID. The request must be signed with the merchant's private key for security.  
+The payment status is retrieved using the orderId  specified in the OrderCreat e request. To 
+ensure reliable tracking and retrieval of order details, the orderId  from the eCommerce 
+platform must be handled uniquely across the system. Each new KOKO payment request 
+should come with a new, unique orderId  to prevent conflicts and ensure that each transaction 
+is properly tracked and managed.  
+ 
+ 
+Request Structure  
+● Content -Type: application/x -www-form-urlencoded  
+ 
+Parameter  Required  Example  Description  
+_mId  Yes  c8cca514bdfa0582cdc40c97
+03c71e9d  Merchant Id  
+api_key  Yes  83fA5n1xUaj8OKnX23YY5vl
+ni5q39gBi  API Key  
+_orderId  Yes  123  Merchant Order Id,specified in 
+the order create request 
+(_orderId ) 
+_pluginName  Yes  customapi  Name of the Plugin  
+_pluginVersion   Yes  1 Plugin Version  
+signature  Yes  JnK2CcsQCDvjSCIGkcrH1bV
+sqDIF3hLXlIh3aEY53hLXwso
+v6Lt/0pvFfXHljBhxaXp0iuKN
+tqtjLI9lj9JXSn44gbO93/kAU
+Hj3HvW62KHt/Tw23WCDuRSA Signing of the datastring of 
+request parameters.  
+(Refer signature creation  
+section)  
+FuF9cYfKfjl3UPjhQYezw4z/v
++BddduUSRaT745bFja7Pjwg
+msga2c=  
+Signature Creation  
+ 
+1. Data String : 
+● Concatenate: MerchantID + PluginName + PluginVersion + OrderID + 
+APIKey  
+● Example Data String: 
+c8cca514bdfa0582cdc40c9703c71e9dcustomapi112383fA5n1xUaj8OKnX23YY
+5vlni5q39gBi  
+ 
+2. Signing Process : 
+● Use the provided private key  and SHA-256 algorithm  to sign the data string, as 
+done in order creation.  
+Example  
+ 
+Request Body:  
+ 
+ 
+ 
+_mId:c8cca514bdfa0582cdc40c9703c71e9d  
+_pluginName:customapi  
+_pluginVersion:1  
+api_key:83fA5n1xUaj8OKnX23YY5vlni5q39gBi  
+_orderId:123  
+signature:lNtd1Tucf0JhwhVu6f6NXmEF4D9M5X5OLjEWZoPXvwtr6ZkXQxgNiQuUy2nIVeFjc
+U5307LocSAEbHKmBDW7mfH5kGVkw4+KSK6RGMOX8P7YrfR4t4437GYmh4B0DH3ZE4CpZVS6FZtS
+wpR2oHwuRnWaI3lTyLmJwfufOlZtk7U=  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Curl Request:  
+ 
+curl --location 'https://prodapi.paykoko.com/a pi/merchants/orderView' \ 
+--header 'Content -Type: application/x -www -form-urlencoded' \ 
+--data-urlencode '_mId=c8cca514bdfa0582cdc40c9703c71e9d' \ 
+--data-urlencode '_pluginName=customapi' \ 
+--data-urlencode '_pluginVersion=1' \ 
+--data-urlencode 'api_key=83fA5n1xUaj8OKnX23YY5vlni5q39gBi' \ 
+--data-urlencode '_orderId=123' \ 
+--data-urlencode 
+'signature=lNtd1Tucf0JhwhVu6f6NXmEF4D9M5X5OLjEWZoPXvwtr6ZkXQxgNiQuUy2nIVeFjcU5307Loc
+SAEbHKmBDW7mfH5kGVkw4+KSK6RGMOX8P7YrfR4t4437GYmh4B0DH3ZE4CpZVS6FZtSwpR2oHw
+uRnWaI3lTyLmJwfufOlZtk7U='  
+ 
+ 
+ 
+ 
+Response  
+ 
+ 
+Parameter  Example  Description  
+orderId  123 Specific order id  
+trnId f7ec3q588eq435zfc8c396d3ecd3
+306a  Koko transaction id  
+status  PENDING | SUCCESS | FAILED  Payment status  
+desc  2 orders  This value is “” as of now.  
+signature  NgMKIcu0MEZ5Zkbbc/2aFFz7zH
+w5IE+bjr39HoBu9ehaGKWK5Gv
+8LjzLj4m+9QT11la7t9X8Z211Qb
+wgmq4dCBXKMmRHwpUFAZdZ
+QXlvL++MLiA0Gb0AcsOGERhR
+HSBbMN7Q0qKBV1XrGQ2HwOd
+++O6s1oXB36NV8xmioT0Oh6s=  String to encrypted - 
+400702f7ec3q588eq435zfc8c396d3ecd
+3306aSUCCESS  
+Above data stri ng will be encrypted using 
+Koko private key, eCommerce need to 
+decrypt and validate it with Koko public 
+key which is already shared.  
+ 
+ 
+ 

@@ -1,0 +1,2943 @@
+/* Customer Experience Styles (Mobile First) - Revised */
+
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #9747FF;
+    /* Lavender/Purple from design */
+    --secondary-color: #F8F9FA;
+    --text-dark: #333;
+    --text-muted: #888;
+    --accent-red: #FF3B30;
+    /* Sale tag */
+    --accent-orange: #FF9500;
+    /* Special tag */
+    --accent-green: #34C759;
+    /* New tag */
+    --bg-white: #ffffff;
+    --border-radius: 0;
+}
+
+*, *::before, *::after {
+    border-radius: 0 !important;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-white);
+    color: var(--text-dark);
+    margin: 0;
+    padding: 0;
+    padding-bottom: 120px;
+}
+
+/* Global Mobile Padding */
+@media (max-width: 1023px) {
+    body {
+        padding-left: 20px;
+        padding-right: 20px;
+        overflow-x: hidden;
+        /* Fix Right Side Gap */
+    }
+
+    /* Reset padding for full-width elements if any */
+    .mobile-header,
+    .section-header,
+    .categories-scroll,
+    .products-scroll,
+    .product-grid {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    /* Fix Price Layout to Columns (Figma Style) */
+    /* Fix Price Layout to Columns (Figma Style) */
+    .product-price-box {
+        display: flex;
+        /* Ensure Flex context */
+        flex-direction: column;
+        align-items: flex-start !important;
+        /* Force Left Align Items */
+        justify-content: flex-start;
+        text-align: left;
+        /* Force Text Left */
+        gap: 0;
+        margin-top: 5px;
+        width: 100%;
+        /* Ensure full width to allow left align */
+    }
+
+
+    .old-price {
+        margin-right: 0;
+        margin-bottom: 2px;
+        font-size: 11px;
+        /* Slightly smaller for top line */
+    }
+
+    .current-price.price-sale {
+        font-size: 14px;
+        /* Emphasize sale price */
+    }
+
+    .scroll-btn.mobile-scroll-cue {
+        display: flex !important;
+        width: 34px !important;
+        height: 34px !important;
+        right: 4px !important;
+        top: 42% !important;
+        transform: translateY(-50%) !important;
+        border-radius: 999px !important;
+        background: rgba(255, 250, 241, 0.96) !important;
+        border: 1px solid rgba(193, 162, 120, 0.45) !important;
+        box-shadow: 0 10px 22px rgba(60, 36, 18, 0.16) !important;
+        backdrop-filter: blur(6px);
+    }
+
+    .scroll-btn.mobile-scroll-cue i {
+        font-size: 12px !important;
+    }
+
+
+}
+
+/* Helper Classes */
+.display-desktop-only {
+    display: none !important;
+}
+
+.display-mobile-only {
+    display: block !important;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+h1,
+h2,
+h3,
+p {
+    margin: 0;
+}
+
+/* --- Mobile Header --- */
+.mobile-header {
+    padding: 20px 0 0 0;
+    /* Top padding only, sides handled by body */
+    display: block;
+    /* Fix: Changed from Flex to Block so Search Bar falls BELOW */
+    margin-bottom: 20px;
+}
+
+.welcome-text h1 {
+    font-size: 32px;
+    font-weight: 800;
+    /* Extra Bold */
+    color: #000;
+    line-height: 1.1;
+}
+
+.welcome-text p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+
+.shop-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #f0f0f0;
+}
+
+.mobile-header-toggle {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 12px;
+    background: #f1e5d1;
+    color: #2f5d50;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.mobile-header-menu {
+    display: none;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.mobile-header-menu-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(193, 162, 120, 0.28);
+    color: #4f4030;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+}
+
+/* --- Mobile Hero Slider --- */
+.hero-slider-section {
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.hero-slider {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    border-radius: 20px;
+    background: transparent;
+    box-shadow: none;
+}
+
+.hero-slider::-webkit-scrollbar {
+    display: none;
+}
+
+.hero-slide {
+    min-width: 100%;
+    scroll-snap-align: center;
+    padding: 0;
+    aspect-ratio: 12 / 5;
+}
+
+.hero-slide-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 20px;
+    background: linear-gradient(180deg, #f6f0e8 0%, #efe5d8 100%);
+}
+
+.hero-slider-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.hero-slider-dot {
+    width: 8px;
+    height: 8px;
+    border: none;
+    border-radius: 999px;
+    background: rgba(151, 71, 255, 0.24);
+    padding: 0;
+    transition: all 0.2s ease;
+}
+
+.hero-slider-dot.active {
+    width: 24px;
+    background: var(--primary-color);
+}
+
+/* --- Section Titles --- */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    margin-bottom: 15px;
+    margin-top: 30px;
+    /* Space between sections */
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+}
+
+.view-all {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* --- Tags --- */
+.tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    /* Pill shape */
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: 8px;
+    vertical-align: middle;
+    text-transform: uppercase;
+}
+
+.tag.special {
+    background-color: var(--accent-orange);
+}
+
+/* Orange SPECIAL */
+.tag.new {
+    background-color: var(--accent-green);
+}
+
+/* Green NEW */
+.tag.sale {
+    background-color: var(--accent-red);
+}
+
+/* Red Sale..! */
+
+/* --- Categories (Horizontal Scroll) --- */
+.categories-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding: 0 20px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    align-items: flex-start;
+}
+
+.categories-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.cat-item {
+    width: 90px;
+    /* Fixed width to ensure even spacing between images */
+    text-align: center;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cat-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    /* Rounded squares from design */
+    object-fit: cover;
+    margin-bottom: 8px;
+    background: #f0f0f0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    /* Soft shadow */
+}
+
+.cat-name {
+    font-size: 11px;
+    /* Slightly smaller for better wrapping */
+    font-weight: 600;
+    color: #000;
+    line-height: 1.2;
+    /* Tight line height for 2 lines */
+    width: 100%;
+    margin-top: 2px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- Product Grid --- */
+/* --- Product Scroll (Mobile) --- */
+.products-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding: 0 20px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    align-items: flex-start;
+}
+
+.products-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.products-scroll .product-card {
+    width: 135px;
+    /* Optimised for "2.5 items" on mobile (375px) */
+    min-width: 135px;
+    flex: 0 0 135px;
+    margin-bottom: 0;
+}
+
+/* Grid for desktop or shop page */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 0 20px;
+}
+
+.product-card {
+    /* No bg color needed per design (clean look), or white */
+    margin-bottom: 10px;
+}
+
+.product-thumb-container {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    width: 100%;
+    aspect-ratio: 1 / 1.2;
+    /* Fixed frame size ratio */
+    background: #f9f9f9;
+}
+
+.product-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cart-btn-overlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #000;
+    /* Black */
+    width: 35px;
+    /* Same size as Sale */
+    height: 35px;
+    border-radius: 50%;
+    /* Perfect Circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    z-index: 5;
+    transition: top 0.2s;
+    /* Smooth movement if state changes */
+}
+
+.sale-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    /* Moved to Right */
+    left: auto;
+    /* Override default if any */
+    background: var(--accent-red);
+    color: white;
+    font-size: 10px;
+    padding: 0;
+    border-radius: 50%;
+    /* Perfect Circle */
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 9px;
+    z-index: 6;
+    /* Clickable or visual preference? Sale usually just visual. */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Logic: If Sale exists, push Cart Down */
+.sale-badge~.cart-btn-overlay {
+    top: 55px;
+    /* 10px (top) + 35px (badge) + 10px (gap) */
+}
+
+.product-name {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 3px;
+    line-height: 1.2;
+}
+
+.product-category {
+    font-size: 11px;
+    color: #888;
+    margin-top: 2px;
+    line-height: 1.2;
+}
+
+.free-shipping-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #e8f8ec;
+    color: #17833d;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 6px;
+}
+
+.free-shipping-badge-overlay {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    margin-top: 0;
+    z-index: 5;
+    box-shadow: 0 6px 16px rgba(23, 131, 61, 0.18);
+    background: rgba(232, 248, 236, 0.96);
+    backdrop-filter: blur(4px);
+}
+
+.product-price-box {
+    margin-top: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.koko-installment-teaser {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    color: #5d4c31;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.25;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.koko-installment-text {
+    color: #6a5430;
+    white-space: nowrap;
+}
+
+.koko-installment-logo {
+    width: 28px;
+    height: auto;
+    object-fit: contain;
+}
+
+.product-card .koko-installment-logo {
+    height: 16px;
+    width: auto;
+    flex-shrink: 0;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: #ccc;
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+.current-price {
+    font-weight: 700;
+}
+
+.price-sale {
+    color: var(--accent-red);
+    font-weight: 700;
+    font-size: 15px;
+    /* Slightly larger for emphasis */
+}
+
+/* Floating WhatsApp */
+.floating-whatsapp {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #25d366;
+    color: #fff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    display: flex;
+    /* Flex for centering */
+}
+
+
+/* --- Bottom Nav (Mobile) --- */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    display: flex !important;
+    justify-content: space-around;
+    padding: 10px 0 calc(10px + env(safe-area-inset-bottom)) 0;
+    /* Extra padding for iPhone home bar */
+    border-top: 1px solid #f0f0f0;
+    z-index: 1000;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.nav-item {
+    text-align: center;
+    color: #999;
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.nav-item.active {
+    color: #555;
+}
+
+.nav-icon-img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    margin-bottom: 2px;
+}
+
+
+/* --- Single Product Page Styles --- */
+.product-detail-page {
+    position: relative;
+    padding-bottom: 80px;
+    /* Space for floating buttons */
+}
+
+/* Gallery - Full Width Slider */
+.product-gallery {
+    position: relative;
+    width: 100%;
+    background: #f9f9f9;
+    margin-bottom: 20px;
+}
+
+.gallery-slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    /* Removed fixed aspect-ratio to allow natural height or use min-height */
+    min-height: 400px;
+    background: #fff;
+    align-items: center;
+    /* Center image if aspect ratio differs */
+}
+
+.gallery-slider picture {
+    display: block;
+    min-width: 100%;
+    width: 100%;
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+}
+
+.gallery-slider img {
+    width: 100%;
+    aspect-ratio: 1 / 1.2;
+    /* Force Portrait Frame */
+    height: auto;
+    /* Let aspect ratio decide height */
+    object-fit: cover;
+    /* Zoom to fill */
+    flex-shrink: 0;
+    scroll-snap-align: center;
+    border-radius: 0;
+    /* Ensure clean edges */
+}
+
+
+
+.back-btn-overlay {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.844);
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    font-size: 16px;
+}
+
+.gallery-dots {
+    /* Removed absolute positioning */
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+    /* Space below image */
+    padding-bottom: 5px;
+}
+
+.gallery-dots .dot {
+    width: 7px;
+    /* Slightly smaller & cleaner */
+    height: 7px;
+    border-radius: 50%;
+    background: #d9d9d9;
+    /* Grey Inactive */
+    transition: background 0.2s;
+}
+
+
+.gallery-dots .dot.active {
+    background: #000;
+}
+
+/* Info Container */
+.product-info-container {
+    padding: 0 20px;
+}
+
+.pd-breadcrumb {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 5px;
+}
+
+.pd-title {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 10px;
+}
+
+.pd-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    row-gap: 12px;
+}
+
+.pd-prices {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pd-price-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.koko-installment-teaser-single {
+    margin-top: 0;
+    font-size: 15px;
+    gap: 12px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.koko-installment-teaser-single .koko-installment-logo {
+    height: 20px;
+    width: auto;
+    flex-shrink: 0;
+}
+
+.pd-old-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 14px;
+}
+
+.pd-sale-price {
+    color: var(--accent-red);
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.btn-size-guide {
+    background: #00C4CC;
+    /* Cyan */
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    /* Increased padding for larger visual size */
+    border-radius: 8px;
+    /* Softer rounded corners */
+    font-size: 14px;
+    /* Larger text */
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Variations */
+.var-section {
+    margin-bottom: 20px;
+}
+
+.var-label {
+    display: block;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.var-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.var-pill {
+    padding: 8px 18px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    background: white;
+    color: #333;
+    transition: all 0.2s;
+}
+
+.var-pill.active {
+    background: #000;
+    color: #00C4CC;
+    /* Cyan Text */
+    border-color: #000;
+    font-weight: 600;
+}
+
+.pd-description {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.6;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.delivery-fee-line {
+    margin-top: 15px;
+    font-weight: 500;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Bottom Actions Floating above Nav */
+.pd-bottom-actions {
+    position: fixed;
+    bottom: 70px;
+    /* Above Bottom Nav */
+    left: 0;
+    right: 0;
+    padding: 10px 20px;
+    display: flex;
+    gap: 15px;
+    /* Clean transparent floating look or white actions container */
+    pointer-events: none;
+    /* Let clicks pass through container */
+    z-index: 900;
+    justify-content: center;
+}
+
+/* Enable pointer events on buttons */
+.btn-action {
+    pointer-events: auto;
+    flex: 1;
+    max-width: 200px;
+    /* Don't stretch too wide on desktop */
+    padding: 12px;
+    border-radius: 30px;
+    /* Pill buttons */
+    border: none;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-order-now {
+    background: linear-gradient(135deg, #111111 0%, #2a2a2a 100%);
+    color: #fff;
+}
+
+.btn-cart {
+    background: #fff;
+    color: #111;
+    border: 1px solid rgba(17, 17, 17, 0.12);
+}
+
+.btn-payhere-standalone {
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.14);
+}
+
+.btn-payhere-submit {
+    background: #111 !important;
+    color: #fff !important;
+}
+
+.cart-payment-btn {
+    width: 100%;
+    border: none;
+    padding: 15px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.cart-payment-logo {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.18);
+    padding: 1px;
+    flex-shrink: 0;
+}
+
+.cart-payment-btn-whatsapp {
+    background: #25d366;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(37, 211, 102, 0.22);
+}
+
+.cart-payment-btn-cod {
+    background: #111;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(17, 17, 17, 0.22);
+}
+
+.cart-payment-btn-payhere {
+    background: #111;
+    color: #fff;
+}
+
+.cart-payment-btn-koko {
+    background: #fff3dc;
+    color: #111;
+    border: 1px solid #f1d28a;
+}
+
+.cart-payment-btn-bank {
+    background: #1f5aa6;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(31, 90, 166, 0.22);
+}
+
+.btn-action-label {
+    display: inline-block;
+}
+
+.payment-sheet-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    background: rgba(17, 17, 17, 0.38);
+    padding: 18px;
+}
+
+.payment-sheet {
+    width: min(100%, 460px);
+    background: linear-gradient(180deg, #ffffff 0%, #f7f3ee 100%);
+    border-radius: 28px 28px 22px 22px;
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.24);
+    padding: 14px 14px 16px;
+}
+
+.payment-sheet-handle {
+    width: 52px;
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(17, 17, 17, 0.12);
+    margin: 0 auto 14px;
+}
+
+.payment-sheet-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.payment-sheet-eyebrow {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8b7e72;
+    margin-bottom: 4px;
+}
+
+.payment-sheet-header h3 {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.2;
+    color: #111;
+}
+
+.payment-sheet-close {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(17, 17, 17, 0.08);
+    background: #fff;
+    color: #111;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none;
+}
+
+.payment-sheet-options {
+    display: grid;
+    gap: 10px;
+}
+
+.payment-method-card {
+    width: 100%;
+    border: 0;
+    border-radius: 22px;
+    padding: 15px 16px;
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr) 18px;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+.payment-method-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.payment-method-logo {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    display: block;
+}
+
+.payment-method-copy {
+    display: grid;
+    gap: 4px;
+}
+
+.payment-method-copy strong {
+    font-size: 15px;
+    color: #111;
+}
+
+.payment-method-copy small {
+    font-size: 12px;
+    line-height: 1.4;
+    color: #62574d;
+}
+
+.payment-method-arrow {
+    color: rgba(17, 17, 17, 0.45);
+    display: inline-flex;
+    justify-content: flex-end;
+}
+
+.method-cod {
+    background: linear-gradient(180deg, #eff9ef 0%, #dff1df 100%);
+}
+
+.method-cod .payment-method-icon {
+    background: #25d366;
+    color: #fff;
+}
+
+.method-whatsapp {
+    background: linear-gradient(180deg, #effbf3 0%, #d7f5e1 100%);
+}
+
+.method-whatsapp .payment-method-icon {
+    background: #25d366;
+    color: #fff;
+}
+
+.method-payhere {
+    background: linear-gradient(180deg, #edf6ff 0%, #ddeeff 100%);
+}
+
+.method-payhere .payment-method-icon {
+    background: #0b6cd1;
+    color: #fff;
+}
+
+.method-koko {
+    background: linear-gradient(180deg, #fff8df 0%, #ffefbe 100%);
+}
+
+.method-koko .payment-method-icon {
+    background: #d79d1f;
+    color: #fff;
+}
+
+.method-bank {
+    background: linear-gradient(180deg, #eef5ff 0%, #dceafe 100%);
+}
+
+.method-bank .payment-method-icon {
+    background: #1f5aa6;
+    color: #fff;
+}
+
+@media (max-width: 767px) {
+    .pd-bottom-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        padding: 0 16px 6px;
+        align-items: stretch;
+    }
+
+    .btn-action {
+        max-width: none;
+        min-height: 60px;
+        padding: 0 14px;
+        border-radius: 18px;
+        flex-direction: row;
+        gap: 10px;
+        text-align: center;
+        font-size: 14px;
+        line-height: 1.15;
+        justify-content: center;
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
+    }
+
+    .btn-action i {
+        font-size: 16px;
+    }
+
+    .btn-action-label {
+        font-weight: 800;
+    }
+
+    .btn-order-now {
+        background: linear-gradient(135deg, #111111 0%, #303030 100%);
+    }
+
+    .btn-cart {
+        background: #fff;
+    }
+
+    .payment-sheet-overlay {
+        padding: 12px;
+    }
+
+    .payment-sheet {
+        width: 100%;
+        border-radius: 26px 26px 20px 20px;
+        padding-bottom: 18px;
+    }
+}
+
+/* Desktop override for bottom actions */
+@media (min-width: 1024px) {
+    .pd-bottom-actions {
+        bottom: 20px;
+        /* Lower on desktop since no nav bar */
+        justify-content: flex-start;
+        /* Align left or keep center? */
+        max-width: 600px;
+        /* Limit width */
+        margin: 0 auto;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+
+/* Modal Styles - Global */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    display: none;
+    /* Managed by JS/Inline style */
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 90%;
+    max-height: 90%;
+    overflow: auto;
+    width: 500px;
+    /* Default width */
+}
+
+/* Desktop Product Detail View (2-Column) */
+@media (min-width: 1024px) {
+
+    /* Reset Page logic to fit inside Sidebar Layout */
+    .product-detail-page {
+        width: 100%;
+        /* Fill main-content */
+        max-width: none;
+        margin: 20px 0;
+        /* Vertical margin only */
+        border: none;
+        box-shadow: none;
+        min-height: auto;
+        background: transparent;
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        /* Image slightly wider? or 1:1 */
+        gap: 40px;
+        padding: 0;
+    }
+
+
+    /* Left Column: Gallery */
+    .product-gallery {
+        width: 100%;
+        background: transparent;
+        margin-bottom: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    /* Turn off slider behavior and show grid or large image */
+    .gallery-slider {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        /* 2x2 Grid of images? Or Main + thumbs? */
+        /* Let's do a simple grid of all images for now, or Main Image Large + Grid below */
+        /* Actually simpler: just vertically stack them or grid them since we have high res */
+        gap: 15px;
+        overflow: visible;
+        aspect-ratio: auto;
+    }
+
+    .gallery-slider img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1/1.2;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    /* Make first image spread full width? */
+    .gallery-slider img:first-child {
+        grid-column: 1 / -1;
+    }
+
+    /* Hide Mobile Controls */
+    /* Hide Mobile Controls - Only dots, Keep Back button as Close */
+    .gallery-dots {
+        display: none;
+    }
+
+    .back-btn-overlay {
+        display: flex;
+        /* Show it */
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        /* Lighter background for desktop */
+        color: #000;
+        z-index: 50;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Right Column: Info */
+    .product-info-container {
+        padding: 0;
+        /* Align with grid */
+        position: sticky;
+        top: 100px;
+        /* Sticky scroll */
+        height: fit-content;
+    }
+
+    .pd-title {
+        font-size: 32px;
+        margin-bottom: 20px;
+    }
+
+    .pd-price-row {
+        justify-content: flex-start;
+        gap: 20px;
+    }
+
+    .pd-sale-price {
+        font-size: 28px;
+    }
+
+    /* Move Actions to static position */
+    .pd-bottom-actions {
+        position: static;
+        transform: none;
+        margin: 30px 0 0 0;
+        padding: 0;
+        max-width: none;
+        display: flex;
+        justify-content: flex-start;
+        gap: 15px;
+        /* Space between buttons */
+        background: transparent;
+        pointer-events: auto;
+        /* Ensure clickable */
+    }
+
+    .btn-action {
+        /* Fix button sizes to be identical */
+        flex: 0 0 auto;
+        width: 180px;
+        height: 45px;
+        font-size: 14px;
+        border-radius: 30px;
+        margin: 0;
+
+        /* Layout & Box Model Strictness */
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box !important;
+        padding: 0 !important;
+        /* Let Flex center it, ignore padding */
+        appearance: none;
+        -webkit-appearance: none;
+    }
+
+    /* Show Header/Footer */
+    .main-footer,
+    footer.main-footer {
+        display: block !important;
+        /* Re-enable footer */
+    }
+}
+
+/* --- Desktop Styles Override --- */
+@media (min-width: 1024px) {
+    body {
+        padding-bottom: 100px;
+        /* Add space at bottom on desktop too */
+        background: var(--bg-white);
+    }
+
+    .display-desktop-only {
+        display: block !important;
+    }
+
+    .display-mobile-only {
+        display: none !important;
+    }
+
+    /* Desktop: 3-column category grid */
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+
+    .bottom-nav {
+        display: none !important;
+    }
+
+    /* Layout Container */
+    .home-layout {
+        display: flex !important;
+        align-items: flex-start !important;
+        /* Force items to start at top */
+        gap: 30px;
+        padding-top: 0;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-left: 20px;
+        padding-right: 20px;
+        overflow-x: hidden;
+    }
+
+    /* Ensure Main Content isn't pushed down */
+    .home-layout .main-content {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        flex: 1;
+        /* Ensure it takes width */
+    }
+
+    /* Ensure Sidebar isn't pushed down */
+    .home-layout .sidebar {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        width: 260px;
+        flex-shrink: 0;
+        background: transparent;
+        display: flex;
+        flex-direction: column;
+        position: sticky;
+        top: 0;
+        /* Ensure it stands tall to push info to bottom, but sidebar height depends on content or calc */
+        /* If we want it sticky or full height of screen? 
+           User says "bottom of the page". 
+           Let's make sidebar sticky so it stays in view? Or just min-height?
+           If we make it sticky, `shop-info-box` at bottom is good.
+        */
+        min-height: calc(100vh - 100px);
+        /* Approx height minus header */
+    }
+
+    .filter-group {
+        margin-bottom: 30px;
+    }
+
+    .filter-title {
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        display: block;
+        color: #000;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+
+    /* Shop Info Box in Sidebar */
+    .shop-info-box {
+        margin-top: auto;
+        /* Push to bottom */
+        padding-top: 20px;
+        border-top: 1px solid #eaeaea;
+        padding-bottom: 20px;
+    }
+
+    .shop-info-title {
+        font-size: 18px;
+        font-weight: 800;
+        margin-bottom: 10px;
+        line-height: 1.2;
+    }
+
+    .shop-desc {
+        font-size: 13px;
+        color: #555;
+        /* Slightly darker for readability */
+        margin-bottom: 20px;
+        line-height: 1.6;
+    }
+
+    .btn-review {
+        background: #6AD07F;
+        /* Green */
+        color: white;
+        border: none;
+        padding: 10px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        width: 100%;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+
+    .social-icons {
+        display: flex;
+        gap: 15px;
+    }
+
+    .social-icons i {
+        /* Keeping FA as fallback or alongside, but user asked for icons in assets */
+        display: none;
+    }
+
+    .social-icon-img {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .social-icon-img:hover {
+        transform: scale(1.1);
+    }
+
+    /* Using background images for social icons if <i> tags are used, 
+       but we need to change HTML to use <img> if we want to use assets/icons directly.
+       Or we can use standard CSS background on the <i> if we want.
+       Let's stick to 3 columns and footer hiding first correctly. */
+
+    /* Main Content */
+    .main-content {
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    /* Desktop Product Grid/Scroll Transformation */
+    .products-scroll {
+        display: flex;
+        /* Back to Flex for slide scroll */
+        gap: 20px;
+        padding: 0;
+        overflow-x: auto;
+        /* Enable Horizontal Scroll */
+        width: 100%;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 20px;
+        /* Space for scrollbar if visible/behavior */
+    }
+
+    .products-scroll .product-card {
+        /* Desktop: Fixed width to ensure peeking/scroll behavior (approx 4.5 items) */
+        min-width: 240px;
+        width: 240px;
+        flex: 0 0 240px;
+        margin-bottom: 10px;
+        scroll-snap-align: start;
+    }
+
+    .products-scroll .product-thumb-container {
+        aspect-ratio: 1 / 1;
+        border-radius: 25px;
+        /* Highly rounded per design */
+    }
+
+    .products-scroll::-webkit-scrollbar {
+        /* Optional: Styled scrollbar for desktop */
+        height: 6px;
+    }
+
+    .products-scroll::-webkit-scrollbar-thumb {
+        background: #ddd;
+        border-radius: 3px;
+    }
+
+    /* Desktop Product Card Overrides */
+
+    /* Sale Badge: Top Right */
+    /* Sale Badge: Top Right - Already handled by mobile first, but let's confirm sizes or just override defaults if needed */
+    .products-scroll .sale-badge {
+        /* Keep consistent with mobile */
+        right: 15px;
+        top: 15px;
+    }
+
+    .products-scroll .cart-btn-overlay {
+        right: 15px;
+        top: 15px;
+    }
+
+    .products-scroll .sale-badge~.cart-btn-overlay {
+        top: 60px;
+        /* 15px + 35px + 10px */
+    }
+
+    /* Typography Overrides */
+    .products-scroll .product-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: #444;
+        margin-top: 10px;
+    }
+
+    .products-scroll .old-price {
+        font-size: 14px;
+        color: #777;
+    }
+
+    .products-scroll .current-price.price-sale {
+        font-size: 16px;
+        font-weight: 700;
+        color: #FF3B30;
+    }
+
+    .products-scroll .product-category {
+        display: block;
+        /* Ensure visible */
+        font-size: 11px;
+        color: #888;
+        margin-top: 2px;
+    }
+
+    .mobile-header {
+        display: none;
+    }
+
+    .hero-slider-section {
+        margin-bottom: 30px;
+    }
+
+    .hero-slide {
+        aspect-ratio: 12 / 5;
+    }
+
+
+
+    /* Desktop Header enhancements */
+    .desktop-header {
+        background: white;
+        padding: 15px 0 0 0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+
+    .header-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
+    }
+
+    .search-bar {
+        flex: 1;
+        position: relative;
+        max-width: 500px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 10px 40px 10px 15px;
+        border: none;
+        background: #f1f2f3;
+        border-radius: 4px;
+        font-size: 13px;
+    }
+
+    /* Hide FA icon for search if checking assets */
+    .search-bar i {
+        display: none;
+    }
+
+    /* Add search icon via pseudo-element or background */
+    .search-bar::after {
+        content: '';
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        background: url('/Ecom-CMS/assets/icons/search.png') no-repeat center center;
+        background-size: contain;
+        opacity: 0.5;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .cat-btn {
+        background: var(--primary-color);
+        /* Specific Blue */
+        color: white;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-red {
+        background: #FF3B30;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    /* Secondary Nav */
+    .desktop-nav-links {
+        max-width: 1200px;
+        margin: 15px auto 0;
+        padding: 15px 20px;
+        display: flex;
+        gap: 30px;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 500;
+        color: #666;
+        border-top: 1px solid #f9f9f9;
+        margin-top: 10px;
+    }
+
+    .desktop-nav-links a:hover {
+        color: var(--primary-color);
+    }
+
+    .desktop-policy-links {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .desktop-policy-links-inner {
+        max-width: calc(1200px - 310px);
+        margin-left: auto;
+    }
+
+    .main-footer,
+    footer.main-footer {
+        display: none !important;
+    }
+
+    /* Ensure WhatsApp uses Flex not Block */
+    .floating-whatsapp.display-desktop-only {
+        display: flex !important;
+    }
+}
+
+/* --- Floating Cart Bubble (Mobile) --- */
+.floating-cart {
+    position: fixed;
+    bottom: 140px;
+    /* Positioned above 'pd-bottom-actions' (70px + ~50px height) and Bottom Nav */
+    right: 20px;
+    z-index: 1100;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--primary-color, #7c4af0);
+    /* fallback */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.floating-cart i {
+    font-size: 24px;
+}
+
+.floating-cart:active {
+    transform: scale(0.95);
+}
+
+.floating-cart-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff3b30;
+    color: white;
+    font-size: 11px;
+    font-weight: 800;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Added to Cart Visual Alert (Pop-up/Overlay) --- */
+#cartToast {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    pointer-events: none;
+    /* Layout wrapper doesn't block, content does */
+}
+
+.ct-content {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    pointer-events: auto;
+    /* Allow clicking buttons */
+    animation: ct-fade-in 0.3s ease-out forwards;
+    width: 85%;
+    max-width: 320px;
+}
+
+@keyframes ct-fade-in {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.ct-emoji {
+    font-size: 60px;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.ct-message-pill {
+    background: linear-gradient(135deg, #18a957 0%, #1fc86d 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 20px;
+    border-radius: 50px;
+    line-height: 1.3;
+    width: 100%;
+    box-shadow: 0 8px 18px rgba(24, 169, 87, 0.26);
+}
+
+.ct-view-cart {
+    color: #999;
+    font-size: 14px;
+    text-decoration: underline;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.ct-close {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    cursor: pointer;
+    margin-top: 10px;
+    background: white;
+}
+
+@media (max-width: 1023px) {
+    a,
+    button,
+    .btn-action,
+    .btn-review,
+    .cat-item,
+    .product-card,
+    .product-thumb-container,
+    .hero-slide img,
+    .nav-item,
+    .scroll-btn,
+    .floating-whatsapp,
+    .floating-cart,
+    .view-all {
+        -webkit-tap-highlight-color: transparent;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+    }
+
+    button:active,
+    .btn-action:active,
+    .btn-review:active,
+    .scroll-btn:active,
+    .floating-whatsapp:active,
+    .floating-cart:active,
+    .nav-item:active {
+        transform: scale(0.97);
+        opacity: 0.92;
+    }
+
+    .cat-item:active,
+    .product-card:active,
+    .hero-slide:active img {
+        transform: translateY(-2px) scale(0.99);
+    }
+
+    .cat-item:active .cat-img,
+    .product-card:active .product-thumb-container,
+    .hero-slide:active img {
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .view-all:active,
+    .nav-item:active,
+    .section-title:active {
+        color: var(--primary-color);
+    }
+}
+
+@media (min-width: 1024px) {
+
+    a,
+    button,
+    .btn-action,
+    .btn-review,
+    .btn-download,
+    .cat-item,
+    .product-card,
+    .product-thumb-container,
+    .hero-slide img,
+    .desktop-policy-links a,
+    .desktop-nav-links a,
+    .social-icon-img,
+    .scroll-btn,
+    .floating-whatsapp,
+    .floating-cart,
+    .view-all,
+    .checkbox-label {
+        transition: transform 0.22s ease, box-shadow 0.22s ease, color 0.22s ease, background-color 0.22s ease, opacity 0.22s ease;
+    }
+
+    a:hover,
+    .desktop-policy-links a:hover,
+    .desktop-nav-links a:hover {
+        opacity: 0.85;
+    }
+
+    button:hover,
+    .btn-action:hover,
+    .btn-review:hover,
+    .btn-download:hover,
+    .scroll-btn:hover,
+    .floating-whatsapp:hover,
+    .floating-cart:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .cat-item:hover {
+        transform: translateY(-4px);
+    }
+
+    .cat-item:hover .cat-img {
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .product-card:hover {
+        transform: translateY(-6px);
+    }
+
+    .product-card:hover .product-thumb-container,
+    .hero-slide:hover img {
+        box-shadow: 0 18px 36px rgba(0, 0, 0, 0.14);
+    }
+
+    .product-thumb {
+        transition: transform 0.28s ease;
+    }
+
+    .product-card:hover .product-thumb,
+    .hero-slide:hover img {
+        transform: scale(1.02);
+    }
+
+    .social-icon-img:hover {
+        transform: translateY(-2px) scale(1.08);
+    }
+
+    .checkbox-label:hover,
+    .view-all:hover {
+        color: var(--primary-color);
+    }
+
+    /* 1. VISIBILITY & UTILITIES */
+    .d-lg-none {
+        display: none !important;
+    }
+
+    .d-lg-flex {
+        display: flex !important;
+    }
+
+    .d-lg-block {
+        display: block !important;
+    }
+
+    .display-desktop-only {
+        display: block !important;
+    }
+
+    .bottom-nav {
+        display: none !important;
+    }
+
+    body {
+        padding-bottom: 20px;
+    }
+
+    /* 2. LAYOUT RESET (Fixes White Space) */
+    .container.main-wrapper,
+    .main-wrapper {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+        min-height: auto !important;
+    }
+
+    /* 3. HOME LAYOUT (Sidebar + Content) */
+    .home-layout {
+        display: block !important;
+        align-items: flex-start !important;
+        /* Forces Top Alignment */
+        justify-content: flex-start !important;
+        gap: 40px;
+        padding-top: 0 !important;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-left: 20px;
+        padding-right: 20px;
+        min-height: 600px;
+    }
+
+    .sidebar {
+        width: 260px;
+        flex-shrink: 0;
+        background: transparent;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 125px;
+        left: max(20px, calc((100vw - 1200px) / 2 + 20px));
+        height: calc(100vh - 125px);
+        overflow-y: auto;
+        z-index: 900;
+        border-right: 1px solid #eee;
+        /* Clean divider */
+        padding-right: 20px;
+    }
+
+    .main-content {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        margin-left: 300px;
+        width: calc(100% - 300px);
+        flex: none;
+        min-width: 0;
+    }
+
+    /* 4. CART PAGE SPECIFICS */
+    .cart-desktop-grid {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        /* Items | Summary */
+        gap: 30px;
+        align-items: start;
+        padding-bottom: 80px;
+    }
+
+    /* Cart Item Card */
+    .cart-desktop-grid .cart-item {
+        background: #fff;
+        border: 1px solid #f0f0f0 !important;
+        border-radius: 16px !important;
+        padding: 20px !important;
+        margin-bottom: 20px !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02) !important;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        position: relative;
+    }
+
+    .cart-desktop-grid img {
+        width: 90px !important;
+        height: 90px !important;
+        border-radius: 12px !important;
+        object-fit: cover;
+    }
+
+    /* Remove Button (Red X) */
+    .btn-remove-item {
+        background: #fff !important;
+        border: 1px solid #eee !important;
+        color: #999 !important;
+        width: 32px !important;
+        height: 32px !important;
+        transition: all 0.2s;
+    }
+
+    .btn-remove-item:hover {
+        background: #FF3B30 !important;
+        border-color: #FF3B30 !important;
+        color: white !important;
+        transform: rotate(90deg);
+    }
+
+    /* Summary Box (Sticky Right) */
+    #cartFooter {
+        position: sticky;
+        top: 120px;
+        background: #F9F9F9 !important;
+        padding: 30px !important;
+        border-radius: 20px;
+        border: none !important;
+    }
+
+    #cartTotalDisplay {
+        font-size: 28px !important;
+        font-weight: 800 !important;
+        color: #000 !important;
+    }
+
+    #cartFooter button {
+        margin-top: 20px;
+        border-radius: 12px !important;
+        height: 55px;
+        font-size: 16px;
+    }
+
+    /* 5. PRODUCT GALLERY (Dots Fix) */
+    .product-gallery {
+        overflow: visible !important;
+    }
+
+    .gallery-slider {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        width: 100%;
+        border-radius: 20px;
+    }
+
+    .gallery-slider .gallery-img {
+        min-width: 100%;
+        width: 100%;
+        scroll-snap-align: center;
+    }
+
+    /* Dots */
+    .gallery-dots {
+        position: relative !important;
+        inset: auto !important;
+        display: flex !important;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+        margin-bottom: 25px;
+        z-index: 20;
+    }
+
+    .gallery-dots .dot {
+        width: 10px;
+        height: 10px;
+        background: #ddd;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .gallery-dots .dot.active {
+        background: #000;
+        transform: scale(1.2);
+    }
+
+    .back-btn-overlay {
+        display: none !important;
+        /* Hide back button on desktop if preferred, or keep */
+    }
+
+    /* NUCLEAR FIX FOR WHITE SPACE */
+    html body .container.main-wrapper,
+    html body .main-wrapper {
+        min-height: 0 !important;
+        height: auto !important;
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+        display: block !important;
+    }
+
+    html body .home-layout {
+        align-items: flex-start !important;
+        padding-top: 0 !important;
+        /* Adjusted from 40px */
+    }
+
+    html body .main-content {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+}
+
+/* --- Responsive Utilities (Fixes Description Duplication) --- */
+
+/* Hide by default (Mobile) */
+.d-none {
+    display: none !important;
+}
+
+/* Desktop Logic (Screens larger than 1024px) */
+@media (min-width: 1024px) {
+
+    /* Show element on Desktop */
+    .d-lg-block {
+        display: block !important;
+    }
+
+    /* Hide element on Desktop */
+    .d-lg-none {
+        display: none !important;
+    }
+}
+
+/* --- FINAL MOBILE FIXES (Single Product Page) --- */
+
+/* 1. Ensure Top Description is HIDDEN on Mobile */
+@media (max-width: 1023px) {
+    .pd-description.d-none {
+        display: none !important;
+    }
+}
+
+/* 2. Fix Gallery Dots (Outside Image) */
+@media (max-width: 1023px) {
+    .product-gallery {
+        display: flex;
+        flex-direction: column;
+        /* Force vertical stack */
+        height: auto !important;
+        /* Allow growing */
+        padding-bottom: 30px;
+        /* Add breathing room at bottom */
+        background: transparent !important;
+        /* Remove grey box if present */
+    }
+
+    .gallery-slider {
+        order: 1;
+        /* Image First */
+        border-radius: 22px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch;
+        background: #fff;
+    }
+
+    .gallery-slider picture {
+        min-width: 100%;
+        width: 100%;
+        flex: 0 0 100%;
+    }
+
+    .gallery-slider .gallery-img,
+    .gallery-slider img {
+        border-radius: 22px !important;
+        width: 100% !important;
+        display: block;
+    }
+
+    .gallery-dots {
+        order: 2;
+        /* Dots Second */
+        position: relative !important;
+        top: auto !important;
+        bottom: auto !important;
+        left: auto !important;
+        transform: none !important;
+        margin-top: 15px !important;
+        justify-content: center;
+        background: transparent !important;
+        width: 100% !important;
+    }
+
+    .gallery-dots .dot {
+        background: #ccc;
+        /* Grey */
+        width: 8px;
+        height: 8px;
+        margin: 0 4px;
+        /* Spacing between dots */
+    }
+
+    .gallery-dots .dot.active {
+        background: #000;
+        /* Black */
+    }
+}
+
+/* --- Global Loading Overlay (Phase 1) --- */
+.global-loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: none;
+    /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    /* Blocks all clicks underneath */
+    pointer-events: all;
+}
+
+/* Spinner Animation */
+.global-loader-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #e0e0e0;
+    border-top: 5px solid var(--primary-color, #9747FF);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.global-loader-text {
+    margin-top: 20px;
+    font-weight: 600;
+    color: var(--primary-color, #9747FF);
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.payment-gateway-banner-wrap {
+    padding: 0 20px 20px;
+}
+
+.payment-gateway-banner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 18px 20px;
+    border: 1px solid #ece7de;
+    border-radius: 18px;
+    background: linear-gradient(180deg, #fffdf8 0%, #f7f3ea 100%);
+    box-shadow: 0 12px 30px rgba(17, 17, 17, 0.05);
+}
+
+.payment-gateway-banner-title {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7b6f5c;
+}
+
+.payment-gateway-banner-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.payment-gateway-badge {
+    min-width: 108px;
+    min-height: 52px;
+    padding: 8px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(17, 17, 17, 0.08);
+    background: rgba(255, 255, 255, 0.88);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.payment-gateway-badge img {
+    max-height: 28px;
+    width: auto;
+    object-fit: contain;
+}
+
+.payment-gateway-badge span {
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    color: #262626;
+}
+
+@media (max-width: 1023px) {
+    .payment-gateway-banner-wrap {
+        padding: 0 0 20px;
+    }
+
+    .payment-gateway-banner {
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    .payment-gateway-banner-icons {
+        gap: 10px;
+    }
+
+    .payment-gateway-badge {
+        min-width: calc(50% - 5px);
+        flex: 1 1 calc(50% - 5px);
+    }
+}
+
+/* --- Spice / Herbs / Tea / Coffee Brand Refresh --- */
+:root {
+    --primary-color: #2f5d50;
+    --secondary-color: #f4ecdf;
+    --text-dark: #24180f;
+    --text-muted: #7a6a58;
+    --accent-red: #a64b2a;
+    --accent-orange: #c28b2c;
+    --accent-green: #5d8a47;
+    --bg-white: #fffdf8;
+    --brand-surface: rgba(255, 251, 244, 0.94);
+    --brand-surface-strong: #f1e5d1;
+    --brand-border: #e2d3bd;
+    --brand-shadow: 0 14px 34px rgba(60, 36, 18, 0.08);
+    --brand-shadow-strong: 0 20px 48px rgba(60, 36, 18, 0.12);
+}
+
+html {
+    background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0) 30%),
+        linear-gradient(180deg, #fffdf8 0%, #f8f1e5 55%, #f3eadc 100%);
+}
+
+body {
+    background: transparent;
+    color: var(--text-dark);
+}
+
+.mobile-header,
+.mobile-header-custom {
+    background: linear-gradient(180deg, rgba(255, 250, 242, 0.98) 0%, rgba(246, 238, 225, 0.88) 100%);
+    border: 1px solid var(--brand-border);
+    border-radius: 28px;
+    padding: 18px !important;
+    box-shadow: var(--brand-shadow);
+}
+
+.welcome-text h1,
+.section-title,
+.pd-title,
+.product-name a,
+.product-name,
+.cat-name {
+    color: var(--text-dark);
+}
+
+.welcome-text h1 {
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+}
+
+.welcome-text p,
+.view-all,
+.product-category,
+.pd-description,
+.pd-breadcrumb {
+    color: var(--text-muted);
+}
+
+.view-all {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.hero-slider {
+    border-radius: 28px;
+}
+
+.hero-slide img {
+    object-fit: cover;
+    border-radius: 28px;
+    background: linear-gradient(180deg, #f7f0e3 0%, #e7d4b6 100%);
+}
+
+.hero-slider-dot {
+    background: rgba(47, 93, 80, 0.22);
+}
+
+.hero-slider-dot.active {
+    background: var(--primary-color);
+}
+
+.categories-scroll,
+.products-scroll {
+    gap: 14px;
+}
+
+.cat-item,
+.product-card {
+    background: var(--brand-surface);
+    border: 1px solid var(--brand-border);
+    box-shadow: var(--brand-shadow);
+}
+
+.cat-item {
+    border-radius: 24px;
+    padding: 10px 8px 12px;
+}
+
+.cat-img {
+    border-radius: 22px;
+    box-shadow: 0 8px 20px rgba(36, 24, 15, 0.08);
+}
+
+.products-scroll .product-card {
+    width: 148px;
+    min-width: 148px;
+    flex: 0 0 148px;
+}
+
+.product-card {
+    border-radius: 26px;
+    padding: 10px;
+}
+
+.product-thumb-container {
+    border-radius: 22px;
+    background: linear-gradient(180deg, #faf4ea 0%, #efe2cc 100%);
+}
+
+.cart-btn-overlay {
+    background: rgba(36, 24, 15, 0.92);
+}
+
+.sale-badge {
+    box-shadow: 0 8px 18px rgba(166, 75, 42, 0.24);
+}
+
+.current-price,
+.pd-sale-price {
+    color: var(--text-dark);
+}
+
+.price-sale {
+    color: var(--accent-red);
+}
+
+.old-price,
+.pd-old-price {
+    color: #a79c90;
+}
+
+.free-shipping-badge {
+    background: #edf6e7;
+    color: #3b6f2b;
+}
+
+.bottom-nav {
+    background: rgba(255, 252, 246, 0.96);
+    border-top: 1px solid var(--brand-border);
+    box-shadow: 0 -12px 24px rgba(60, 36, 18, 0.08);
+}
+
+.nav-item {
+    color: #8d7b69;
+}
+
+.nav-item.active {
+    color: var(--primary-color);
+}
+
+.gallery-slider {
+    background: linear-gradient(180deg, #faf4ea 0%, #efe1cc 100%);
+}
+
+.gallery-dots .dot.active {
+    background: var(--primary-color);
+}
+
+.btn-size-guide {
+    background: #c28b2c;
+}
+
+.var-pill {
+    border: 1px solid var(--brand-border);
+    border-radius: 999px;
+    background: #fffdf9;
+    color: var(--text-dark);
+}
+
+.var-pill.active {
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+.btn-order-now {
+    background: linear-gradient(135deg, #2f5d50 0%, #1d3d34 100%);
+}
+
+.btn-cart {
+    background: #fffaf1;
+    color: var(--text-dark);
+    border: 1px solid var(--brand-border);
+}
+
+.payment-sheet,
+.payment-gateway-banner {
+    background: linear-gradient(180deg, #fffdfa 0%, #f5eddf 100%);
+}
+
+.payment-gateway-banner {
+    border: 1px solid var(--brand-border);
+    border-radius: 22px;
+    box-shadow: var(--brand-shadow);
+}
+
+.payment-gateway-badge {
+    border: 1px solid rgba(82, 58, 32, 0.08);
+}
+
+.floating-cart,
+.global-loader-text {
+    color: #fff;
+}
+
+.global-loader-spinner {
+    border-top-color: var(--primary-color);
+}
+
+.ct-message-pill {
+    background: linear-gradient(135deg, #2f5d50 0%, #5d8a47 100%);
+}
+
+@media (max-width: 1023px) {
+    .section-header {
+        margin-top: 32px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+    }
+
+    .product-grid {
+        gap: 16px;
+    }
+}
+
+/* --- Structured Pantry / Apothecary Pass --- */
+.mobile-header,
+.mobile-header-custom {
+    border-radius: 12px !important;
+    padding: 14px !important;
+    box-shadow: 0 4px 14px rgba(60, 36, 18, 0.05);
+}
+
+.hero-slider,
+.hero-slide img {
+    border-radius: 10px !important;
+}
+
+.section-header {
+    margin-top: 24px;
+    margin-bottom: 12px;
+}
+
+.section-title {
+    font-size: 18px;
+    letter-spacing: -0.02em;
+}
+
+.categories-scroll,
+.products-scroll {
+    gap: 10px;
+}
+
+.categories-scroll {
+    padding-left: 0;
+    padding-right: 12px;
+}
+
+.products-scroll {
+    padding-left: 0;
+    padding-right: 12px;
+}
+
+.cat-item {
+    border-radius: 8px;
+    width: 108px;
+    min-width: 108px;
+    flex: 0 0 108px;
+    min-height: 150px;
+    padding: 10px 8px 12px;
+    box-shadow: none;
+    background: rgba(255, 252, 247, 0.92);
+    justify-content: flex-start;
+}
+
+.cat-img {
+    width: 92px;
+    height: 92px;
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+.cat-name {
+    min-height: 32px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.product-card {
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    min-height: 304px;
+}
+
+.products-scroll .product-card {
+    width: 168px;
+    min-width: 168px;
+    flex: 0 0 168px;
+}
+
+.product-thumb-container {
+    border-radius: 6px;
+    aspect-ratio: 1 / 1;
+    margin-bottom: 10px;
+}
+
+.product-info {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+}
+
+.cart-btn-overlay,
+.sale-badge {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50%;
+    box-shadow: none;
+}
+
+.sale-badge ~ .cart-btn-overlay {
+    top: 50px !important;
+}
+
+.product-name {
+    min-height: 40px;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-name a {
+    display: block;
+}
+
+.product-price-box {
+    margin-top: 0;
+    margin-bottom: 6px;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    align-items: flex-start !important;
+    gap: 1px;
+}
+
+.old-price {
+    font-size: 11px;
+    color: #9a8e82;
+    margin-bottom: 2px;
+}
+
+.current-price,
+.current-price.price-sale {
+    display: block;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: #1f140b;
+}
+
+.koko-installment-teaser {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 0;
+    margin-bottom: 4px;
+    min-height: 18px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.koko-installment-teaser .koko-installment-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-category {
+    margin-top: 0;
+    padding-top: 0;
+    font-size: 10px;
+}
+
+.free-shipping-badge,
+.tag,
+.var-pill,
+.btn-size-guide,
+.btn-action,
+.payment-gateway-badge {
+    border-radius: 6px !important;
+}
+
+.bottom-nav {
+    box-shadow: none;
+}
+
+.gallery-slider,
+.gallery-slider img {
+    border-radius: 8px !important;
+}
+
+.payment-sheet,
+.payment-gateway-banner,
+.ct-content {
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(60, 36, 18, 0.08);
+}
+
+.payment-gateway-banner {
+    padding: 14px 16px;
+}
+
+.floating-cart {
+    box-shadow: 0 8px 20px rgba(60, 36, 18, 0.14);
+}
+
+@media (max-width: 1023px) {
+    .section-header {
+        padding: 0 6px;
+    }
+
+    .product-grid {
+        gap: 12px;
+    }
+
+    .product-info-container {
+        padding: 0 8px;
+    }
+
+    .pd-bottom-actions {
+        padding: 8px 12px;
+        gap: 10px;
+    }
+
+    .btn-action {
+        min-height: 46px;
+        border-radius: 8px !important;
+        box-shadow: none;
+    }
+}

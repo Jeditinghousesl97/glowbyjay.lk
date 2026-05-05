@@ -1,0 +1,48 @@
+Tharindu Janaka <jeditinghousesl@gmail.com>
+Fwd: API Documentation - Developer Preview
+Maheshi Karunarathna <maheshikarunarathna2003@gmail.com> Thu, Mar 19, 2026 at 6:10 PM
+To: jeditinghousesl@gmail.com
+Sent from my iPhone
+Begin forwarded message:
+From:  Mohammed Rizan < rizan.m@paykoko.com >
+Date:  18 March 2026 at 12:24:18 GMT+5:30
+To: maheshikarunarathna2003@gmail. com
+Subject:  API Documentation - Developer Preview
+Hi there,
+Please find attached our API documentation and sample code.
+This developer preview document outlines the method and process for our upcoming API integration.
+For testing purposes, we’ve included the QA  credentials below . Once development is successfully completed, kindly let us know , and
+we will provide the production keys.
+Endpoint (POST) - https://qaapi.paykoko.com/ api/merchants/orderCreate    
+Parameter Value
+Title Koko: Buy Now Pay Later
+Description Pay in 3 interest free instalments with Koko.
+Merchant ID c8cca514bdfa0582cdc40c9703c71e 9d
+API Key 83fA5n1xUaj8OKnX23YY5vlni5q39g Bi
+Public Key -----BEGIN PUBLIC KEY -----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNAD CBiQKBgQDDwDt4Q9B+ MEAcxP8pPeTYGh22
+lvCOxxKEwDuJP AvTtYpfiqU1Ip// njnMgWIpFcpIcqabALPrkHW8eD37SB zQ6R5l
+fr01xf7lBG3bGqNXZkdXb0txnoXSmP ya+B4oGqZc+ KWNrKTntY3sNKD6k4tdOeoX
+83rxb/gnZR5v7WP7WQIDAQAB
+-----END PUBLIC KEY -----
+Private Key -----BEGIN RSA  PRIV ATE KEY -----
+MIICXAIBAAKBgQCnAPcpmvA3Iipb7F n+eAmO/P4Xv8y+ PVm8FrDhqOSeMqaUQmzf
+iZ6xw+ ejCmye46MMW5SaA03Hnm0WGDXqYhMR 0TiWUgXRCeQImxSq+wXwd+0ufxW+
+ANnvH9l/ mxcPwlGr2BKJTUJy2NQt8FZ9R6NSfI lKzdyGStvzF3j0KdBnjQIDAQAB
+AoGA VMjwsnaurc7yomiD5+ UZNTbL6VK+p3aOMCd09ZvBNW+ RkoOGspYzsxw6ZVPN
+gX0gMg3si6RRwJ5101nHR Y81DmysZ9 0kgJsknqxUuwKGU6k2Wk18JqJBLGLX ilwR
+Z5/NjdgohoZDrJbbr029LNLZ06pvpdXtv VRM9A1XZVzEnAECQQDQ02Wg7nGFvS4 M
+yRWMHNARLto19W/Q+ BlCsWRCDYO5zns9BtaqzZ3CyOAaXOb Ds6ZWpCEY+3e84u3X
+pvBpdOGtAkEAzLr15YBG9Y3hQgErwI Ud0dSlY iDzaIM9DszIh+lzCIi/ bUM6nXQi
+IZ0zDJmLjwa0bMduO+ ZDiUbxuCFlxhEZYQJAdpTEbhlYr4gY wTvil3i5EjjXwrJH
+t5NazMts0jFYbsd4pdPfTIiMIFLvJy lABTtbpnF3Nfd+K+10// OVK10q1QJBAMLU
+qW3exaipfNTziE+ OXvJxC3J3KS0st85909iDsZVNjd7NO 9rbyh9zGkHDXayfFNT w
+dVdLqrnZae9w2QnE/AECQF+ cRPcQMA1wbmOBCyn/ C1YAMji71DtplJF9fFOxlp9P
+XdzBrBj9flrwjasEs3WKrepvZ9A0GT 5HaG15ULd2/rc=
+-----END RSA  PRIV ATE KEY -----
+Gateway credentials for the payment
+Mobile -  765283630
+Password - Madhu@123
+Please let us know if you have any questions.
+Thank you!
+--
