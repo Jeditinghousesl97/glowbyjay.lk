@@ -39,8 +39,17 @@ class BaseController
      */
     protected function redirect($url)
     {
-        // Use BASE_URL from config.php
-        header("Location: " . BASE_URL . $url);
+        $target = BASE_URL . ltrim((string) $url, '/');
+
+        // Preferred redirect path
+        if (!headers_sent()) {
+            header("Location: " . $target);
+            exit;
+        }
+
+        // Fallback when output was already sent before redirect.
+        echo '<script>window.location.href=' . json_encode($target) . ';</script>';
+        echo '<noscript><meta http-equiv="refresh" content="0;url=' . htmlspecialchars($target, ENT_QUOTES, 'UTF-8') . '"></noscript>';
         exit;
     }
 
