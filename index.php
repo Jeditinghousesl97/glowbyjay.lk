@@ -140,15 +140,15 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
             box-sizing:border-box;
         }
         .main{padding-top:0}
-        .hero{position:relative;width:100%;height:auto;min-height:0;background:transparent;overflow:hidden}
-        .hero-media{position:relative;inset:auto;width:100%;height:auto;background:transparent}
-        .hero-slider{position:relative;inset:auto;display:flex;align-items:flex-start;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none}
+        .hero{position:relative;width:100%;height:auto !important;min-height:0 !important;max-height:none !important;background:transparent;overflow:visible !important}
+        .hero-media{position:relative;inset:auto;width:100%;height:auto !important;min-height:0 !important;max-height:none !important;background:transparent;overflow:visible !important}
+        .hero-slider{position:relative;inset:auto;display:flex;align-items:flex-start;overflow-x:auto;overflow-y:visible;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none;border-radius:0 !important}
         .hero-slider::-webkit-scrollbar{display:none}
-        .hero-slide{flex:0 0 100%;min-width:100%;position:relative;display:flex;align-items:flex-start;justify-content:flex-start;scroll-snap-align:start;background:transparent;padding:0}
-        .hero-slide-link,.hero-slide-frame{display:block;width:100%;height:auto}
-        .hero-slide picture{display:block;width:100%;height:auto}
-        .hero-slide img{width:100%;height:auto;max-width:100%;object-fit:contain;object-position:center center}
-        .hero-media > img{width:100%;height:auto;max-width:100%;object-fit:contain;object-position:center center}
+        .hero-slide{flex:0 0 100% !important;min-width:100% !important;position:relative;display:flex;align-items:flex-start;justify-content:flex-start;scroll-snap-align:start;background:transparent !important;padding:0;aspect-ratio:auto !important;overflow:visible !important;border-radius:0 !important;box-shadow:none !important}
+        .hero-slide-link,.hero-slide-frame{display:block;width:100%;height:auto !important;min-height:0 !important}
+        .hero-slide picture{display:block;width:100%;height:auto !important;min-height:0 !important;overflow:visible !important;border-radius:0 !important}
+        .hero-slide img{display:block;width:100% !important;height:auto !important;max-width:100%;max-height:none !important;object-fit:contain !important;object-position:center center;border-radius:0 !important}
+        .hero-media > img{display:block;width:100% !important;height:auto !important;max-width:100%;max-height:none !important;object-fit:contain !important;object-position:center center;border-radius:0 !important}
         .hero-slider-dots{position:absolute;left:0;right:0;bottom:18px;z-index:3;display:flex;justify-content:center;gap:8px;padding:0 16px;pointer-events:none}
         .hero-slider-dot{width:18px;height:3px;border:0;background:rgba(28,27,27,.22);padding:0;pointer-events:auto;cursor:pointer}
         .hero-slider-dot.active{background:var(--primary)}
@@ -451,7 +451,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                                                 loading="<?= $index === 0 ? 'eager' : 'lazy' ?>"
                                                 decoding="<?= $index === 0 ? 'sync' : 'async' ?>"
                                                 fetchpriority="<?= $index === 0 ? 'high' : 'low' ?>"
-                                                style="width:100%;height:auto;max-width:100%;object-fit:contain;object-position:center center;">
+                                                style="display:block;width:100% !important;height:auto !important;max-width:100%;max-height:none !important;object-fit:contain !important;object-position:center center;border-radius:0 !important;">
                                         </picture>
                                     </a>
                                 <?php else: ?>
@@ -466,7 +466,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                                                 loading="<?= $index === 0 ? 'eager' : 'lazy' ?>"
                                                 decoding="<?= $index === 0 ? 'sync' : 'async' ?>"
                                                 fetchpriority="<?= $index === 0 ? 'high' : 'low' ?>"
-                                                style="width:100%;height:auto;max-width:100%;object-fit:contain;object-position:center center;">
+                                                style="display:block;width:100% !important;height:auto !important;max-width:100%;max-height:none !important;object-fit:contain !important;object-position:center center;border-radius:0 !important;">
                                         </picture>
                                     </div>
                                 <?php endif; ?>
