@@ -821,22 +821,25 @@
                 <textarea name="short_description" class="input-box" rows="3"
                     placeholder="Short summary shown on the single product page"><?= htmlspecialchars($product['short_description'] ?? '') ?></textarea>
 
-                <!-- Size Guide -->
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span class="section-label">Size Guide</span>
-                    <a href="javascript:void(0)"
-                        onclick="openIframeModal('<?= BASE_URL ?>sizeGuide/index', 'Manage Size Guides')"
-                        style="font-size:12px; color:#007aff; text-decoration:none; font-weight:600;">+ Add / Manage
-                        Guides</a>
+                <!-- Temporarily hidden: Size Guide field is not needed on the product form right now. -->
+                <div style="display:none;">
+                    <!-- Size Guide -->
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="section-label">Size Guide</span>
+                        <a href="javascript:void(0)"
+                            onclick="openIframeModal('<?= BASE_URL ?>sizeGuide/index', 'Manage Size Guides')"
+                            style="font-size:12px; color:#007aff; text-decoration:none; font-weight:600;">+ Add / Manage
+                            Guides</a>
+                    </div>
+                    <select name="size_guide_id" class="input-box">
+                        <option value="">+ Click here to select Size Guides</option>
+                        <?php foreach ($sizeGuides as $sg): ?>
+                            <option value="<?= $sg['id'] ?>" <?= (isset($product['size_guide_id']) && $product['size_guide_id'] == $sg['id']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($sg['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
-                <select name="size_guide_id" class="input-box">
-                    <option value="">+ Click here to select Size Guides</option>
-                    <?php foreach ($sizeGuides as $sg): ?>
-                        <option value="<?= $sg['id'] ?>" <?= (isset($product['size_guide_id']) && $product['size_guide_id'] == $sg['id']) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($sg['name']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
 
                 <!-- SKU -->
                 <span class="section-label">Product Code (SKU)</span>
