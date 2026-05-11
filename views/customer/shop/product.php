@@ -127,7 +127,7 @@ $faviconUrl = ImageHelper::settingsImageUrl(
         <script src="https://www.google.com/recaptcha/api.js?render=<?= htmlspecialchars($recaptchaSiteKey) ?>"></script>
     <?php endif; ?>
     <style>
-        :root{--primary:var(--accent, #b9000b);--primary-strong:var(--accent-red, #e31a1a);--surface-low:var(--surface-soft, #fafafa);--surface-mid:var(--surface-soft, #fafafa);--ink:#1c1b1b;--muted:#6d6665;--shadow:0 24px 60px rgba(28,27,27,.08);--shadow-soft:0 14px 30px rgba(28,27,27,.06)}
+        :root{--primary:var(--accent, #b68a2d);--primary-strong:var(--accent-red, #d4af37);--surface-low:var(--surface-soft, #fafafa);--surface-mid:var(--surface-soft, #fafafa);--ink:#1c1b1b;--muted:#6d6665;--shadow:0 24px 60px rgba(28,27,27,.08);--shadow-soft:0 14px 30px rgba(28,27,27,.06)}
         *{box-sizing:border-box} html{scroll-behavior:smooth;background:var(--surface)} body{margin:0;font-family:"Manrope",sans-serif;background:var(--surface);color:var(--ink)}
         *,*::before,*::after{border-radius:0 !important}
         h1,h2,h3,h4,h5{font-family:"Noto Serif",serif;font-weight:400;margin:0}
@@ -150,7 +150,7 @@ $faviconUrl = ImageHelper::settingsImageUrl(
         .gallery-thumbs{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:10px;padding:0 18px 18px;background:var(--surface)}
         .gallery-thumb{appearance:none;border:1px solid transparent;background:var(--surface);border-radius:0;overflow:hidden;padding:0;aspect-ratio:1/1;cursor:pointer;transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease}
         .gallery-thumb:hover{transform:translateY(-1px)}
-        .gallery-thumb.active{border-color:var(--primary);box-shadow:0 0 0 2px rgba(185,0,11,.12)}
+        .gallery-thumb.active{border-color:var(--primary);box-shadow:0 0 0 2px rgba(182,138,45,.16)}
         .gallery-thumb picture,.gallery-thumb img{display:block;width:100%;height:100%}
         .gallery-thumb img{object-fit:cover;object-position:center}
         .visual-copy{padding:22px 24px 24px}.visual-copy .section-title{font-family:"Noto Serif",serif;font-size:32px;letter-spacing:-.04em;line-height:1.02}.visual-copy p{margin:12px 0 0;color:var(--muted);line-height:1.8}
@@ -193,7 +193,7 @@ $faviconUrl = ImageHelper::settingsImageUrl(
             transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease;
         }
         .btn-action:hover{transform:translateY(-1px)}
-        .btn-order-now{background:var(--btn-ordernow-bg, var(--primary));color:var(--btn-ordernow-text, #fff);box-shadow:0 12px 24px rgba(185,0,11,.16)}
+        .btn-order-now{background:var(--btn-ordernow-bg, var(--primary));color:var(--btn-ordernow-text, #fff);box-shadow:0 12px 24px rgba(182,138,45,.18)}
         .btn-cart{background:var(--btn-addcart-bg, var(--ink));color:var(--btn-addcart-text, #fff);box-shadow:0 12px 24px rgba(28,27,27,.14)}
         .action-note{margin-top:14px;font-size:12px;line-height:1.7;color:var(--muted)}
         .detail-card{background:var(--surface);box-shadow:var(--shadow-soft);padding:24px}.detail-card h3{font-size:26px;margin-bottom:14px;font-family:"Noto Serif",serif}.detail-card p{margin:0;color:var(--muted);line-height:1.9}.features-list{display:grid;gap:10px;margin-top:16px}.feature-line{display:flex;gap:10px;align-items:flex-start;color:var(--ink);font-size:13px;line-height:1.7}.feature-line i{color:var(--accent-red, var(--primary));margin-top:3px}
@@ -269,7 +269,7 @@ $faviconUrl = ImageHelper::settingsImageUrl(
         #orderModal .field label{display:block;margin-bottom:5px;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#7c7777}
         #orderModal .field input,#orderModal .field textarea,#orderModal .field select{width:100%;min-height:46px;padding:10px 12px;border:1px solid rgba(31,31,31,.18);background:var(--surface);color:#111;font:inherit;box-shadow:inset 0 1px 0 rgba(255,255,255,.7);border-radius:0}
         #orderModal .field textarea{min-height:90px;resize:vertical}
-        #orderModal .field input:focus,#orderModal .field textarea:focus,#orderModal .field select:focus{outline:none;border-color:rgba(185,0,11,.36);box-shadow:0 0 0 3px rgba(185,0,11,.08)}
+        #orderModal .field input:focus,#orderModal .field textarea:focus,#orderModal .field select:focus{outline:none;border-color:rgba(182,138,45,.42);box-shadow:0 0 0 3px rgba(182,138,45,.10)}
         #orderModal .totals-box{background:#fafafa;border:1px solid rgba(31,31,31,.08);padding:16px 18px;display:grid;gap:10px;margin-top:4px}
         #orderModal .totals-row{display:flex;justify-content:space-between;gap:12px;font-size:13px}
         #orderModal .totals-row span{color:#7c7777}
@@ -287,7 +287,7 @@ $faviconUrl = ImageHelper::settingsImageUrl(
         .btn-action{min-height:54px;border:1px solid var(--ink);border-radius:0;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:0 18px;font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,opacity .2s ease}
         .btn-action:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
         .btn-action:hover{transform:translateY(-1px)}
-        .btn-buy-now{background:var(--btn-ordernow-bg, var(--primary));color:var(--btn-ordernow-text, #fff);box-shadow:0 12px 24px rgba(185,0,11,.16)}
+        .btn-buy-now{background:var(--btn-ordernow-bg, var(--primary));color:var(--btn-ordernow-text, #fff);box-shadow:0 12px 24px rgba(182,138,45,.18)}
         .btn-add-cart{background:var(--btn-addcart-bg, var(--ink));color:var(--btn-addcart-text, #fff);box-shadow:0 12px 24px rgba(28,27,27,.14)}
         .summary-stock-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
         .summary-stock-badge{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid rgba(28,27,27,.12);background:var(--surface);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:800}
@@ -304,7 +304,7 @@ $faviconUrl = ImageHelper::settingsImageUrl(
         .product-details-panel{margin-top:28px;border:1px solid rgba(28,27,27,.12);background:var(--surface);box-shadow:var(--shadow-soft);padding:22px 24px}
         .product-details-panel h3{margin:0 0 10px;font-size:22px;letter-spacing:-.02em;text-transform:uppercase}
         .product-details-panel .text{color:var(--muted);line-height:1.85;font-size:14px}
-        .order-flash{margin:0 0 16px;padding:14px 16px;border:1px solid rgba(185,0,11,.18);background:color-mix(in srgb, var(--accent-red, var(--primary)) 8%, #ffffff);color:#8d0c14;font-size:13px;line-height:1.7}
+        .order-flash{margin:0 0 16px;padding:14px 16px;border:1px solid rgba(182,138,45,.22);background:color-mix(in srgb, var(--accent-red, var(--primary)) 8%, #ffffff);color:#7a5a14;font-size:13px;line-height:1.7}
         .order-flash strong{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px}
         .related-section{padding-top:82px}
         .related-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:26px}

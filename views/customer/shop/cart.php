@@ -142,7 +142,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     }
     .cart-page .payment-method-card:hover{
         transform:translateY(-1px);
-        border-color:rgba(185,0,11,.22);
+        border-color:rgba(182,138,45,.28);
         box-shadow:0 14px 28px rgba(31,31,31,.10)
     }
     .cart-page .payment-method-card:disabled{
@@ -204,7 +204,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     .cart-page .field label{display:block;margin-bottom:5px;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#7c7777}
     .cart-page .field input,.cart-page .field textarea,.cart-page .field select{width:100%;min-height:46px;padding:10px 12px;border:1px solid rgba(31,31,31,.18);background:var(--surface);color:#111;font:inherit;box-shadow:inset 0 1px 0 rgba(255,255,255,.7);border-radius:0}
     .cart-page .field textarea{min-height:90px;resize:vertical}
-    .cart-page .field input:focus,.cart-page .field textarea:focus,.cart-page .field select:focus{outline:none;border-color:rgba(185,0,11,.36);box-shadow:0 0 0 3px rgba(185,0,11,.08)}
+    .cart-page .field input:focus,.cart-page .field textarea:focus,.cart-page .field select:focus{outline:none;border-color:rgba(182,138,45,.42);box-shadow:0 0 0 3px rgba(182,138,45,.10)}
     .cart-page .totals-box{background:#fafafa;border:1px solid rgba(31,31,31,.08);padding:16px 18px;display:grid;gap:10px;margin-top:4px}
     .cart-page .totals-row{display:flex;justify-content:space-between;gap:12px;font-size:13px}
     .cart-page .totals-row span{color:#7c7777}
@@ -221,7 +221,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     .cart-page .toast.success{background:#17663b}
     .cart-page .toast.error{background:#a43838}
     .cart-page .toast .text{font-size:13px;line-height:1.5;font-weight:700}
-    .cart-page .order-flash{margin:0 0 16px;padding:14px 16px;border:1px solid rgba(185,0,11,.18);background:color-mix(in srgb, var(--accent-red, var(--primary)) 8%, #ffffff);color:#8d0c14;font-size:13px;line-height:1.7}
+    .cart-page .order-flash{margin:0 0 16px;padding:14px 16px;border:1px solid rgba(182,138,45,.22);background:color-mix(in srgb, var(--accent-red, var(--primary)) 8%, #ffffff);color:#7a5a14;font-size:13px;line-height:1.7}
     .cart-page .order-flash strong{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px}
     @media (max-width:1023px){
         .cart-page{padding:16px 0 48px}

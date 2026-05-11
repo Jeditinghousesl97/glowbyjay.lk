@@ -5,13 +5,13 @@
 }
 
 :root {
-    --primary-color: #9747FF;
-    /* Lavender/Purple from design */
+    --primary-color: #b68a2d;
+    /* Brand gold */
     --secondary-color: #F8F9FA;
     --text-dark: #333;
     --text-muted: #888;
-    --accent-red: #FF3B30;
-    /* Sale tag */
+    --accent-red: #d4af37;
+    /* Gold accent */
     --accent-orange: #FF9500;
     /* Special tag */
     --accent-green: #34C759;
@@ -1633,7 +1633,7 @@ p {
     .products-scroll .current-price.price-sale {
         font-size: 16px;
         font-weight: 700;
-        color: #FF3B30;
+        color: #b68a2d;
     }
 
     .products-scroll .product-category {
@@ -1732,7 +1732,7 @@ p {
     }
 
     .btn-red {
-        background: #FF3B30;
+        background: #b68a2d;
         color: white;
         border: none;
         padding: 8px 16px;
@@ -1816,7 +1816,7 @@ p {
     position: absolute;
     top: -5px;
     right: -5px;
-    background: #ff3b30;
+    background: #b68a2d;
     color: white;
     font-size: 11px;
     font-weight: 800;
@@ -2156,8 +2156,8 @@ p {
     }
 
     .btn-remove-item:hover {
-        background: #FF3B30 !important;
-        border-color: #FF3B30 !important;
+        background: #b68a2d !important;
+        border-color: #b68a2d !important;
         color: white !important;
         transform: rotate(90deg);
     }
@@ -2377,7 +2377,7 @@ p {
     width: 50px;
     height: 50px;
     border: 5px solid #e0e0e0;
-    border-top: 5px solid var(--primary-color, #9747FF);
+    border-top: 5px solid var(--primary-color, #b68a2d);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -2395,7 +2395,7 @@ p {
 .global-loader-text {
     margin-top: 20px;
     font-weight: 600;
-    color: var(--primary-color, #9747FF);
+    color: var(--primary-color, #b68a2d);
     font-size: 14px;
     letter-spacing: 1px;
 }

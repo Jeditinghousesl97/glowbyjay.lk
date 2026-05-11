@@ -126,7 +126,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
 <?php require_once 'views/layouts/customer_layout.php'; customer_layout_start(); ?>
 <style>
         :root{
-            --primary:#b9000b;--primary-strong:#e31a1a;--surface:#fcf9f8;--surface-low:#f6f3f2;--surface-mid:#f0eded;--surface-high:#eae7e7;--surface-highest:#e5e2e1;--ink:#1c1b1b;--muted:#6d6665;--shadow:0 24px 60px rgba(28,27,27,.08);--shadow-soft:0 14px 30px rgba(28,27,27,.06)
+            --primary:var(--accent, #b68a2d);--primary-strong:var(--accent-red, #d4af37);--surface:#fcf9f8;--surface-low:#f6f3f2;--surface-mid:#f0eded;--surface-high:#eae7e7;--surface-highest:#e5e2e1;--ink:#1c1b1b;--muted:#6d6665;--shadow:0 24px 60px rgba(28,27,27,.08);--shadow-soft:0 14px 30px rgba(28,27,27,.06)
         }
         *{box-sizing:border-box} html{scroll-behavior:smooth}
         body{margin:0;font-family:"Manrope",sans-serif;background:var(--surface);color:var(--ink)}

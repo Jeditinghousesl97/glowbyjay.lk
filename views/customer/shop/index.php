@@ -98,7 +98,7 @@ function shopExcerpt(string $text, int $length = 120): string
 ?>
 <?php require_once 'views/layouts/customer_layout.php'; customer_layout_start(); ?>
 <style>
-        :root{--primary:var(--accent, #b9000b);--primary-strong:var(--accent-red, #e31a1a);--surface:#fcf9f8;--surface-low:#f6f3f2;--surface-mid:#f0eded;--surface-high:#eae7e7;--surface-highest:#e5e2e1;--ink:#1c1b1b;--muted:#6d6665;--shadow:0 24px 60px rgba(28,27,27,.08);--shadow-soft:0 14px 30px rgba(28,27,27,.06)}
+        :root{--primary:var(--accent, #b68a2d);--primary-strong:var(--accent-red, #d4af37);--surface:#fcf9f8;--surface-low:#f6f3f2;--surface-mid:#f0eded;--surface-high:#eae7e7;--surface-highest:#e5e2e1;--ink:#1c1b1b;--muted:#6d6665;--shadow:0 24px 60px rgba(28,27,27,.08);--shadow-soft:0 14px 30px rgba(28,27,27,.06)}
         *{box-sizing:border-box} html{scroll-behavior:smooth;background:#fff} body{margin:0;font-family:"Manrope",sans-serif;background:#fff;color:var(--ink)} h1,h2,h3,h4,h5{font-family:"Noto Serif",serif;font-weight:400;margin:0} a{color:inherit;text-decoration:none} img{display:block;max-width:100%}
         .page{overflow-x:hidden;background:#fff;min-height:100vh}.container{width:min(1600px,calc(100% - 96px));margin:0 auto}
         .main{padding-top:0}
@@ -120,7 +120,7 @@ function shopExcerpt(string $text, int $length = 120): string
         .shop-filter-section:first-of-type{padding-top:0;border-top:0}
         .shop-filter-label{font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--primary)}
         .shop-filter-input,.shop-filter-select{width:100%;height:48px;padding:0 14px;border:1px solid rgba(28,27,27,.1);border-radius:0;background:#fff;color:var(--ink);font:inherit;outline:none;transition:border-color .2s ease,box-shadow .2s ease}
-        .shop-filter-input:focus,.shop-filter-select:focus{border-color:rgba(185,0,11,.32);box-shadow:0 0 0 3px rgba(185,0,11,.1)}
+        .shop-filter-input:focus,.shop-filter-select:focus{border-color:rgba(182,138,45,.38);box-shadow:0 0 0 3px rgba(182,138,45,.12)}
         .shop-price-range{display:grid;gap:12px}
         .shop-price-range-values{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(28,27,27,.58)}
         .shop-price-range-track{position:relative;height:34px;display:flex;align-items:center}
@@ -131,8 +131,8 @@ function shopExcerpt(string $text, int $length = 120): string
         .shop-price-range input[type="range"]::-moz-range-track{height:2px;background:transparent;border:0}
         .shop-price-range input[type="range"]::-webkit-slider-thumb{pointer-events:auto;-webkit-appearance:none;appearance:none;width:18px;height:18px;border:1px solid rgba(28,27,27,.14);border-radius:0;background:#fff;box-shadow:0 4px 10px rgba(28,27,27,.14);margin-top:-8px;cursor:pointer}
         .shop-price-range input[type="range"]::-moz-range-thumb{pointer-events:auto;width:18px;height:18px;border:1px solid rgba(28,27,27,.14);border-radius:0;background:#fff;box-shadow:0 4px 10px rgba(28,27,27,.14);cursor:pointer}
-        .shop-price-range input[type="range"]:focus::-webkit-slider-thumb{border-color:rgba(185,0,11,.5);box-shadow:0 0 0 3px rgba(185,0,11,.12),0 4px 10px rgba(28,27,27,.14)}
-        .shop-price-range input[type="range"]:focus::-moz-range-thumb{border-color:rgba(185,0,11,.5);box-shadow:0 0 0 3px rgba(185,0,11,.12),0 4px 10px rgba(28,27,27,.14)}
+        .shop-price-range input[type="range"]:focus::-webkit-slider-thumb{border-color:rgba(182,138,45,.55);box-shadow:0 0 0 3px rgba(182,138,45,.14),0 4px 10px rgba(28,27,27,.14)}
+        .shop-price-range input[type="range"]:focus::-moz-range-thumb{border-color:rgba(182,138,45,.55);box-shadow:0 0 0 3px rgba(182,138,45,.14),0 4px 10px rgba(28,27,27,.14)}
         .shop-category-list{display:grid;gap:10px;max-height:300px;overflow:auto;padding-right:4px}
         .shop-category-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:0;border:1px solid rgba(28,27,27,.06);background:#fff;font-size:13px;line-height:1.4}
         .shop-category-item input{accent-color:var(--primary)}

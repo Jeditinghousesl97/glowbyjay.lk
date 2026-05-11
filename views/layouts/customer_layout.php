@@ -89,9 +89,22 @@ if (!function_exists('customer_layout_start')) {
             $currentRoute = '';
         }
 
-        $sitePrimary = trim((string) ($settings['primary_color'] ?? '#b9000b')) ?: '#b9000b';
+        $goldPrimary = '#b68a2d';
+        $goldAccent = '#d4af37';
+        $goldLegacy = static function (string $value, string $fallback) use ($goldPrimary, $goldAccent): string {
+            $normalized = strtolower(trim($value));
+            if ($normalized === '' || $normalized === '#b9000b' || $normalized === '#b9000bff') {
+                return $fallback === '#d4af37' ? $goldAccent : $goldPrimary;
+            }
+            if ($normalized === '#e31a1a' || $normalized === '#ff3b30') {
+                return $goldAccent;
+            }
+            return $value;
+        };
+
+        $sitePrimary = $goldLegacy(trim((string) ($settings['primary_color'] ?? $goldPrimary)), $goldPrimary);
         $siteSecondary = trim((string) ($settings['secondary_color'] ?? '#1f1f1f')) ?: '#1f1f1f';
-        $siteAccentRed = trim((string) ($settings['accent_red'] ?? '#e31a1a')) ?: '#e31a1a';
+        $siteAccentRed = $goldLegacy(trim((string) ($settings['accent_red'] ?? $goldAccent)), $goldAccent);
         $siteBg = trim((string) ($settings['bg_color'] ?? '#ffffff')) ?: '#ffffff';
         $siteSurface = trim((string) ($settings['surface_color'] ?? '#fafafa')) ?: '#fafafa';
         $siteInk = trim((string) ($settings['ink_color'] ?? '#1c1b1b')) ?: '#1c1b1b';
@@ -101,17 +114,17 @@ if (!function_exists('customer_layout_start')) {
         $headerText = trim((string) ($settings['header_text'] ?? '#1c1b1b')) ?: '#1c1b1b';
         $footerBg = trim((string) ($settings['footer_bg'] ?? '#ffffff')) ?: '#ffffff';
         $footerText = trim((string) ($settings['footer_text'] ?? '#1c1b1b')) ?: '#1c1b1b';
-        $footerLink = trim((string) ($settings['footer_link'] ?? '#b9000b')) ?: '#b9000b';
+        $footerLink = $goldLegacy(trim((string) ($settings['footer_link'] ?? $goldPrimary)), $goldPrimary);
         $navMobileBg = trim((string) ($settings['nav_mobile_bg'] ?? '#ffffff')) ?: '#ffffff';
         $navMobileIcon = trim((string) ($settings['nav_mobile_icon_color'] ?? '#999999')) ?: '#999999';
-        $navMobileActive = trim((string) ($settings['nav_mobile_active_color'] ?? '#b9000b')) ?: '#b9000b';
+        $navMobileActive = $goldLegacy(trim((string) ($settings['nav_mobile_active_color'] ?? $goldPrimary)), $goldPrimary);
         $navDesktopBg = trim((string) ($settings['nav_desktop_bg'] ?? '#ffffff')) ?: '#ffffff';
         $navDesktopLink = trim((string) ($settings['nav_desktop_link_color'] ?? '#666666')) ?: '#666666';
         $floatingCartBg = trim((string) ($settings['floating_cart_bg'] ?? '#7c4af0')) ?: '#7c4af0';
         $floatingCartText = trim((string) ($settings['floating_cart_text'] ?? '#ffffff')) ?: '#ffffff';
         $btnAddCartBg = trim((string) ($settings['btn_addcart_bg'] ?? '#111111')) ?: '#111111';
         $btnAddCartText = trim((string) ($settings['btn_addcart_text'] ?? '#ffffff')) ?: '#ffffff';
-        $btnOrderNowBg = trim((string) ($settings['btn_ordernow_bg'] ?? '#b9000b')) ?: '#b9000b';
+        $btnOrderNowBg = $goldLegacy(trim((string) ($settings['btn_ordernow_bg'] ?? $goldPrimary)), $goldPrimary);
         $btnOrderNowText = trim((string) ($settings['btn_ordernow_text'] ?? '#ffffff')) ?: '#ffffff';
         $btnCartWhatsappBg = trim((string) ($settings['btn_cart_whatsapp_bg'] ?? '#25d366')) ?: '#25d366';
         $btnCartWhatsappText = trim((string) ($settings['btn_cart_whatsapp_text'] ?? '#ffffff')) ?: '#ffffff';

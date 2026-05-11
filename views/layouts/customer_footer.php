@@ -542,7 +542,7 @@ if (!function_exists('customer_footer_render')) {
                     height:18px;
                     padding:0 5px;
                     border-radius:999px;
-                    background:#b9000b;
+                    background:var(--primary, #b68a2d);
                     color:#fff;
                     font-size:9px;
                     line-height:18px;

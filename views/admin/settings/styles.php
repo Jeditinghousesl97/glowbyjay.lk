@@ -129,7 +129,7 @@ if (!function_exists('renderStyleColorField')) {
             letter-spacing: 0.08em;
         }
         .btn-save {
-            background: #b9000b;
+            background: #b68a2d;
             color: white;
             border: none;
             padding: 14px 18px;
@@ -171,9 +171,9 @@ if (!function_exists('renderStyleColorField')) {
             <div class="section-header-block">1. Core Colors</div>
             <div class="style-card">
                 <div class="card-grid">
-                    <?php renderStyleColorField($styles, 'primary_color', 'Primary Color', '#b9000b'); ?>
+                    <?php renderStyleColorField($styles, 'primary_color', 'Primary Color', '#b68a2d'); ?>
                     <?php renderStyleColorField($styles, 'secondary_color', 'Secondary Color', '#1f1f1f'); ?>
-                    <?php renderStyleColorField($styles, 'accent_red', 'Accent / Sale Red', '#e31a1a'); ?>
+                    <?php renderStyleColorField($styles, 'accent_red', 'Accent / Sale Gold', '#d4af37'); ?>
                     <?php renderStyleColorField($styles, 'bg_color', 'Page Background', '#ffffff'); ?>
                     <?php renderStyleColorField($styles, 'surface_color', 'Surface Color', '#fafafa'); ?>
                     <?php renderStyleColorField($styles, 'ink_color', 'Text Color', '#1c1b1b'); ?>
@@ -189,7 +189,7 @@ if (!function_exists('renderStyleColorField')) {
                     <?php renderStyleColorField($styles, 'header_text', 'Header Text', '#1c1b1b'); ?>
                     <?php renderStyleColorField($styles, 'footer_bg', 'Footer Background', '#ffffff'); ?>
                     <?php renderStyleColorField($styles, 'footer_text', 'Footer Text', '#1c1b1b'); ?>
-                    <?php renderStyleColorField($styles, 'footer_link', 'Footer Link', '#b9000b'); ?>
+                    <?php renderStyleColorField($styles, 'footer_link', 'Footer Link', '#b68a2d'); ?>
                 </div>
             </div>
 
@@ -198,7 +198,7 @@ if (!function_exists('renderStyleColorField')) {
                 <div class="card-grid">
                     <?php renderStyleColorField($styles, 'nav_mobile_bg', 'Mobile Nav Background', '#ffffff'); ?>
                     <?php renderStyleColorField($styles, 'nav_mobile_icon_color', 'Mobile Nav Icon', '#999999'); ?>
-                    <?php renderStyleColorField($styles, 'nav_mobile_active_color', 'Mobile Active Color', '#b9000b'); ?>
+                    <?php renderStyleColorField($styles, 'nav_mobile_active_color', 'Mobile Active Color', '#b68a2d'); ?>
                     <?php renderStyleColorField($styles, 'nav_desktop_bg', 'Desktop Nav Background', '#ffffff'); ?>
                     <?php renderStyleColorField($styles, 'nav_desktop_link_color', 'Desktop Nav Link', '#666666'); ?>
                 </div>
@@ -209,7 +209,7 @@ if (!function_exists('renderStyleColorField')) {
                 <div class="card-grid">
                     <?php renderStyleColorField($styles, 'btn_addcart_bg', 'Add to Cart Background', '#111111'); ?>
                     <?php renderStyleColorField($styles, 'btn_addcart_text', 'Add to Cart Text', '#ffffff'); ?>
-                    <?php renderStyleColorField($styles, 'btn_ordernow_bg', 'Buy Now Background', '#b9000b'); ?>
+                    <?php renderStyleColorField($styles, 'btn_ordernow_bg', 'Buy Now Background', '#b68a2d'); ?>
                     <?php renderStyleColorField($styles, 'btn_ordernow_text', 'Buy Now Text', '#ffffff'); ?>
                     <?php renderStyleColorField($styles, 'btn_cart_whatsapp_bg', 'Cart WhatsApp Background', '#25d366'); ?>
                     <?php renderStyleColorField($styles, 'btn_cart_whatsapp_text', 'Cart WhatsApp Text', '#ffffff'); ?>

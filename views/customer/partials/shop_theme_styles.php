@@ -1,8 +1,8 @@
 <style>
     body {
-        --primary-color: var(--accent, #b9000b);
-        --primary-strong: var(--accent-red, #e31a1a);
-        --accent-red: var(--accent-red, #e31a1a);
+        --primary-color: var(--accent, #b68a2d);
+        --primary-strong: var(--accent-red, #d4af37);
+        --accent-red: var(--accent-red, #d4af37);
         background: var(--surface, #fff);
         color: var(--ink, #1c1b1b);
         overflow-x: hidden;
@@ -19,8 +19,8 @@
     }
 
     .shop-page {
-        --shop-primary: var(--accent, #b9000b);
-        --shop-primary-strong: var(--accent-red, #e31a1a);
+        --shop-primary: var(--accent, #b68a2d);
+        --shop-primary-strong: var(--accent-red, #d4af37);
         --shop-surface: var(--surface, #fcf9f8);
         --shop-surface-low: #f6f3f2;
         --shop-surface-mid: #f0eded;
@@ -71,7 +71,7 @@
     .shop-btn {
         background: linear-gradient(135deg, var(--shop-primary) 0%, #3f2e1e 100%);
         color: #fff;
-        box-shadow: 0 14px 28px rgba(185, 0, 11, 0.16);
+        box-shadow: 0 14px 28px rgba(182, 138, 45, 0.18);
     }
 
     .shop-btn-secondary {
@@ -137,8 +137,8 @@
     }
 
     .filter-field input:focus {
-        border-color: rgba(185, 0, 11, 0.28);
-        box-shadow: 0 0 0 4px rgba(185, 0, 11, 0.08);
+        border-color: rgba(182, 138, 45, 0.34);
+        box-shadow: 0 0 0 4px rgba(182, 138, 45, 0.10);
     }
 
     .filter-submit {
@@ -155,7 +155,7 @@
         letter-spacing: 0.18em;
         text-transform: uppercase;
         cursor: pointer;
-        box-shadow: 0 14px 28px rgba(185, 0, 11, 0.16);
+        box-shadow: 0 14px 28px rgba(182, 138, 45, 0.18);
     }
 
     .shop-active-filters {
