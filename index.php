@@ -140,15 +140,15 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
             box-sizing:border-box;
         }
         .main{padding-top:0}
-        .hero{position:relative;height:clamp(420px,72vh,921px);background:transparent;overflow:hidden}
-        .hero-media{position:absolute;inset:0;background:transparent}
-        .hero-slider{position:absolute;inset:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none}
+        .hero{position:relative;width:100%;height:auto;min-height:0;background:transparent;overflow:hidden}
+        .hero-media{position:relative;inset:auto;width:100%;height:auto;background:transparent}
+        .hero-slider{position:relative;inset:auto;display:flex;align-items:flex-start;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none}
         .hero-slider::-webkit-scrollbar{display:none}
-        .hero-slide{min-width:100%;position:relative;display:flex;align-items:center;justify-content:center;scroll-snap-align:start;background:transparent;padding:0}
-        .hero-slide-link,.hero-slide-frame{display:flex;width:100%;height:100%;align-items:center;justify-content:center}
-        .hero-slide picture{display:block;width:100%;height:100%}
-        .hero-slide img{width:100%;height:100%;object-fit:cover;object-position:center center}
-        .hero-media > img{width:100%;height:100%;object-fit:cover;object-position:center center}
+        .hero-slide{flex:0 0 100%;min-width:100%;position:relative;display:flex;align-items:flex-start;justify-content:flex-start;scroll-snap-align:start;background:transparent;padding:0}
+        .hero-slide-link,.hero-slide-frame{display:block;width:100%;height:auto}
+        .hero-slide picture{display:block;width:100%;height:auto}
+        .hero-slide img{width:100%;height:auto;max-width:100%;object-fit:contain;object-position:center center}
+        .hero-media > img{width:100%;height:auto;max-width:100%;object-fit:contain;object-position:center center}
         .hero-slider-dots{position:absolute;left:0;right:0;bottom:18px;z-index:3;display:flex;justify-content:center;gap:8px;padding:0 16px;pointer-events:none}
         .hero-slider-dot{width:18px;height:3px;border:0;background:rgba(28,27,27,.22);padding:0;pointer-events:auto;cursor:pointer}
         .hero-slider-dot.active{background:var(--primary)}
@@ -331,7 +331,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
         }
         @media (max-width:1180px){
             .container{width:min(100% - 48px,1600px);padding-left:20px}
-            .hero{min-height:860px}
+            .hero{min-height:0}
             .category-grid{grid-template-columns:1fr}
             .feature-panel{min-height:560px}
             .category-stack{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
@@ -441,7 +441,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                             <div class="hero-slide">
                                 <?php if (!empty($slide['link'])): ?>
                                     <a class="hero-slide-link" href="<?= htmlspecialchars($slide['link']) ?>" aria-label="<?= htmlspecialchars($slide['title']) ?>">
-                                        <picture style="display:block;width:100%;height:100%;">
+                                        <picture style="display:block;width:100%;height:auto;">
                                             <?php if (!empty($mobileSlideUrl)): ?>
                                                 <source media="(max-width: 760px)" srcset="<?= htmlspecialchars($mobileSlideUrl) ?>">
                                             <?php endif; ?>
@@ -451,12 +451,12 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                                                 loading="<?= $index === 0 ? 'eager' : 'lazy' ?>"
                                                 decoding="<?= $index === 0 ? 'sync' : 'async' ?>"
                                                 fetchpriority="<?= $index === 0 ? 'high' : 'low' ?>"
-                                                style="width:100%;height:100%;object-fit:cover;object-position:center center;">
+                                                style="width:100%;height:auto;max-width:100%;object-fit:contain;object-position:center center;">
                                         </picture>
                                     </a>
                                 <?php else: ?>
                                     <div class="hero-slide-frame">
-                                        <picture style="display:block;width:100%;height:100%;">
+                                        <picture style="display:block;width:100%;height:auto;">
                                             <?php if (!empty($mobileSlideUrl)): ?>
                                                 <source media="(max-width: 760px)" srcset="<?= htmlspecialchars($mobileSlideUrl) ?>">
                                             <?php endif; ?>
@@ -466,7 +466,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                                                 loading="<?= $index === 0 ? 'eager' : 'lazy' ?>"
                                                 decoding="<?= $index === 0 ? 'sync' : 'async' ?>"
                                                 fetchpriority="<?= $index === 0 ? 'high' : 'low' ?>"
-                                                style="width:100%;height:100%;object-fit:cover;object-position:center center;">
+                                                style="width:100%;height:auto;max-width:100%;object-fit:contain;object-position:center center;">
                                         </picture>
                                     </div>
                                 <?php endif; ?>
