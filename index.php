@@ -277,6 +277,9 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
         .sale-archive-section .section-title{
             color:#fff !important;
         }
+        .sale-archive-section .price-row .sale-price{
+            color:var(--primary, #b68a2d) !important;
+        }
         .sale-archive-section .carousel-actions .icon-btn{
             color:#fff;
             box-shadow:inset 0 0 0 1px rgba(255,255,255,.24);
