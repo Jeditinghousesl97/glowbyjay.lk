@@ -1161,8 +1161,8 @@ $faviconUrl = ImageHelper::settingsImageUrl(
         if (!hasCompletedVariationSelection() && getRequiredVariationCount() > 0) { showProductToast('Please choose all product options before adding to basket.', 'error'); return; }
         if (isPurchaseBlocked()) { showProductToast('This item is not available right now.', 'error'); return; }
         fetch('<?= htmlspecialchars($baseUrl) ?>cart/add', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: productId, title: productTitle, price: getCurrentUnitPrice(), img: getCurrentImage(), variants: variantStr, variant_key: variantKey, quantity: qty })
+            method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': (typeof csrfToken !== 'undefined' ? csrfToken : '') },
+            body: JSON.stringify({ _csrf: (typeof csrfToken !== 'undefined' ? csrfToken : ''), id: productId, title: productTitle, price: getCurrentUnitPrice(), img: getCurrentImage(), variants: variantStr, variant_key: variantKey, quantity: qty })
         }).then(function (res) { return res.json(); }).then(function (data) {
             if (!data || !data.success) throw new Error((data && data.message) ? data.message : 'Failed to add to cart');
             if (typeof window.updateCartUi === 'function') {

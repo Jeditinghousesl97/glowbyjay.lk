@@ -928,6 +928,7 @@ if (!function_exists('customer_layout_start')) {
     </div>
     <script>
         const baseUrl = <?= json_encode(defined('BASE_URL') ? BASE_URL : '/') ?>;
+        const csrfToken = <?= json_encode(function_exists('csrf_token') ? csrf_token() : '') ?>;
         const cartCountStorageKey = 'style1_cart_count';
 
         window.updateCartUi = function (count) {
@@ -974,8 +975,9 @@ if (!function_exists('customer_layout_start')) {
             const qty = Math.max(1, parseInt(quantity, 10) || 1);
             return fetch(baseUrl + 'cart/add', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
                 body: JSON.stringify({
+                    _csrf: csrfToken,
                     id: productId,
                     title: productTitle,
                     price: productPrice,
