@@ -164,56 +164,11 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
         .section-dark .section-copy{color:rgba(255,255,255,.68)}
         .section-link{font-size:11px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:inherit;display:inline-flex;align-items:center;gap:10px}
         .section-link::after{content:"";width:44px;height:1px;background:currentColor;opacity:.35}
-        .category-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
-        .category-stack{display:contents}
-        .category-more-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-top:22px}
-        .category-more-card{position:relative;min-height:170px;overflow:hidden;background:var(--surface-highest);box-shadow:var(--shadow-soft)}
-        .category-more-card img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease}
-        .category-more-card:hover img{transform:scale(1.05)}
-        .category-more-card .overlay{
-            position:absolute;
-            inset:0;
-            padding:18px;
-            background:rgba(0,0,0,.26);
-            color:#fff;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            text-align:center;
-        }
-        .category-grid h3,
-        .category-more-card h3{
-            display:inline-block;
-            max-width:100%;
-            padding:10px 14px;
-            background:#fff;
-            color:var(--ink);
-            line-height:1.1;
-            box-decoration-break:clone;
-            -webkit-box-decoration-break:clone;
-            margin:0;
-            width:fit-content;
-        }
-        .category-grid h3,
-        .category-more-card h3{font-size:20px}
-        .feature-panel,.mini-panel{position:relative;overflow:hidden;background:var(--surface-highest);box-shadow:var(--shadow-soft)}
-        .feature-panel{min-height:640px}.mini-panel{min-height:309px}
-        .feature-panel img,.mini-panel img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease}
-        .feature-panel:hover img,.mini-panel:hover img{transform:scale(1.05)}
-        .feature-panel .overlay,.mini-panel .overlay{
-            position:absolute;
-            inset:0;
-            padding:18px;
-            background:rgba(0,0,0,.26);
-            color:#fff;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            text-align:center;
-        }
-        .feature-panel h3,.mini-panel h3{font-size:20px}
-        .overlay .small-link{display:inline-flex;font-size:11px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.75);padding-bottom:4px}
-        .mini-panel .overlay.center,.mini-panel .overlay.bottom-right{justify-content:center;align-items:center;text-align:center}
+        .category-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+        .category-card{position:relative;display:block;aspect-ratio:4/5;overflow:hidden;background:var(--surface-highest);box-shadow:var(--shadow-soft)}
+        .category-card picture,.category-card img{display:block;width:100%;height:100%}
+        .category-card img{object-fit:cover;transition:transform .7s ease}
+        .category-card:hover img{transform:scale(1.04)}
         .carousel-actions{display:flex;gap:14px;margin-left:auto}
         .icon-btn{width:46px;height:46px;border:0;border-radius:0;background:transparent;color:inherit;box-shadow:inset 0 0 0 1px rgba(28,27,27,.12);cursor:pointer}
         .section-dark .icon-btn{box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
@@ -332,11 +287,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
         @media (max-width:1180px){
             .container{width:min(100% - 48px,1600px);padding-left:20px}
             .hero{min-height:0}
-            .category-grid{grid-template-columns:1fr}
-            .feature-panel{min-height:560px}
-            .category-stack{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
-            .category-more-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-            .mini-panel{min-height:280px}
+            .category-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
             .grid-arrivals{grid-template-columns:repeat(2,minmax(0,1fr))}
             .section-dark{padding:104px 0 116px}
         }
@@ -403,10 +354,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
             .hero-slider-dot{width:16px;height:3px}
             .section{padding:68px 0}
             .section-head{flex-direction:column;align-items:flex-start}
-            .category-stack{display:grid;grid-template-columns:1fr;gap:22px}
-            .feature-panel{min-height:460px}
-            .category-more-grid{grid-template-columns:1fr}
-            .mini-panel{min-height:240px}
+            .category-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
             .grid-arrivals{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 16px}
             .product-card{min-width:280px;max-width:280px;box-shadow:none;border:0;outline:0;margin:0}
             .section-dark{padding:58px 0 64px}
@@ -494,102 +442,31 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
             <div class="container">
                 <?php if (!empty($categoryTiles)): ?>
                     <div class="category-grid">
-                        <?php $leftCategory = $categoryTiles[0] ?? null; ?>
-                        <?php if (!empty($leftCategory)): ?>
+                        <?php foreach ($categoryTiles as $categoryTile): ?>
                             <?php
-                            $leftImage = ImageHelper::uploadUrl(
-                                $leftCategory['image'] ?? '',
-                                'https://via.placeholder.com/1200x1600?text=' . urlencode($leftCategory['name'] ?? 'Category')
+                            $tileImage = ImageHelper::uploadUrl(
+                                $categoryTile['image'] ?? '',
+                                'https://via.placeholder.com/900x1125?text=' . urlencode($categoryTile['name'] ?? 'Category')
                             );
                             ?>
-                            <a class="feature-panel" href="<?= htmlspecialchars($baseUrl . 'shop/category/' . $leftCategory['id']) ?>">
+                            <a class="category-card" href="<?= htmlspecialchars($baseUrl . 'shop/category/' . $categoryTile['id']) ?>" aria-label="<?= htmlspecialchars($categoryTile['name'] ?? 'Category') ?>">
                                 <?= ImageHelper::renderResponsivePicture(
-                                    $leftCategory['image'] ?? '',
-                                    $leftImage,
+                                    $categoryTile['image'] ?? '',
+                                    $tileImage,
                                     [
-                                        'alt' => $leftCategory['name'] ?? 'Category',
+                                        'alt' => $categoryTile['name'] ?? 'Category',
                                         'loading' => 'lazy',
                                         'decoding' => 'async',
                                         'fetchpriority' => 'low'
                                     ],
                                     'product_gallery'
                                 ) ?>
-                                <div class="overlay">
-                                    <h3><?= htmlspecialchars($leftCategory['name'] ?? 'Category') ?></h3>
-                                </div>
                             </a>
-                        <?php endif; ?>
-
-                        <div class="category-stack">
-                            <?php foreach (array_slice($categoryTiles, 1, 2) as $index => $categoryTile): ?>
-                                <?php
-                                $tileImage = ImageHelper::uploadUrl(
-                                    $categoryTile['image'] ?? '',
-                                    'https://via.placeholder.com/900x900?text=' . urlencode($categoryTile['name'] ?? 'Category')
-                                );
-                                ?>
-                                <a class="mini-panel" href="<?= htmlspecialchars($baseUrl . 'shop/category/' . $categoryTile['id']) ?>">
-                                    <?= ImageHelper::renderResponsivePicture(
-                                        $categoryTile['image'] ?? '',
-                                        $tileImage,
-                                        [
-                                            'alt' => $categoryTile['name'] ?? 'Category',
-                                            'loading' => 'lazy',
-                                            'decoding' => 'async',
-                                            'fetchpriority' => 'low'
-                                        ],
-                                        'product_gallery'
-                                    ) ?>
-                                    <?php if ($index === 0): ?>
-                                        <div class="overlay center">
-                                            <h3><?= htmlspecialchars($categoryTile['name'] ?? 'Category') ?></h3>
-                                        </div>
-                                    <?php else: ?>
-                                        <div class="overlay bottom-right">
-                                            <h3><?= htmlspecialchars($categoryTile['name'] ?? 'Category') ?></h3>
-                                        </div>
-                                    <?php endif; ?>
-                                </a>
-                            <?php endforeach; ?>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
-
-                    <?php if (count($categoryTiles) > 3): ?>
-                        <div class="category-more-grid">
-                            <?php foreach (array_slice($categoryTiles, 3) as $categoryTile): ?>
-                                <?php
-                                $tileImage = ImageHelper::uploadUrl(
-                                    $categoryTile['image'] ?? '',
-                                    'https://via.placeholder.com/900x900?text=' . urlencode($categoryTile['name'] ?? 'Category')
-                                );
-                                ?>
-                                <a class="category-more-card" href="<?= htmlspecialchars($baseUrl . 'shop/category/' . $categoryTile['id']) ?>">
-                                    <?= ImageHelper::renderResponsivePicture(
-                                        $categoryTile['image'] ?? '',
-                                        $tileImage,
-                                        [
-                                            'alt' => $categoryTile['name'] ?? 'Category',
-                                            'loading' => 'lazy',
-                                            'decoding' => 'async',
-                                            'fetchpriority' => 'low'
-                                        ],
-                                        'product_gallery'
-                                    ) ?>
-                                    <div class="overlay">
-                                        <h3><?= htmlspecialchars($categoryTile['name'] ?? 'Category') ?></h3>
-                                    </div>
-                                </a>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php endif; ?>
                 <?php else: ?>
                     <div class="category-grid">
-                        <div class="feature-panel">
-                            <div class="overlay">
-                                <h3>Categories coming soon</h3>
-                                <span class="small-link">Add categories in admin</span>
-                            </div>
-                        </div>
+                        <div class="category-card"></div>
                     </div>
                 <?php endif; ?>
             </div>
