@@ -2478,12 +2478,12 @@ p {
 
 /* --- Spice / Herbs / Tea / Coffee Brand Refresh --- */
 :root {
-    --primary-color: #2f5d50;
+    --primary-color: #b68a2d;
     --secondary-color: #f4ecdf;
     --text-dark: #24180f;
     --text-muted: #7a6a58;
-    --accent-red: #a64b2a;
-    --accent-orange: #c28b2c;
+    --accent-red: #d4af37;
+    --accent-orange: #b68a2d;
     --accent-green: #5d8a47;
     --bg-white: #fffdf8;
     --brand-surface: rgba(255, 251, 244, 0.94);

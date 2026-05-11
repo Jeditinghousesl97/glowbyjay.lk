@@ -144,10 +144,10 @@
     }
 
     .btn-red {
-        background: linear-gradient(135deg, #fff4eb 0%, #ffe6d2 100%) !important;
-        color: #8f3d16 !important;
-        border: 1px solid rgba(201, 123, 61, 0.22) !important;
-        box-shadow: 0 14px 28px rgba(201, 123, 61, 0.14) !important;
+        background: linear-gradient(135deg, #fff8e8 0%, #f3dfab 100%) !important;
+        color: #7a5a14 !important;
+        border: 1px solid rgba(182, 138, 45, 0.26) !important;
+        box-shadow: 0 14px 28px rgba(182, 138, 45, 0.16) !important;
         position: relative;
         overflow: hidden;
         min-width: 146px;
@@ -170,7 +170,7 @@
         margin-right: 4px;
         padding: 5px 9px;
         border-radius: 999px;
-        background: linear-gradient(135deg, #d95d4f 0%, #bb3d33 100%);
+        background: linear-gradient(135deg, #d4af37 0%, #b68a2d 100%);
         color: #fff;
         font-size: 10px;
         font-weight: 800;
@@ -183,7 +183,7 @@
     .btn-red:hover,
     .btn-red:focus,
     .btn-red:visited {
-        color: #8f3d16 !important;
+        color: #7a5a14 !important;
         opacity: 1 !important;
     }
 
@@ -1335,13 +1335,13 @@
     }
 
     .cat-btn {
-        background: linear-gradient(135deg, #2f5d50 0%, #1f4338 100%) !important;
+        background: linear-gradient(135deg, #b68a2d 0%, #7a5a14 100%) !important;
     }
 
     .btn-red {
-        background: linear-gradient(135deg, #fff1e6 0%, #f9dfc7 100%) !important;
-        color: #8a431f !important;
-        border-color: rgba(166, 75, 42, 0.18) !important;
+        background: linear-gradient(135deg, #fff8e8 0%, #f3dfab 100%) !important;
+        color: #7a5a14 !important;
+        border-color: rgba(182, 138, 45, 0.24) !important;
     }
 
     .btn-red::before {

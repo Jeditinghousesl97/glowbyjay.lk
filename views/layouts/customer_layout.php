@@ -93,11 +93,36 @@ if (!function_exists('customer_layout_start')) {
         $goldAccent = '#d4af37';
         $goldLegacy = static function (string $value, string $fallback) use ($goldPrimary, $goldAccent): string {
             $normalized = strtolower(trim($value));
-            if ($normalized === '' || $normalized === '#b9000b' || $normalized === '#b9000bff') {
+            $legacyPrimaryReds = [
+                '',
+                '#b9000b',
+                '#b9000bff',
+                '#9747ff',
+                '#a64b2a',
+                '#8f3d16',
+                '#8a431f',
+            ];
+            $legacyAccentReds = [
+                '#e31a1a',
+                '#ff3b30',
+                '#d95d4f',
+                '#bb3d33',
+            ];
+
+            if (in_array($normalized, $legacyPrimaryReds, true)) {
                 return $fallback === '#d4af37' ? $goldAccent : $goldPrimary;
             }
-            if ($normalized === '#e31a1a' || $normalized === '#ff3b30') {
+            if (in_array($normalized, $legacyAccentReds, true)) {
                 return $goldAccent;
+            }
+            if (preg_match('/^#?([0-9a-f]{6})$/', $normalized, $match)) {
+                $hex = $match[1];
+                $red = hexdec(substr($hex, 0, 2));
+                $green = hexdec(substr($hex, 2, 2));
+                $blue = hexdec(substr($hex, 4, 2));
+                if ($red >= 120 && $green <= 120 && $blue <= 120 && $red > ($green + 35)) {
+                    return $fallback === '#d4af37' ? $goldAccent : $goldPrimary;
+                }
             }
             return $value;
         };
@@ -120,7 +145,7 @@ if (!function_exists('customer_layout_start')) {
         $navMobileActive = $goldLegacy(trim((string) ($settings['nav_mobile_active_color'] ?? $goldPrimary)), $goldPrimary);
         $navDesktopBg = trim((string) ($settings['nav_desktop_bg'] ?? '#ffffff')) ?: '#ffffff';
         $navDesktopLink = trim((string) ($settings['nav_desktop_link_color'] ?? '#666666')) ?: '#666666';
-        $floatingCartBg = trim((string) ($settings['floating_cart_bg'] ?? '#7c4af0')) ?: '#7c4af0';
+        $floatingCartBg = $goldLegacy(trim((string) ($settings['floating_cart_bg'] ?? $goldPrimary)), $goldPrimary);
         $floatingCartText = trim((string) ($settings['floating_cart_text'] ?? '#ffffff')) ?: '#ffffff';
         $btnAddCartBg = trim((string) ($settings['btn_addcart_bg'] ?? '#111111')) ?: '#111111';
         $btnAddCartText = trim((string) ($settings['btn_addcart_text'] ?? '#ffffff')) ?: '#ffffff';
