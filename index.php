@@ -278,7 +278,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
             color:#fff !important;
         }
         .sale-archive-section .price-row .sale-price{
-            color:var(--primary, #b68a2d) !important;
+            color:#d4af37 !important;
         }
         .sale-archive-section .carousel-actions .icon-btn{
             color:#fff;
@@ -659,7 +659,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                                 </a>
                                 <h4><?= htmlspecialchars($product['title'] ?? 'Product') ?></h4>
                                 <div class="price-row">
-                                    <span class="sale-price"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format($salePrice, 0) ?></span>
+                                    <span class="sale-price" style="color:#d4af37 !important;"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format($salePrice, 0) ?></span>
                                     <?php if ($discount > 0): ?>
                                         <span class="old-price"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format($regularPrice, 0) ?></span>
                                     <?php endif; ?>
