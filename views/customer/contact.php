@@ -13,11 +13,12 @@ if ($supportEmail === '') {
 if ($supportEmail === '') {
     $supportEmail = 'hello@style1.lk';
 }
-$supportHours = 'Mon - Fri: 09:00 - 20:00';
+$supportHours = '6.00am to 10.00 pm';
 $responseTime = 'Within 24 business hours';
 $careNote = $shopAbout !== '' ? $shopAbout : 'Reach us for order help, product questions, delivery updates, and general support.';
+$contactSummary = $shopAbout !== '' ? $shopAbout : 'Reach us for order support, product guidance, delivery updates, and customer care.';
 $contactFormHint = $shopWhatsappDigits !== ''
-    ? 'Your message will open in WhatsApp and be sent directly to the shop owner.'
+    ? 'Your message will open in WhatsApp and be sent directly to the Our shop.'
     : 'Please add a WhatsApp number in shop settings so this form can send directly to the shop owner.';
 $contactImage = BASE_URL . 'assets/contact.png';
 
@@ -84,47 +85,61 @@ customer_layout_start();
     }
 
     .contact-shell{
-        width:min(1600px,calc(100% - 80px));
+        width:min(1600px,calc(100% - 96px));
         margin:0 auto;
     }
 
     .contact-hero{
-        padding:18px 0 34px;
-        border-bottom:1px solid rgba(28,27,27,.05);
+        padding:8px 0 28px;
+        border-bottom:0;
     }
 
     .contact-hero-row{
-        display:grid;
-        grid-template-columns:minmax(0,1.4fr) minmax(280px,.72fr);
-        gap:56px;
-        align-items:end;
+        display:flex;
+        align-items:flex-end;
+        justify-content:space-between;
+        gap:24px;
+        margin-bottom:28px;
+    }
+
+    .contact-head-left{
+        max-width:760px;
     }
 
     .contact-kicker{
         display:block;
-        margin-bottom:18px;
-        font-size:10px;
-        letter-spacing:.28em;
+        margin-bottom:8px;
+        font-size:11px;
+        letter-spacing:.26em;
         text-transform:uppercase;
-        color:var(--contact-accent);
+        color:var(--accent-red, var(--primary));
+        font-weight:800;
+        font-family:sans-serif !important;
     }
 
     .contact-title{
         margin:0;
-        font-family:"Noto Serif",serif;
-        font-style:italic;
-        font-weight:400;
-        font-size:clamp(72px,11vw,158px);
-        line-height:.9;
-        letter-spacing:-.06em;
+        font-family:sans-serif;
+        font-size:clamp(34px,4vw,54px);
+        line-height:1.02;
+        letter-spacing:-.04em;
     }
 
     .contact-intro{
-        margin:0;
+        margin:10px 0 0;
         color:var(--contact-muted);
-        line-height:1.75;
+        line-height:1.8;
         font-size:15px;
-        max-width:34ch;
+        max-width:64ch;
+    }
+
+    .contact-count{
+        font-size:10px;
+        font-weight:800;
+        letter-spacing:.2em;
+        text-transform:uppercase;
+        color:var(--accent-red, var(--primary));
+        white-space:nowrap;
     }
 
     .contact-grid{
@@ -145,7 +160,7 @@ customer_layout_start();
         font-size:10px;
         letter-spacing:.3em;
         text-transform:uppercase;
-        color:var(--contact-accent);
+        color:#d4af37;
     }
 
     .contact-location-list{
@@ -160,9 +175,9 @@ customer_layout_start();
 
     .contact-location-title{
         margin:0;
-        font-family:"Noto Serif",serif;
-        font-style:italic;
-        font-weight:400;
+        font-family:sans-serif;
+        font-style:normal;
+        font-weight:600;
         font-size:clamp(28px,2.8vw,36px);
         line-height:1.05;
         letter-spacing:-.03em;
@@ -206,6 +221,29 @@ customer_layout_start();
         color:var(--contact-muted);
         text-align:center;
         flex-shrink:0;
+    }
+
+    .contact-whatsapp-btn{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        min-height:40px;
+        padding:0 16px;
+        background:#25d366;
+        color:#fff !important;
+        font-size:11px;
+        font-weight:700;
+        letter-spacing:.16em;
+        text-transform:uppercase;
+        text-decoration:none;
+        box-shadow:0 10px 22px rgba(37,211,102,.24);
+        transition:transform .2s ease, box-shadow .2s ease, background-color .2s ease;
+    }
+
+    .contact-whatsapp-btn:hover{
+        background:#20bd5a;
+        transform:translateY(-1px);
+        box-shadow:0 14px 26px rgba(37,211,102,.3);
     }
 
     .contact-care-social{
@@ -258,6 +296,7 @@ customer_layout_start();
         box-shadow:0 18px 42px rgba(31,31,31,.06);
     }
 
+
     .contact-form-grid{
         display:grid;
         gap:28px 30px;
@@ -274,10 +313,11 @@ customer_layout_start();
     }
 
     .contact-label{
-        font-size:10px;
+        font-size:12px;
         letter-spacing:.24em;
         text-transform:uppercase;
         color:var(--contact-muted);
+        font-weight:700;
     }
 
     .contact-input,
@@ -328,7 +368,7 @@ customer_layout_start();
     .contact-submit{
         min-width:214px;
         border:0;
-        background:var(--contact-accent);
+        background:#25d366;
         color:#fff;
         padding:18px 28px;
         font-size:11px;
@@ -337,12 +377,12 @@ customer_layout_start();
         font-weight:600;
         cursor:pointer;
         transition:transform .2s ease, box-shadow .2s ease, background-color .2s ease;
-        box-shadow:0 14px 28px rgba(196,0,13,.16);
+        box-shadow:0 14px 28px rgba(37,211,102,.24);
     }
 
     .contact-submit:hover{
         transform:translateY(-1px);
-        box-shadow:0 18px 34px rgba(196,0,13,.2);
+        box-shadow:0 18px 34px rgba(37,211,102,.3);
     }
 
     .contact-submit:disabled{
@@ -415,19 +455,23 @@ customer_layout_start();
         }
 
         .contact-shell{
-            width:min(100%,calc(100% - 28px));
+            width:100% !important;
+            padding-left:14px !important;
+            padding-right:14px !important;
         }
 
         .contact-hero{
-            padding:18px 0 22px;
+            display:none;
         }
 
         .contact-hero-row{
-            gap:18px;
+            flex-direction:column;
+            align-items:flex-start;
+            gap:10px;
         }
 
         .contact-title{
-            font-size:clamp(56px,18vw,86px);
+            font-size:clamp(34px,10vw,46px);
         }
 
         .contact-grid{
@@ -473,11 +517,12 @@ customer_layout_start();
     <div class="contact-shell">
         <section class="contact-hero">
             <div class="contact-hero-row">
-                <div>
+                <div class="contact-head-left">
+                    <span class="contact-kicker"><?= htmlspecialchars($shopName) ?> Support</span>
                     <h1 class="contact-title">CONTACT</h1>
+                    <p class="contact-intro"><?= htmlspecialchars($contactSummary) ?></p>
                 </div>
-                <div>
-                </div>
+                <div class="contact-count">Customer Care</div>
             </div>
         </section>
 
@@ -486,7 +531,7 @@ customer_layout_start();
                 <span class="contact-section-label">Contact Details</span>
                 <div class="contact-location-list">
                     <div class="contact-location">
-                        <h2 class="contact-location-title"><?= htmlspecialchars($shopName) ?> Support</h2>
+                        <h2 class="contact-location-title" style="font-family:sans-serif !important;font-style:normal !important;"><?= htmlspecialchars($shopName) ?> Support</h2>
                         <p class="contact-location-text"><?= htmlspecialchars($careNote) ?></p>
                     </div>
 
@@ -508,7 +553,7 @@ customer_layout_start();
                         <?php if ($shopWhatsappDigits !== ''): ?>
                             <div class="contact-care-item">
                                 <i class="fa-brands fa-whatsapp"></i>
-                                <a href="https://wa.me/<?= htmlspecialchars($shopWhatsappDigits) ?>" target="_blank" rel="noopener noreferrer">WhatsApp support</a>
+                                <a class="contact-whatsapp-btn" href="https://wa.me/<?= htmlspecialchars($shopWhatsappDigits) ?>" target="_blank" rel="noopener noreferrer">WhatsApp support</a>
                             </div>
                         <?php else: ?>
                             <div class="contact-care-item">

@@ -6,6 +6,14 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : '/';
 
 $gridProducts = array_slice($products ?? [], 0, 24);
 $productCount = count($products ?? []);
+$isDiscountsPage = (($title ?? '') === 'Discounts!');
+$discountsLimit = max(1, (int) ($discounts_limit ?? 20));
+$discountsHasMore = !empty($discounts_has_more);
+$discountsTotalProducts = max(0, (int) ($discounts_total_products ?? $productCount));
+if ($isDiscountsPage) {
+    $gridProducts = $products ?? [];
+    $productCount = $discountsTotalProducts > 0 ? $discountsTotalProducts : count($gridProducts);
+}
 $currency = $settings['currency_symbol'] ?? 'LKR';
 $productPrices = array_values(array_filter(array_map(static function ($prod) {
     $regular = isset($prod['price']) ? (float) $prod['price'] : 0;
@@ -161,13 +169,24 @@ function shopExcerpt(string $text, int $length = 120): string
         .product-media{position:relative;aspect-ratio:4/5;overflow:hidden;background:var(--surface-high)}
         .product-media img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease}
         .product-card:hover .product-media img{transform:scale(1.04)}
-        .badge{position:absolute;top:14px;right:14px;background:var(--primary);color:#fff;padding:8px 12px;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+        .badge{position:absolute;top:14px;right:14px;background:#d4af37;color:#fff;padding:8px 12px;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
         .badge.alt{left:16px;right:auto;background:var(--ink)}
         .product-meta{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start;padding:0 16px}
-        .product-name{font-size:17px;line-height:1.22;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em}
+        .product-name{font-size:17px;line-height:1.22;font-family:sans-serif;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em}
         .product-category{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-top:0}
+        .shop-price-row{display:flex;align-items:baseline;gap:8px;font-size:16px;font-weight:800;white-space:nowrap}
+        .shop-sale-price{color:#d4af37}
+        .shop-regular-price{color:rgba(28,27,27,.42);text-decoration:line-through;font-size:13px;font-weight:700}
         .product-price{font-size:12px;font-weight:800;white-space:nowrap;color:var(--primary)}
-        .product-desc{color:var(--muted);font-size:13px;line-height:1.65;margin:0;padding:0 16px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.75em}
+        .product-desc{color:var(--muted);font-size:13px;line-height:1.65;margin:0;padding:0 16px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;min-height:6.6em}
+        .is-discounts-page .shop-content-head h1{font-family:sans-serif !important}
+        .is-discounts-page .product-name{font-family:sans-serif !important;-webkit-line-clamp:2;min-height:2.5em}
+        .is-discounts-page .product-desc{-webkit-line-clamp:4;min-height:6.6em}
+        .is-discounts-page .product-media{aspect-ratio:1/1}
+        .is-discounts-page .shop-price-row{font-size:18px}
+        .is-discounts-page .shop-sale-price{font-size:18px}
+        .is-discounts-page .shop-regular-price{font-size:14px}
+        .discounts-infinite-loader{display:none;text-align:center;padding:16px 8px 4px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8a8383}
         .product-card .koko-installment-teaser{display:flex;align-items:center;flex-direction:row;margin-top:0;padding:0 16px;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0}
         .product-card .koko-installment-text{min-width:0;overflow:hidden;text-overflow:ellipsis}
         .product-card .koko-installment-logo{height:16px;width:auto;flex-shrink:0;display:block}
@@ -286,11 +305,11 @@ function shopExcerpt(string $text, int $length = 120): string
                     </div>
                 </details>
 
-                <section class="shop-content">
+                <section class="shop-content<?= $isDiscountsPage ? ' is-discounts-page' : '' ?>">
                     <div class="shop-content-head">
                         <div>
                             <h1><?= htmlspecialchars($title === 'Shop' ? 'Collections' : ($title ?? 'Collections')) ?></h1>
-                            <div class="shop-content-note">Use the sidebar to narrow the catalog by category, price, or shop edit.</div>
+                            <div class="shop-content-note">Discover our curated beauty collection with premium essentials, signature favorites, and fresh arrivals selected for your daily routine.</div>
                         </div>
                         <div class="shop-content-meta">
                             <div class="shop-content-count"><?= (int) $productCount ?> products</div>
@@ -306,7 +325,7 @@ function shopExcerpt(string $text, int $length = 120): string
 
                     <div class="shop-grid">
                         <?php if (!empty($gridProducts)): ?>
-                            <div class="product-grid">
+                            <div class="product-grid<?= $isDiscountsPage ? ' discounts-grid' : '' ?>"<?= $isDiscountsPage ? ' id="discountsGrid" data-limit="' . (int) $discountsLimit . '" data-next-offset="' . count($gridProducts) . '" data-has-more="' . ($discountsHasMore ? '1' : '0') . '"' : '' ?>>
                                 <?php foreach ($gridProducts as $prod): ?>
                                     <?php
                                     $imagePath = ImageHelper::uploadUrl(
@@ -341,13 +360,24 @@ function shopExcerpt(string $text, int $length = 120): string
                                                     <a href="<?= htmlspecialchars($baseUrl . 'shop/product/' . ($prod['id'] ?? '')) ?>"><?= htmlspecialchars($prod['title'] ?? 'Product') ?></a>
                                                 </h3>
                                             </div>
-                                            <div class="product-price"><?= htmlspecialchars(shopPriceLabel($prod, $currency)) ?></div>
+                                            <div class="shop-price-row">
+                                                <?php if ($isOnSale): ?>
+                                                    <span class="shop-sale-price"><?= htmlspecialchars($currency) ?> <?= number_format((float) $prod['sale_price'], 0) ?></span>
+                                                    <span class="shop-regular-price"><?= htmlspecialchars($currency) ?> <?= number_format((float) $prod['price'], 0) ?></span>
+                                                <?php else: ?>
+                                                    <span class="shop-sale-price"><?= htmlspecialchars($currency) ?> <?= number_format((float) $prod['price'], 0) ?></span>
+                                                <?php endif; ?>
+                                            </div>
                                         </div>
                                         <?= shopKokoTeaser($prod, $settings ?? [], $currency) ?>
                                         <p class="product-desc"><?= htmlspecialchars(shopExcerpt((string) ($prod['short_description'] ?? $prod['description'] ?? 'Fresh product from the new shop page.'), 120)) ?></p>
                                     </article>
                                 <?php endforeach; ?>
                             </div>
+                            <?php if ($isDiscountsPage): ?>
+                                <div id="discountsInfiniteLoader" class="discounts-infinite-loader" style="<?= $discountsHasMore ? 'display:block;' : 'display:none;' ?>">Loading more products...</div>
+                                <div id="discountsInfiniteSentinel" style="<?= $discountsHasMore ? '' : 'display:none;' ?>" aria-hidden="true"></div>
+                            <?php endif; ?>
                         <?php else: ?>
                             <div class="empty-state">
                                 <h3>No products found</h3>
@@ -355,7 +385,7 @@ function shopExcerpt(string $text, int $length = 120): string
                             </div>
                         <?php endif; ?>
 
-                        <div class="pagination-wrap">
+                        <div class="pagination-wrap"<?= $isDiscountsPage ? ' style="display:none;"' : '' ?>>
                             <div class="pagination-topline"></div>
                             <div class="pagination-row" aria-label="Pagination">
                                 <button class="pagination-button" type="button"><i class="fas fa-chevron-left"></i> Previous</button>
@@ -462,6 +492,66 @@ function shopExcerpt(string $text, int $length = 120): string
                 updateUI();
             }
         }
+
+        <?php if ($isDiscountsPage): ?>
+        const discountsGrid = document.getElementById('discountsGrid');
+        const discountsLoader = document.getElementById('discountsInfiniteLoader');
+        const discountsSentinel = document.getElementById('discountsInfiniteSentinel');
+        if (discountsGrid && discountsLoader && discountsSentinel) {
+            let isLoadingDiscounts = false;
+            let hasMoreDiscounts = discountsGrid.dataset.hasMore === '1';
+            let nextDiscountsOffset = parseInt(discountsGrid.dataset.nextOffset || '0', 10) || 0;
+            const discountsLimit = parseInt(discountsGrid.dataset.limit || '20', 10) || 20;
+
+            const hideDiscountsInfiniteUi = function () {
+                discountsLoader.style.display = 'none';
+                discountsSentinel.style.display = 'none';
+            };
+
+            if (!hasMoreDiscounts) {
+                hideDiscountsInfiniteUi();
+            } else {
+                const loadMoreDiscounts = async function () {
+                    if (isLoadingDiscounts || !hasMoreDiscounts) return;
+                    isLoadingDiscounts = true;
+                    discountsLoader.style.display = 'block';
+
+                    try {
+                        const url = <?= json_encode($baseUrl . 'shop/discountsLoadMore') ?> + '?offset=' + encodeURIComponent(String(nextDiscountsOffset)) + '&limit=' + encodeURIComponent(String(discountsLimit));
+                        const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                        const payload = await response.json();
+
+                        if (!payload || !payload.success) throw new Error('Unable to load more products');
+
+                        if (payload.html && String(payload.html).trim() !== '') {
+                            discountsSentinel.insertAdjacentHTML('beforebegin', payload.html);
+                        }
+
+                        nextDiscountsOffset = Number(payload.next_offset || nextDiscountsOffset);
+                        hasMoreDiscounts = !!payload.has_more;
+                        discountsGrid.dataset.nextOffset = String(nextDiscountsOffset);
+                        discountsGrid.dataset.hasMore = hasMoreDiscounts ? '1' : '0';
+
+                        if (!hasMoreDiscounts || Number(payload.count || 0) === 0) {
+                            hideDiscountsInfiniteUi();
+                        }
+                    } catch (error) {
+                        discountsLoader.textContent = 'Unable to load more products';
+                    } finally {
+                        isLoadingDiscounts = false;
+                    }
+                };
+
+                const discountsObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) loadMoreDiscounts();
+                    });
+                }, { rootMargin: '300px 0px 300px 0px' });
+
+                discountsObserver.observe(discountsSentinel);
+            }
+        }
+        <?php endif; ?>
 
     });
 </script>

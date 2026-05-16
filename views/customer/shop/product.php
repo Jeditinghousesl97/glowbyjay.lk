@@ -105,28 +105,12 @@ $hasGalleryCarousel = $galleryCount > 1;
 $deliveryApplyAllDistricts = !empty($settings['delivery_apply_all_districts']);
 $deliveryAllFirstKg = (float) ($settings['delivery_all_first_kg'] ?? 0);
 $deliveryAllAdditionalKg = (float) ($settings['delivery_all_additional_kg'] ?? 0);
-$faviconUrl = ImageHelper::settingsImageUrl(
-    (string) ($settings['shop_favicon'] ?? ''),
-    str_replace('/Ecom-CMS/', BASE_URL, (string) ($settings['shop_favicon'] ?? ''))
-);
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($seo_title ?? ($title ?? 'Product')) ?></title>
-    <?php if (!empty($faviconUrl)): ?>
-        <link rel="icon" type="image/x-icon" href="<?= htmlspecialchars($faviconUrl) ?>">
-    <?php endif; ?>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <?php if ($recaptchaCheckoutEnabled && $recaptchaSiteKey !== ''): ?>
-        <script src="https://www.google.com/recaptcha/api.js?render=<?= htmlspecialchars($recaptchaSiteKey) ?>"></script>
-    <?php endif; ?>
-    <style>
+<?php require_once 'views/layouts/customer_layout.php'; customer_layout_start(); ?>
+<?php if ($recaptchaCheckoutEnabled && $recaptchaSiteKey !== ''): ?>
+    <script src="https://www.google.com/recaptcha/api.js?render=<?= htmlspecialchars($recaptchaSiteKey) ?>"></script>
+<?php endif; ?>
+<style>
         :root{--primary:var(--accent, #b68a2d);--primary-strong:var(--accent-red, #d4af37);--surface-low:var(--surface-soft, #fafafa);--surface-mid:var(--surface-soft, #fafafa);--ink:#1c1b1b;--muted:#6d6665;--shadow:0 24px 60px rgba(28,27,27,.08);--shadow-soft:0 14px 30px rgba(28,27,27,.06)}
         *{box-sizing:border-box} html{scroll-behavior:smooth;background:var(--surface)} body{margin:0;font-family:"Manrope",sans-serif;background:var(--surface);color:var(--ink)}
         *,*::before,*::after{border-radius:0 !important}
@@ -203,7 +187,7 @@ $faviconUrl = ImageHelper::settingsImageUrl(
         .lightbox-slider{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;width:min(92vw,720px);max-height:82vh;border-radius:18px;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;touch-action:pan-x pinch-zoom;background:var(--surface)}.lightbox-slider::-webkit-scrollbar{display:none}.lightbox-slide{min-width:100%;width:100%;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;background:var(--surface)}.lightbox-slide img{width:100%;max-height:82vh;object-fit:contain;display:block;border-radius:18px;user-select:none;-webkit-user-drag:none}
         .hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}.hide-scrollbar::-webkit-scrollbar{display:none}
         @media (max-width:1180px){.container{width:min(100% - 48px,1600px)}.product-shell{grid-template-columns:1fr}.summary-card{position:relative;top:0}.related-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.gallery-slide{min-height:620px}}
-        @media (max-width:760px){.container{width:100%}.main{padding-top:0}.product-hero{padding:18px 0 48px}.gallery-slide{min-height:420px;padding:10px}.gallery-thumbs{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:0 14px 14px}.visual-copy{padding:18px}.summary-card{padding:20px}.pd-bottom-actions{grid-template-columns:1fr}.related-grid{grid-template-columns:1fr}.section{padding:64px 0}}
+        @media (max-width:760px){.container{width:100%}.product-ui .container,.product-hero .container,.related-section .container{padding-left:14px !important;padding-right:14px !important}.main{padding-top:0}.product-hero{padding:18px 0 48px}.gallery-slide{min-height:420px;padding:10px}.gallery-thumbs{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:0 14px 14px}.visual-copy{padding:18px}.summary-card{padding:20px}.pd-bottom-actions{grid-template-columns:1fr}.related-grid{grid-template-columns:1fr}.section{padding:64px 0}}
     </style>
     <style>
         .product-ui{padding:24px 0 72px;background:var(--surface)}
@@ -233,7 +217,7 @@ $faviconUrl = ImageHelper::settingsImageUrl(
         .summary-chips{display:flex;flex-wrap:wrap;gap:8px}
         .summary-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid rgba(28,27,27,.12);background:var(--surface);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(28,27,27,.72);transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease}
         .summary-chip:hover{border-color:var(--accent-red, var(--primary));transform:translateY(-1px);box-shadow:0 8px 18px rgba(31,31,31,.06)}
-        .summary-title{font-size:clamp(28px,2.8vw,40px);line-height:1.08;letter-spacing:.02em;text-transform:uppercase;margin:0}
+        .summary-title{font-family:sans-serif !important;font-size:clamp(24px,2.2vw,32px);line-height:1.12;letter-spacing:0;text-transform:none !important;margin:0}
         .summary-price-stack{display:grid;gap:10px}
         .summary-prices{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
         .summary-sale-price{font-size:28px;font-weight:800;color:var(--accent-red, var(--primary))}
@@ -257,8 +241,9 @@ $faviconUrl = ImageHelper::settingsImageUrl(
         .cart-confirm-head{display:grid;gap:8px;justify-items:center;text-align:center}
         .cart-confirm-head h3{margin:0;font-size:24px;line-height:1.1;font-weight:900;color:#111;letter-spacing:-.03em}
         .cart-confirm-head p{margin:0;color:#777;font-size:13px;line-height:1.7}
-        .cart-confirm-actions{display:flex;justify-content:center}
-        .cart-confirm-actions button{min-width:128px;min-height:46px;border:1px solid var(--ink);background:var(--ink);color:#fff;font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+        .cart-confirm-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+        .cart-confirm-actions button{min-width:128px;min-height:46px;border:1px solid var(--ink);background:var(--ink);color:#fff;font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;padding:0 14px}
+        .cart-confirm-actions .btn-view-cart{background:var(--btn-ordernow-bg, var(--primary));border-color:var(--btn-ordernow-bg, var(--primary));color:var(--btn-ordernow-text, #fff)}
         #orderModal .modal{width:min(92vw,610px);max-height:90vh;overflow-y:auto;background:var(--surface);border:1px solid rgba(31,31,31,.10);box-shadow:none;padding:24px 24px 22px;border-radius:0}
         #orderModal .modal-head{position:relative;display:grid;gap:6px;justify-items:center;text-align:center;margin-bottom:18px;padding-right:42px}
         #orderModal .modal-head h3{margin:0;font-size:28px;line-height:1.05;font-weight:900;color:#111;letter-spacing:-.03em}
@@ -302,30 +287,26 @@ $faviconUrl = ImageHelper::settingsImageUrl(
         .summary-long-description h3{font-size:18px;letter-spacing:-.02em;text-transform:uppercase}
         .summary-long-description .text{color:var(--muted);line-height:1.85;font-size:14px}
         .product-details-panel{margin-top:28px;border:1px solid rgba(28,27,27,.12);background:var(--surface);box-shadow:var(--shadow-soft);padding:22px 24px}
-        .product-details-panel h3{margin:0 0 10px;font-size:22px;letter-spacing:-.02em;text-transform:uppercase}
+        .product-details-panel h3{margin:0 0 10px;font-size:22px;letter-spacing:-.02em;text-transform:uppercase;font-family:sans-serif !important}
         .product-details-panel .text{color:var(--muted);line-height:1.85;font-size:14px}
         .order-flash{margin:0 0 16px;padding:14px 16px;border:1px solid rgba(182,138,45,.22);background:color-mix(in srgb, var(--accent-red, var(--primary)) 8%, #ffffff);color:#7a5a14;font-size:13px;line-height:1.7}
         .order-flash strong{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px}
         .related-section{padding-top:82px}
         .related-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:26px}
-        .related-heading h2{font-size:clamp(28px,3vw,44px);letter-spacing:-.03em;text-transform:uppercase}
+        .related-heading h2{font-family:sans-serif;font-size:clamp(20px,2vw,28px);letter-spacing:-.02em;text-transform:uppercase}
         .related-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 22px}
         .related-card{display:grid;gap:12px}
-        .related-media{display:block;aspect-ratio:3/4;overflow:hidden;background:var(--surface);border:1px solid rgba(28,27,27,.12);box-shadow:var(--shadow-soft)}
+        .related-media{display:block;aspect-ratio:4/5;overflow:hidden;background:var(--surface);border:1px solid rgba(28,27,27,.12);box-shadow:var(--shadow-soft)}
         .related-media img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease}
         .related-card:hover .related-media img{transform:scale(1.03)}
-        .related-title{margin:0;font-size:14px;line-height:1.35;letter-spacing:.02em;text-transform:uppercase}
-        .related-price{font-size:13px;font-weight:800;color:var(--ink)}
+        .related-title{margin:0;font-family:sans-serif;font-size:14px;line-height:1.35;letter-spacing:.02em;text-transform:uppercase}
+        .related-price{font-size:15px;font-weight:800;color:#d4af37}
         .related-old-price{font-size:12px;color:rgba(28,27,27,.42);text-decoration:line-through}
         .related-card .product-btn{display:none}
         .gallery-dots{display:none}
         @media (max-width:1180px){.product-showcase{grid-template-columns:1fr}.gallery-rail{grid-template-columns:82px minmax(0,1fr)}.product-summary{position:relative;top:0;padding:0}.related-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
         @media (max-width:760px){.product-ui{padding:18px 0 64px}.gallery-rail{grid-template-columns:1fr;gap:10px}.gallery-thumb-rail{position:relative;top:0;flex-direction:row;gap:8px;max-height:none;overflow-x:auto;overflow-y:hidden;padding-right:0;padding-bottom:4px}.gallery-thumb-btn{min-width:72px;max-width:72px}.gallery-main{aspect-ratio:auto !important;overflow:visible;border:1px solid rgba(28,27,27,.12);box-shadow:var(--shadow-soft);background:var(--surface);border-radius:0 !important}.gallery-slider{height:auto !important;border-radius:0 !important;background:var(--surface) !important}.gallery-slide{padding:0;align-items:flex-start;justify-content:flex-start;min-height:0;background:var(--surface);height:auto}.gallery-open-btn{justify-content:flex-start;align-items:flex-start;height:auto}.gallery-slide picture,.gallery-slide img,.gallery-open-btn picture,.gallery-open-btn img{width:100% !important;max-width:100%;height:auto !important;max-height:none !important;object-fit:contain !important;aspect-ratio:auto !important;border-radius:0 !important}.gallery-slide picture,.gallery-open-btn picture{overflow:visible !important}.gallery-nav{width:36px;height:36px}.summary-actions{display:grid;grid-template-columns:1fr}.summary-payment-logo{width:72px;height:44px;padding:7px 8px}.summary-title{font-size:24px}.summary-sale-price{font-size:24px}.related-heading{align-items:flex-start;flex-direction:column}.related-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 14px}.related-title{font-size:12px}#orderModal .modal{padding:18px}#orderModal .modal-head{padding-right:0}#orderModal .modal-close{position:static;justify-self:center;margin-top:6px}#orderModal .modal-actions{flex-direction:column}#orderModal .input-row{grid-template-columns:1fr}}
-    </style>
-</head>
-<body>
-<div class="page">
-    <?php require_once 'views/layouts/customer_layout.php'; customer_layout_start(); ?>
+</style>
 
     <main class="main product-ui">
         <section class="product-hero">
@@ -567,9 +548,8 @@ $faviconUrl = ImageHelper::settingsImageUrl(
             </section>
         <?php endif; ?>
 
-        <?php customer_layout_end(); ?>
     </main>
-</div>
+<?php customer_layout_end(); ?>
 
 <?php if ($hasSizeGuide): ?>
 <div id="sgModal" class="modal-overlay size-guide-lightbox" onclick="closeSizeGuide()" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;z-index:3050;background:rgba(0,0,0,.72);">
@@ -589,8 +569,8 @@ $faviconUrl = ImageHelper::settingsImageUrl(
     </div>
 </div>
 
-<div id="paymentMethodSheet" class="payment-sheet-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:3100;align-items:flex-end;justify-content:center;" onclick="closePaymentMethodSheet()">
-    <div class="payment-sheet" onclick="event.stopPropagation()" style="width:min(100%,720px);background:var(--surface);border-radius:24px 24px 0 0;padding:18px 18px 24px;box-shadow:0 -20px 40px rgba(0,0,0,.18);">
+<div id="paymentMethodSheet" class="payment-sheet-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:3100;align-items:flex-end;justify-content:center;padding-top:12px;" onclick="closePaymentMethodSheet()">
+    <div class="payment-sheet" onclick="event.stopPropagation()" style="width:min(100%,720px);max-height:calc(100vh - 12px);max-height:calc(100dvh - 12px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--surface);border-radius:24px 24px 0 0;padding:18px 18px calc(24px + env(safe-area-inset-bottom, 0px));box-shadow:0 -20px 40px rgba(0,0,0,.18);">
         <div style="width:54px;height:5px;border-radius:999px;background:#e7e3e1;margin:0 auto 16px;"></div>
         <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px;">
             <div><div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a0a0a0;margin-bottom:6px;">Choose Payment Method</div><h3 style="margin:0;font-size:22px;">Select how you want to order</h3></div>
@@ -598,7 +578,7 @@ $faviconUrl = ImageHelper::settingsImageUrl(
         </div>
         <div style="display:grid;gap:12px;">
             <?php if ($whatsappEnabled): ?><button type="button" class="payment-method-card" onclick="choosePaymentMethod('whatsapp')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #eee;border-radius:18px;background:linear-gradient(180deg,color-mix(in srgb, var(--btn-cart-whatsapp-bg, #25d366) 12%, var(--surface)) 0%, var(--surface) 100%);color:var(--btn-cart-whatsapp-bg, #25d366);cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--btn-cart-whatsapp-bg, #25d366) 18%, #ffffff);color:inherit;font-size:18px;"><i class="fab fa-whatsapp"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">WhatsApp Order</strong><small style="color:color-mix(in srgb, var(--btn-cart-whatsapp-bg, #25d366) 78%, transparent);line-height:1.5;">Send your order details directly to the shop on WhatsApp.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
-            <?php if ($codEnabled): ?><button type="button" class="payment-method-card" onclick="choosePaymentMethod('cod')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #eee;border-radius:18px;background:linear-gradient(180deg,color-mix(in srgb, var(--btn-cart-cod-bg, #111111) 10%, var(--surface)) 0%, var(--surface) 100%);color:var(--btn-cart-cod-bg, #111111);cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--btn-cart-cod-bg, #111111) 16%, #ffffff);color:inherit;font-size:18px;"><i class="fas fa-hand-holding-dollar"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">Cash on Delivery</strong><small style="color:color-mix(in srgb, var(--btn-cart-cod-bg, #111111) 78%, transparent);line-height:1.5;">Place the order now and pay when it is delivered.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
+            <?php if ($codEnabled): ?><button type="button" class="payment-method-card" onclick="choosePaymentMethod('cod')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #eee;border-radius:18px;background:linear-gradient(180deg,color-mix(in srgb, #d4af37 12%, var(--surface)) 0%, var(--surface) 100%);color:#8f6b00;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, #d4af37 18%, #ffffff);color:inherit;font-size:18px;"><i class="fas fa-hand-holding-dollar"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">Cash on Delivery</strong><small style="color:color-mix(in srgb, #8f6b00 78%, transparent);line-height:1.5;">Place the order now and pay when it is delivered.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
             <?php if ($payhereReady): ?><button type="button" class="payment-method-card" onclick="choosePaymentMethod('payhere')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #eee;border-radius:18px;background:linear-gradient(180deg,color-mix(in srgb, var(--btn-cart-payhere-bg, #111111) 10%, var(--surface)) 0%, var(--surface) 100%);color:var(--btn-cart-payhere-bg, #111111);cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--btn-cart-payhere-bg, #111111) 16%, #ffffff);color:inherit;font-size:18px;"><i class="fas fa-credit-card"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">Card Payments</strong><small style="color:color-mix(in srgb, var(--btn-cart-payhere-bg, #111111) 78%, transparent);line-height:1.5;">Pay online securely before your order is confirmed.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
             <?php if ($kokoReady): ?><button type="button" class="payment-method-card" onclick="choosePaymentMethod('koko')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #eee;border-radius:18px;background:linear-gradient(180deg,color-mix(in srgb, var(--btn-cart-koko-bg, #fff3dc) 12%, var(--surface)) 0%, var(--surface) 100%);color:var(--btn-cart-koko-text, #111111);cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--btn-cart-koko-bg, #fff3dc) 18%, #ffffff);color:inherit;font-size:18px;"><i class="fas fa-layer-group"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">KOKO Payments</strong><small style="color:color-mix(in srgb, var(--btn-cart-koko-text, #111111) 78%, transparent);line-height:1.5;">Split your payment into 3 interest-free installments.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
             <?php if ($bankTransferEnabled): ?><button type="button" class="payment-method-card" onclick="choosePaymentMethod('bank_transfer')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #eee;border-radius:18px;background:linear-gradient(180deg,color-mix(in srgb, #7b4d1a 12%, var(--surface)) 0%, var(--surface) 100%);cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, #7b4d1a 16%, #ffffff);color:#7b4d1a;font-size:18px;"><i class="fas fa-building-columns"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;">Bank Transfer</strong><small style="color:#666;line-height:1.5;">Place the order now and send the payment using the bank details provided.</small></span><i class="fas fa-chevron-right" style="color:#999;"></i></button><?php endif; ?>
@@ -614,6 +594,7 @@ $faviconUrl = ImageHelper::settingsImageUrl(
         </div>
         <div class="cart-confirm-actions">
             <button type="button" onclick="closeCartConfirm()">OK</button>
+            <button type="button" class="btn-view-cart" onclick="viewCartFromConfirm()">View Cart</button>
         </div>
     </div>
 </div>
@@ -676,6 +657,7 @@ $faviconUrl = ImageHelper::settingsImageUrl(
     const baseProductPrice = <?= json_encode((float) $productUnitPrice) ?>;
     const baseProductRegularPrice = <?= json_encode((float) $productRegularPrice) ?>;
     const baseProductSalePrice = <?= json_encode($productSalePrice !== null ? (float) $productSalePrice : null) ?>;
+    const baseProductWeightGrams = <?= json_encode(max(0, (int) ($product['weight_grams'] ?? 0))) ?>;
     const kokoHandlingFeePercentage = <?= json_encode((float) ($settings['koko_handling_fee_percentage'] ?? 0)) ?>;
     const deliveryApplyAllDistricts = <?= json_encode($deliveryApplyAllDistricts) ?>;
     const deliveryAllFirstKg = <?= json_encode($deliveryAllFirstKg) ?>;
@@ -735,6 +717,11 @@ $faviconUrl = ImageHelper::settingsImageUrl(
     function closeCartConfirm() {
         const overlay = document.getElementById('cartConfirmOverlay');
         if (overlay) overlay.style.display = 'none';
+    }
+
+    function viewCartFromConfirm() {
+        closeCartConfirm();
+        window.location.href = <?= json_encode($baseUrl . 'cart') ?>;
     }
 
     function getStoredCustomerProfile() {
@@ -973,7 +960,7 @@ $faviconUrl = ImageHelper::settingsImageUrl(
     function getCurrentWeight() {
         const activeVariant = getActiveVariantRow();
         if (activeVariant && activeVariant.variant_weight_grams !== undefined && activeVariant.variant_weight_grams !== null) return Number(activeVariant.variant_weight_grams || 0);
-        return 0;
+        return Number(baseProductWeightGrams || 0);
     }
 
     function getCurrentImage() {
@@ -1251,5 +1238,3 @@ $faviconUrl = ImageHelper::settingsImageUrl(
     });
     document.addEventListener('keydown', handleImageModalKeydown);
 </script>
-</body>
-</html>

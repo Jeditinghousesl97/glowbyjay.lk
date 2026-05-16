@@ -25,10 +25,20 @@
             font-weight: bold;
             font-size: 14px;
         }
+        .save-order-btn {
+            background:#111;
+            color:#fff;
+            padding:10px 18px;
+            border:0;
+            border-radius:8px;
+            font-weight:bold;
+            cursor:pointer;
+            margin-right:8px;
+        }
 
         .feedback-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             padding-bottom: 80px;
         }
@@ -39,7 +49,9 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            cursor: move;
         }
+        .fb-item.dragging { opacity: 0.45; }
 
         .fb-img {
             width: 100%;
@@ -118,7 +130,7 @@
 
         @media (min-width: 992px) {
             .feedback-grid {
-                grid-template-columns: repeat(4, minmax(0, 1fr));
+                grid-template-columns: repeat(6, minmax(0, 1fr));
                 gap: 18px;
                 padding-bottom: 24px;
             }
@@ -144,25 +156,31 @@
     <div class="container">
         <div class="page-header">
             <div>
-                <h2 style="margin:0;">Feedbacks</h2>
-                <p style="margin:0; font-size:11px; color:#888;">Dark Lavender Clothing!</p>
+                <h2 style="margin:0;">Customer Reviews</h2>
+                <p style="margin:0; font-size:11px; color:#888;">Manage WhatsApp review screenshots for the prefooter slider.</p>
             </div>
             <div>
                 <!-- Logo or Avatar placeholder -->
+                <button type="button" class="save-order-btn" onclick="submitReviewOrder()">Save Order</button>
                 <a href="<?= BASE_URL ?>feedback/add" class="add-btn-blue">Add New</a>
             </div>
         </div>
 
-        <div class="feedback-grid">
+        <form id="reviewOrderForm" action="<?= BASE_URL ?>feedback/reorder" method="POST">
+            <?= csrf_input() ?>
+            <input type="hidden" name="review_order" id="reviewOrderInput" value="">
+        </form>
+
+        <div class="feedback-grid" id="feedbackGrid">
             <?php foreach ($feedbacks as $fb): ?>
-                <div class="fb-item">
+                <div class="fb-item" draggable="true" data-review-id="<?= (int) $fb['id'] ?>">
                     <?php $feedbackImage = ImageHelper::uploadUrl($fb['image_path'] ?? '', 'https://via.placeholder.com/320?text=Feedback'); ?>
                     <?= ImageHelper::renderResponsivePicture(
                         $fb['image_path'] ?? '',
                         $feedbackImage,
                         [
                             'class' => 'fb-img',
-                            'alt' => 'Feedback',
+                            'alt' => 'Customer review screenshot',
                             'loading' => 'lazy',
                             'decoding' => 'async',
                             'fetchpriority' => 'low'
@@ -177,15 +195,15 @@
         </div>
 
         <?php if (empty($feedbacks)): ?>
-            <p style="text-align:center; color:#999;">No feedbacks yet.</p>
+            <p style="text-align:center; color:#999;">No review screenshots yet.</p>
         <?php endif; ?>
     </div>
 
     <!-- Custom Confirmation Modal -->
     <div class="modal-overlay" id="confirmModal">
         <div class="modal-box">
-            <h3>Delete Feedback?</h3>
-            <p style="color:#666; font-size:14px;">Are you sure you want to delete this feedback image?</p>
+            <h3>Delete Review Screenshot?</h3>
+            <p style="color:#666; font-size:14px;">Are you sure you want to delete this review screenshot?</p>
             <div class="modal-btn-row">
                 <button class="btn-cancel" onclick="closeModal()">Cancel</button>
                 <a href="#" id="deleteLink" class="btn-yes">Yes</a>
@@ -194,6 +212,59 @@
     </div>
 
     <script>
+        const feedbackGrid = document.getElementById('feedbackGrid');
+        let draggingItem = null;
+
+        if (feedbackGrid) {
+            feedbackGrid.querySelectorAll('.fb-item').forEach(item => {
+                item.addEventListener('dragstart', () => {
+                    draggingItem = item;
+                    item.classList.add('dragging');
+                });
+                item.addEventListener('dragend', () => {
+                    item.classList.remove('dragging');
+                    draggingItem = null;
+                });
+            });
+
+            feedbackGrid.addEventListener('dragover', (event) => {
+                event.preventDefault();
+                const afterElement = getDragAfterElement(feedbackGrid, event.clientY, event.clientX);
+                if (!draggingItem) return;
+                if (afterElement == null) {
+                    feedbackGrid.appendChild(draggingItem);
+                } else {
+                    feedbackGrid.insertBefore(draggingItem, afterElement);
+                }
+            });
+        }
+
+        function getDragAfterElement(container, y, x) {
+            const draggableElements = [...container.querySelectorAll('.fb-item:not(.dragging)')];
+            let closest = { offset: Number.NEGATIVE_INFINITY, element: null };
+            draggableElements.forEach(child => {
+                const box = child.getBoundingClientRect();
+                const offsetY = y - box.top - box.height / 2;
+                const offsetX = x - box.left - box.width / 2;
+                const distance = Math.abs(offsetY) + Math.abs(offsetX) * 0.15;
+                const score = -distance;
+                if (score > closest.offset) {
+                    closest = { offset: score, element: child };
+                }
+            });
+            return closest.element;
+        }
+
+        function submitReviewOrder() {
+            const ids = [...document.querySelectorAll('#feedbackGrid .fb-item')]
+                .map(el => el.getAttribute('data-review-id'))
+                .filter(Boolean);
+            if (!ids.length) return;
+            document.getElementById('reviewOrderInput').value = ids.join(',');
+            showGlobalLoader();
+            document.getElementById('reviewOrderForm').submit();
+        }
+
         function confirmDelete(id) {
             const modal = document.getElementById('confirmModal');
             const link = document.getElementById('deleteLink');

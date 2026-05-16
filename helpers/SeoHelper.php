@@ -78,10 +78,36 @@ class SeoHelper
         }
 
         if (function_exists('mb_strlen') && function_exists('mb_substr')) {
-            return mb_strlen($text) > $length ? mb_substr($text, 0, $length - 1) . '…' : $text;
+            return mb_strlen($text) > $length ? mb_substr($text, 0, $length - 3) . '...' : $text;
         }
 
-        return strlen($text) > $length ? substr($text, 0, $length - 1) . '…' : $text;
+        return strlen($text) > $length ? substr($text, 0, $length - 3) . '...' : $text;
+    }
+
+    public static function currencyCodeFromSetting($currencyValue)
+    {
+        $value = strtoupper(trim((string) $currencyValue));
+        if ($value === '' || $value === 'RS' || $value === 'LKR' || $value === 'RS.') {
+            return 'LKR';
+        }
+
+        if ($value === '$' || $value === 'USD') {
+            return 'USD';
+        }
+
+        if ($value === '€' || $value === 'EUR') {
+            return 'EUR';
+        }
+
+        if ($value === '£' || $value === 'GBP') {
+            return 'GBP';
+        }
+
+        if (preg_match('/^[A-Z]{3}$/', $value)) {
+            return $value;
+        }
+
+        return 'LKR';
     }
 
     public static function shopName($settings)
@@ -211,7 +237,7 @@ class SeoHelper
             'url' => self::absoluteUrl(BASE_URL),
             'potentialAction' => [
                 '@type' => 'SearchAction',
-                'target' => self::absoluteUrl(BASE_URL . 'shop/index?search={search_term_string}'),
+                'target' => self::absoluteUrl(BASE_URL . 'shop?search={search_term_string}'),
                 'query-input' => 'required name=search_term_string'
             ]
         ];
@@ -290,7 +316,7 @@ class SeoHelper
             ],
             'offers' => [
                 '@type' => 'Offer',
-                'priceCurrency' => trim($settings['currency_symbol'] ?? 'LKR'),
+                'priceCurrency' => self::currencyCodeFromSetting($settings['currency_symbol'] ?? 'LKR'),
                 'price' => number_format($price, 2, '.', ''),
                 'availability' => !empty($product['is_active']) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
                 'url' => $url
@@ -316,3 +342,4 @@ class SeoHelper
         return $schema;
     }
 }
+

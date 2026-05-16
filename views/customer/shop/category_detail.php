@@ -9,6 +9,8 @@ $currency = (string) ($settings['currency_symbol'] ?? 'LKR');
 $kokoLogoUrl = BASE_URL . 'assets/icons/payment-gateways/koko-home.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/koko-home.png') ?: time());
 $categoryName = (string) ($category['name'] ?? 'Category');
 $categoryCount = (int) ($category_count ?? (is_array($products ?? null) ? count($products) : 0));
+$categoryLimit = max(1, (int) ($category_limit ?? 20));
+$categoryHasMore = !empty($category_has_more);
 $categoryImageUrl = !empty($category_image)
     ? (string) $category_image
     : ImageHelper::uploadUrl(
@@ -16,8 +18,8 @@ $categoryImageUrl = !empty($category_image)
         'https://via.placeholder.com/1200x1500?text=' . urlencode($categoryName ?: 'Category')
     );
 $categoryCopy = !empty($subCategories)
-    ? 'Browse products in ' . $categoryName . ' and its subcategories in the site\'s clean discount-style grid.'
-    : 'Browse all products in ' . $categoryName . ' in the same clean, aligned product layout used across the site.';
+    ? 'Explore our curated ' . $categoryName . ' range and discover handpicked products across related subcategories.'
+    : 'Explore our curated ' . $categoryName . ' range with premium products selected to match your beauty and care routine.';
 
 customer_layout_start();
 ?>
@@ -67,7 +69,7 @@ customer_layout_start();
 
     .category-title{
         margin:0;
-        font-family:"Noto Serif",serif;
+        font-family:sans-serif;
         font-size:clamp(34px,4vw,56px);
         line-height:1.02;
         letter-spacing:-.04em;
@@ -181,7 +183,7 @@ customer_layout_start();
     .category-grid{
         display:grid;
         grid-template-columns:repeat(4,minmax(0,1fr));
-        gap:28px 24px;
+        gap:42px 24px;
         align-items:start;
     }
 
@@ -194,7 +196,7 @@ customer_layout_start();
 
     .category-media{
         position:relative;
-        aspect-ratio:4/5;
+        aspect-ratio:1/1;
         overflow:hidden;
         background:#f2efee;
     }
@@ -252,14 +254,16 @@ customer_layout_start();
 
     .category-name{
         margin:0;
-        font-family:"Noto Serif",serif;
+        font-family:sans-serif;
         font-size:18px;
         line-height:1.25;
         letter-spacing:-.02em;
-        white-space:nowrap;
+        display:-webkit-box;
+        -webkit-line-clamp:2;
+        -webkit-box-orient:vertical;
         overflow:hidden;
         text-overflow:ellipsis;
-        min-height:1.25em;
+        min-height:2.5em;
     }
 
     .category-name a{
@@ -274,7 +278,7 @@ customer_layout_start();
     }
 
     .category-sale-price{
-        font-size:12px;
+        font-size:16px;
         font-weight:800;
         letter-spacing:.1em;
         text-transform:uppercase;
@@ -282,7 +286,7 @@ customer_layout_start();
     }
 
     .category-old-price{
-        font-size:12px;
+        font-size:13px;
         font-weight:700;
         color:#8c8785;
         text-decoration:line-through;
@@ -323,10 +327,10 @@ customer_layout_start();
         font-size:13px;
         line-height:1.7;
         display:-webkit-box;
-        -webkit-line-clamp:2;
+        -webkit-line-clamp:4;
         -webkit-box-orient:vertical;
         overflow:hidden;
-        min-height:2.85em;
+        min-height:6.8em;
     }
 
     .category-empty{
@@ -346,6 +350,15 @@ customer_layout_start();
         margin:0;
         color:#6d6665;
         line-height:1.8;
+    }
+    .category-infinite-loader{
+        grid-column:1 / -1;
+        text-align:center;
+        font-size:12px;
+        letter-spacing:.14em;
+        text-transform:uppercase;
+        color:#8a8380;
+        padding:16px 8px 4px;
     }
 
     @media (max-width: 1180px){
@@ -408,7 +421,7 @@ customer_layout_start();
 
         .category-grid{
             grid-template-columns:repeat(2,minmax(0,1fr));
-            gap:18px 14px;
+            gap:28px 14px;
         }
 
         .category-badge{
@@ -432,13 +445,13 @@ customer_layout_start();
 
         .category-sale-price,
         .category-old-price{
-            font-size:11px;
+            font-size:12px;
         }
 
         .category-desc{
             font-size:12px;
             line-height:1.55;
-            min-height:2.55em;
+            min-height:4.96em;
         }
     }
 </style>
@@ -476,7 +489,7 @@ customer_layout_start();
             </a>
         </section>
 
-        <section class="category-grid" aria-label="Category products">
+        <section class="category-grid" id="categoryGrid" aria-label="Category products" data-limit="<?= (int) $categoryLimit ?>" data-next-offset="<?= count($products ?? []) ?>" data-has-more="<?= $categoryHasMore ? '1' : '0' ?>" data-category-id="<?= (int) ($category['id'] ?? 0) ?>">
             <?php if (!empty($products)): ?>
                 <?php foreach ($products as $product): ?>
                     <?php
@@ -489,6 +502,17 @@ customer_layout_start();
                         $product['main_image'] ?? '',
                         'https://via.placeholder.com/720x900?text=' . urlencode($product['title'] ?? 'Product')
                     );
+                    $chipCategories = [];
+                    if (!empty($product['parent_category_name'])) {
+                        $chipCategories[] = trim((string) $product['parent_category_name']);
+                    }
+                    if (!empty($product['category_name'])) {
+                        $chipCategories[] = trim((string) $product['category_name']);
+                    }
+                    $chipCategories = array_values(array_unique(array_filter($chipCategories, static function ($name) {
+                        return $name !== '';
+                    })));
+                    $chipLabel = !empty($chipCategories) ? implode(', ', $chipCategories) : 'Shop';
                     $description = trim((string) ($product['short_description'] ?? $product['description'] ?? ''));
                     ?>
                     <article class="category-card">
@@ -513,7 +537,7 @@ customer_layout_start();
                         </a>
 
                         <div class="category-body">
-                            <span class="category-chip">Category Product</span>
+                            <span class="category-chip"><?= htmlspecialchars($chipLabel) ?></span>
                             <h2 class="category-name">
                                 <a href="<?= htmlspecialchars($baseUrl . 'shop/product/' . $product['id']) ?>"><?= htmlspecialchars($product['title'] ?? 'Product') ?></a>
                             </h2>
@@ -554,8 +578,74 @@ customer_layout_start();
                     <p>When products are assigned to this category, they will appear here automatically.</p>
                 </div>
             <?php endif; ?>
+            <div id="categoryInfiniteLoader" class="category-infinite-loader" style="<?= $categoryHasMore ? '' : 'display:none;' ?>">Loading more products...</div>
+            <div id="categoryInfiniteSentinel" style="<?= $categoryHasMore ? '' : 'display:none;' ?>" aria-hidden="true"></div>
         </section>
     </div>
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const grid = document.getElementById('categoryGrid');
+    const loader = document.getElementById('categoryInfiniteLoader');
+    const sentinel = document.getElementById('categoryInfiniteSentinel');
+    if (!grid || !loader || !sentinel) return;
+
+    let isLoading = false;
+    let hasMore = grid.dataset.hasMore === '1';
+    let nextOffset = parseInt(grid.dataset.nextOffset || '0', 10) || 0;
+    const limit = parseInt(grid.dataset.limit || '20', 10) || 20;
+    const categoryId = parseInt(grid.dataset.categoryId || '0', 10) || 0;
+
+    const hideInfiniteUi = function () {
+        loader.style.display = 'none';
+        sentinel.style.display = 'none';
+    };
+
+    if (!hasMore || categoryId <= 0) {
+        hideInfiniteUi();
+        return;
+    }
+
+    const loadMore = async function () {
+        if (isLoading || !hasMore) return;
+        isLoading = true;
+        loader.style.display = 'block';
+
+        try {
+            const url = <?= json_encode($baseUrl . 'shop/categoryLoadMore/') ?> + encodeURIComponent(String(categoryId)) + '?offset=' + encodeURIComponent(String(nextOffset)) + '&limit=' + encodeURIComponent(String(limit));
+            const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            const payload = await response.json();
+
+            if (!payload || !payload.success) throw new Error('Unable to load more products');
+
+            if (payload.html && String(payload.html).trim() !== '') {
+                sentinel.insertAdjacentHTML('beforebegin', payload.html);
+            }
+
+            nextOffset = Number(payload.next_offset || nextOffset);
+            hasMore = !!payload.has_more;
+            grid.dataset.nextOffset = String(nextOffset);
+            grid.dataset.hasMore = hasMore ? '1' : '0';
+
+            if (!hasMore || Number(payload.count || 0) === 0) {
+                hideInfiniteUi();
+            }
+        } catch (error) {
+            loader.textContent = 'Unable to load more products';
+        } finally {
+            isLoading = false;
+        }
+    };
+
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) loadMore();
+        });
+    }, { rootMargin: '300px 0px 300px 0px' });
+
+    observer.observe(sentinel);
+});
+</script>
 
 <?php customer_layout_end(); ?>

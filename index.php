@@ -52,7 +52,7 @@ $seo_json_ld = $seo['seo_json_ld'];
 $categories = $categoryModel->getAll();
 $featuredProducts = $productModel->getFeatured(20);
 $latestProducts = $productModel->getLatest(24);
-$saleProducts = $productModel->getOnSale(15);
+$saleProducts = $productModel->getAllOnSale();
 
 $mainCategories = array_values(array_filter($categories, function ($cat) {
     return empty($cat['parent_id']);
@@ -184,6 +184,11 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
             outline:0;
             margin:0;
         }
+        .product-card-link{
+            display:block;
+            color:inherit;
+            text-decoration:none;
+        }
         .product-media{position:relative;aspect-ratio:3/4;overflow:hidden;background:var(--surface-high)}
         .product-media img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease}.product-card:hover .product-media img{transform:scale(1.05)}
         .product-body{padding:22px 18px 20px}
@@ -191,9 +196,12 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
         .arrival-item h4,
         .sale-card h4{
             display:block;
-            white-space:nowrap;
+            display:-webkit-box;
+            -webkit-line-clamp:2;
+            -webkit-box-orient:vertical;
             overflow:hidden;
             text-overflow:ellipsis;
+            min-height:2.5em;
         }
         .product-name{font-size:18px;line-height:1.22}
         .product-price-row{display:flex;align-items:baseline;gap:10px;margin-top:8px;margin-bottom:8px;flex-wrap:wrap}
@@ -274,18 +282,55 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
             border-radius:0;
         }
         .spacer{height:6px}
+        .featured-products-section .section-title,
+        .recently-added-section .section-title{
+            font-family:"Manrope",sans-serif !important;
+        }
+        .featured-products-section .product-price{
+            color:#d4af37 !important;
+        }
+        .featured-products-section .product-badge.discount{
+            background:#d4af37 !important;
+        }
+        .recently-added-section .arrival-item h4{
+            font-family:"Manrope",sans-serif !important;
+        }
+        .recently-added-section .arrival-price{
+            color:#d4af37 !important;
+        }
+        .recently-added-section .arrival-badge.discount{
+            background:#d4af37 !important;
+        }
+        .sale-archive-section{
+            background:#f0eded !important;
+            color:var(--ink);
+        }
         .sale-archive-section .section-title{
-            color:#fff !important;
+            font-family:"Manrope",sans-serif !important;
+        }
+        .sale-archive-section .label{
+            color:rgba(28,27,27,.55);
+        }
+        .sale-archive-section .section-copy{
+            color:var(--muted);
+            margin-top:10px;
+        }
+        .sale-archive-section .sale-card h4{
+            color:var(--ink);
+            font-family:"Manrope",sans-serif !important;
         }
         .sale-archive-section .price-row .sale-price{
             color:#d4af37 !important;
         }
-        .sale-archive-section .carousel-actions .icon-btn{
-            color:#fff;
-            box-shadow:inset 0 0 0 1px rgba(255,255,255,.24);
+        .sale-archive-section .badge{
+            background:#d4af37 !important;
         }
-        @media (max-width:760px){
-            .sale-archive-section .carousel-actions{display:none}
+        .sale-archive-section .price-row .old-price{
+            color:rgba(28,27,27,.45);
+        }
+        .sale-archive-section .carousel-actions .icon-btn{
+            color:var(--ink);
+            box-shadow:inset 0 0 0 1px rgba(28,27,27,.12);
         }
         @media (max-width:1180px){
             .container{width:min(100% - 48px,1600px);padding-left:20px}
@@ -299,10 +344,15 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                 overflow-x:hidden;
                 overflow-y:visible;
             }
-            .container{width:min(100% - 28px,1600px);padding-left:16px}
+            .container{
+                width:100%;
+                max-width:100%;
+                padding-left:0;
+                padding-right:0;
+            }
             .hero{
-                width:100vw;
-                margin-left:calc(50% - 50vw);
+                width:100% !important;
+                margin-left:0 !important;
                 height:auto;
                 min-height:0;
                 max-height:none;
@@ -323,8 +373,8 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                 scroll-behavior:smooth;
             }
             .hero-slide{
-                flex:0 0 100vw;
-                min-width:100vw;
+                flex:0 0 100%;
+                min-width:100%;
                 min-height:0;
                 height:auto;
                 aspect-ratio:auto !important;
@@ -336,16 +386,16 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                 scroll-snap-align:start;
             }
             .hero-slide picture,.hero-slide-link,.hero-slide-frame{
-                width:100vw;
+                width:100%;
                 height:auto !important;
                 min-height:0;
                 display:block;
                 overflow:visible !important;
             }
             .hero-slide img,.hero-media > img{
-                width:100vw;
+                width:100% !important;
                 height:auto !important;
-                max-width:100vw;
+                max-width:100%;
                 max-height:none;
                 display:block;
                 padding:0;
@@ -360,6 +410,26 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
             .category-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
             .grid-arrivals{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 16px}
             .product-card{min-width:280px;max-width:280px;box-shadow:none;border:0;outline:0;margin:0}
+            .featured-products-section .section-head-left{
+                padding-left:12px;
+            }
+            .featured-products-section .product-rail{
+                padding-left:12px;
+                padding-right:12px;
+            }
+            .recently-added-section .section-head-left{
+                padding-left:12px;
+            }
+            .recently-added-section .grid-arrivals{
+                padding-left:12px;
+                padding-right:12px;
+            }
+            .sale-archive-section .section-title{
+                color:var(--ink) !important;
+            }
+            .sale-archive-section .carousel-actions{
+                display:none;
+            }
             .section-dark{padding:58px 0 64px}
             .sale-card{min-width:72vw;max-width:72vw}
             .sale-media{aspect-ratio:5/6}
@@ -373,6 +443,12 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
             .section-dark .sale-rail{
                 padding-left:16px !important;
                 padding-right:16px !important;
+            }
+        }
+        @media (max-width:1023px){
+            html, body{
+                padding-left:0 !important;
+                padding-right:0 !important;
             }
         }
     </style>
@@ -441,46 +517,12 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
             </div>
         </section>
 
-        <section class="section">
-            <div class="container">
-                <?php if (!empty($categoryTiles)): ?>
-                    <div class="category-grid">
-                        <?php foreach ($categoryTiles as $categoryTile): ?>
-                            <?php
-                            $tileImage = ImageHelper::uploadUrl(
-                                $categoryTile['image'] ?? '',
-                                'https://via.placeholder.com/900x1125?text=' . urlencode($categoryTile['name'] ?? 'Category')
-                            );
-                            ?>
-                            <a class="category-card" href="<?= htmlspecialchars($baseUrl . 'shop/category/' . $categoryTile['id']) ?>" aria-label="<?= htmlspecialchars($categoryTile['name'] ?? 'Category') ?>">
-                                <?= ImageHelper::renderResponsivePicture(
-                                    $categoryTile['image'] ?? '',
-                                    $tileImage,
-                                    [
-                                        'alt' => $categoryTile['name'] ?? 'Category',
-                                        'loading' => 'lazy',
-                                        'decoding' => 'async',
-                                        'fetchpriority' => 'low'
-                                    ],
-                                    'product_gallery'
-                                ) ?>
-                            </a>
-                        <?php endforeach; ?>
-                    </div>
-                <?php else: ?>
-                    <div class="category-grid">
-                        <div class="category-card"></div>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </section>
-
-        <section class="section section-surface-low">
+        <section class="section section-surface-low featured-products-section">
             <div class="container">
                 <div class="section-head">
                     <div class="section-head-left">
                         <span class="label">Curated Selection</span>
-                        <h2 class="section-title">Featured Pieces</h2>
+                        <h2 class="section-title">Trending Products</h2>
                     </div>
                     <div class="carousel-actions">
                         <button class="icon-btn" type="button" aria-label="Previous featured products" data-product-prev>←</button>
@@ -503,10 +545,14 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                                 ? (int) round((($regularPrice - $salePrice) / $regularPrice) * 100)
                                 : 0;
                             $displayPrice = $hasDiscount ? $salePrice : $regularPrice;
+                            $productShortDescription = trim((string) ($product['short_description'] ?? ''));
+                            $productSummary = $productShortDescription !== ''
+                                ? $productShortDescription
+                                : (string) ($product['description'] ?? '');
                             ?>
                             <article class="product-card">
-                                <div class="product-media">
-                                    <a href="<?= htmlspecialchars($baseUrl . 'shop/product/' . $product['id']) ?>">
+                                <a class="product-card-link" href="<?= htmlspecialchars($baseUrl . 'shop/product/' . $product['id']) ?>">
+                                    <div class="product-media">
                                         <?= ImageHelper::renderResponsivePicture(
                                             $product['main_image'] ?? '',
                                             $productImage,
@@ -518,25 +564,25 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                                             ],
                                             'product_card'
                                         ) ?>
-                                    </a>
-                                    <?php if ($hasDiscount): ?>
-                                        <span class="product-badge discount">-<?= $discountPercent ?>%</span>
-                                    <?php endif; ?>
-                                    <?php if (!empty($product['free_shipping'])): ?>
-                                        <span class="product-badge shipping">Free Shipping</span>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="product-body">
-                                    <div class="product-name"><?= htmlspecialchars($product['title'] ?? 'Product') ?></div>
-                                    <div class="product-price-row">
-                                        <div class="product-price"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format($displayPrice, 0) ?></div>
                                         <?php if ($hasDiscount): ?>
-                                            <div class="product-old-price"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format($regularPrice, 0) ?></div>
+                                            <span class="product-badge discount">-<?= $discountPercent ?>%</span>
+                                        <?php endif; ?>
+                                        <?php if (!empty($product['free_shipping'])): ?>
+                                            <span class="product-badge shipping">Free Shipping</span>
                                         <?php endif; ?>
                                     </div>
-                                    <?= renderHomeKokoTeaser($product, $settings, 'featured') ?>
-                                    <p class="product-desc"><?= htmlspecialchars(SeoHelper::trimText($product['description'] ?? '', 90)) ?></p>
-                                </div>
+                                    <div class="product-body">
+                                        <div class="product-name"><?= htmlspecialchars($product['title'] ?? 'Product') ?></div>
+                                        <div class="product-price-row">
+                                            <div class="product-price"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format($displayPrice, 0) ?></div>
+                                            <?php if ($hasDiscount): ?>
+                                                <div class="product-old-price"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format($regularPrice, 0) ?></div>
+                                            <?php endif; ?>
+                                        </div>
+                                        <?= renderHomeKokoTeaser($product, $settings, 'featured') ?>
+                                        <p class="product-desc"><?= htmlspecialchars(SeoHelper::trimText($productSummary, 90)) ?></p>
+                                    </div>
+                                </a>
                             </article>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -546,7 +592,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
             </div>
         </section>
 
-        <section class="section">
+        <section class="section recently-added-section">
             <div class="container">
                 <div class="section-head">
                     <div class="section-head-left">
@@ -615,15 +661,52 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
             </div>
         </section>
 
+        <section class="section">
+            <div class="container">
+                <?php if (!empty($categoryTiles)): ?>
+                    <div class="category-grid">
+                        <?php foreach ($categoryTiles as $categoryTile): ?>
+                            <?php
+                            $tileImage = ImageHelper::uploadUrl(
+                                $categoryTile['image'] ?? '',
+                                'https://via.placeholder.com/900x1125?text=' . urlencode($categoryTile['name'] ?? 'Category')
+                            );
+                            ?>
+                            <a class="category-card" href="<?= htmlspecialchars($baseUrl . 'shop/category/' . $categoryTile['id']) ?>" aria-label="<?= htmlspecialchars($categoryTile['name'] ?? 'Category') ?>">
+                                <?= ImageHelper::renderResponsivePicture(
+                                    $categoryTile['image'] ?? '',
+                                    $tileImage,
+                                    [
+                                        'alt' => $categoryTile['name'] ?? 'Category',
+                                        'loading' => 'lazy',
+                                        'decoding' => 'async',
+                                        'fetchpriority' => 'low'
+                                    ],
+                                    'product_gallery'
+                                ) ?>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="category-grid">
+                        <div class="category-card"></div>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </section>
+
         <section class="section section-dark sale-archive-section">
             <div class="container">
                 <div class="section-head">
-                    <div class="section-head-left"><h2 class="section-title">Archive Sale</h2></div>
-                    <div class="carousel-actions">
-                        <button class="icon-btn" type="button" aria-label="Previous sale products" data-sale-prev>←</button>
-                        <button class="icon-btn" type="button" aria-label="Next sale products" data-sale-next>→</button>
+                    <div class="section-head-left">
+                        <span class="label">Limited Time</span>
+                        <h2 class="section-title">Special Offers</h2>
+                        <p class="section-copy">Latest discounted products, sorted by newest arrivals.</p>
                     </div>
-                    <a class="section-link" href="<?= htmlspecialchars($baseUrl . 'discounts') ?>">Shop All Sale</a>
+                    <div class="carousel-actions">
+                        <button class="icon-btn" type="button" aria-label="Previous special offer products" data-sale-prev>←</button>
+                        <button class="icon-btn" type="button" aria-label="Next special offer products" data-sale-next>→</button>
+                    </div>
                 </div>
 
                 <div class="sale-rail hide-scrollbar" data-sale-rail>
@@ -659,12 +742,12 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                                 </a>
                                 <h4><?= htmlspecialchars($product['title'] ?? 'Product') ?></h4>
                                 <div class="price-row">
-                                    <span class="sale-price" style="color:#d4af37 !important;"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format($salePrice, 0) ?></span>
+                                    <span class="sale-price"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format($salePrice, 0) ?></span>
                                     <?php if ($discount > 0): ?>
                                         <span class="old-price"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format($regularPrice, 0) ?></span>
                                     <?php endif; ?>
                                 </div>
-                                <?= renderHomeKokoTeaser($product, $settings, 'arrivals') ?>
+                                <?= renderHomeKokoTeaser($product, $settings, 'sale') ?>
                             </article>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -764,6 +847,10 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                     });
                 });
             }
+
+
+
+
 
             if (saleRail && salePrev && saleNext) {
                 const getSaleScrollAmount = () => {

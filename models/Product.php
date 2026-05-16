@@ -702,6 +702,32 @@ class Product extends BaseModel
         return $this->applyVariantDiscountPricing($stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
+    public function getLatestPaged($limit = 20, $offset = 0)
+    {
+        $limit = max(1, min(100, (int) $limit));
+        $offset = max(0, (int) $offset);
+
+        $sql = "SELECT p.*, c.name as category_name, pc.name as parent_category_name
+                FROM products p 
+                LEFT JOIN categories c ON p.category_id = c.id 
+                LEFT JOIN categories pc ON c.parent_id = pc.id
+                WHERE p.is_active = 1
+                ORDER BY p.created_at DESC, p.id DESC
+                LIMIT :limit OFFSET :offset";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        return $this->applyVariantDiscountPricing($stmt->fetchAll(PDO::FETCH_ASSOC));
+    }
+
+    public function countActiveProducts()
+    {
+        $stmt = $this->conn->prepare("SELECT COUNT(*) FROM products WHERE is_active = 1");
+        $stmt->execute();
+        return (int) $stmt->fetchColumn();
+    }
+
     /**
      * Get On Sale Products
      */
@@ -1777,6 +1803,47 @@ class Product extends BaseModel
         $stmt = $this->conn->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getSearchSuggestions($term, $limit = 8)
+    {
+        if (!$this->conn instanceof PDO) {
+            return [];
+        }
+
+        $term = trim((string) $term);
+        if ($term === '') {
+            return [];
+        }
+
+        $limit = max(1, min(12, (int) $limit));
+        $likeTerm = '%' . $term . '%';
+
+        $sql = "SELECT
+                    p.id,
+                    p.title,
+                    p.short_description,
+                    p.main_image,
+                    p.price,
+                    p.sale_price,
+                    c.name AS category_name
+                FROM products p
+                LEFT JOIN categories c ON p.category_id = c.id
+                WHERE (p.is_active = 1 OR p.is_active IS NULL)
+                  AND (p.title LIKE :term OR p.sku LIKE :term OR p.short_description LIKE :term)
+                ORDER BY
+                    CASE WHEN p.title LIKE :prefix_term THEN 0 ELSE 1 END,
+                    p.created_at DESC,
+                    p.id DESC
+                LIMIT :limit";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':term', $likeTerm, PDO::PARAM_STR);
+        $stmt->bindValue(':prefix_term', $term . '%', PDO::PARAM_STR);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
     private function nextCloneTitle($title)

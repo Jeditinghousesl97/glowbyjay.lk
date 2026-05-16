@@ -98,7 +98,6 @@ class SeoController extends BaseController
             ['loc' => SeoHelper::absoluteUrl(BASE_URL . 'shop'), 'changefreq' => 'daily', 'priority' => 0.9],
             ['loc' => SeoHelper::absoluteUrl(BASE_URL . 'shop/categories'), 'changefreq' => 'weekly', 'priority' => 0.8],
             ['loc' => SeoHelper::absoluteUrl(BASE_URL . 'shop/featured'), 'changefreq' => 'daily', 'priority' => 0.7],
-            ['loc' => SeoHelper::absoluteUrl(BASE_URL . 'shop/sales'), 'changefreq' => 'daily', 'priority' => 0.7],
             ['loc' => SeoHelper::absoluteUrl(BASE_URL . 'discounts'), 'changefreq' => 'daily', 'priority' => 0.8],
             ['loc' => SeoHelper::absoluteUrl(BASE_URL . 'contact'), 'changefreq' => 'monthly', 'priority' => 0.5],
             ['loc' => SeoHelper::absoluteUrl(BASE_URL . 'page/refundReturns'), 'changefreq' => 'monthly', 'priority' => 0.3],

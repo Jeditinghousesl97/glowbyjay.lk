@@ -10,7 +10,9 @@ $kokoLogoUrl = BASE_URL . 'assets/icons/payment-gateways/koko-home.png?v=' . (@f
 $discountProducts = array_values(array_filter($products ?? [], static function ($product) {
     return !empty($product['sale_price']) && (float) $product['sale_price'] < (float) $product['price'];
 }));
-$discountCount = count($discountProducts);
+$discountLimit = max(1, (int) ($discounts_limit ?? 20));
+$discountHasMore = !empty($discounts_has_more);
+$discountCount = max(0, (int) ($discounts_total_products ?? count($discountProducts)));
 
 customer_layout_start();
 ?>
@@ -55,7 +57,7 @@ customer_layout_start();
 
     .discount-title{
         margin:0;
-        font-family:"Noto Serif",serif;
+        font-family:sans-serif;
         font-size:clamp(34px,4vw,54px);
         line-height:1.02;
         letter-spacing:-.04em;
@@ -94,7 +96,7 @@ customer_layout_start();
 
     .discount-media{
         position:relative;
-        aspect-ratio:4/5;
+        aspect-ratio:1/1;
         overflow:hidden;
         background:#f2efee;
     }
@@ -152,14 +154,16 @@ customer_layout_start();
 
     .discount-name{
         margin:0;
-        font-family:"Noto Serif",serif;
+        font-family:sans-serif;
         font-size:18px;
         line-height:1.25;
         letter-spacing:-.02em;
-        white-space:nowrap;
+        display:-webkit-box;
+        -webkit-line-clamp:2;
+        -webkit-box-orient:vertical;
         overflow:hidden;
         text-overflow:ellipsis;
-        min-height:1.25em;
+        min-height:2.5em;
     }
 
     .discount-name a{
@@ -174,7 +178,7 @@ customer_layout_start();
     }
 
     .discount-sale-price{
-        font-size:12px;
+        font-size:18px;
         font-weight:800;
         letter-spacing:.1em;
         text-transform:uppercase;
@@ -182,7 +186,7 @@ customer_layout_start();
     }
 
     .discount-old-price{
-        font-size:12px;
+        font-size:14px;
         font-weight:700;
         color:#8c8785;
         text-decoration:line-through;
@@ -223,10 +227,19 @@ customer_layout_start();
         font-size:13px;
         line-height:1.7;
         display:-webkit-box;
-        -webkit-line-clamp:2;
+        -webkit-line-clamp:4;
         -webkit-box-orient:vertical;
         overflow:hidden;
-        min-height:2.85em;
+        min-height:6.8em;
+    }
+    .discount-infinite-loader{
+        grid-column:1 / -1;
+        text-align:center;
+        font-size:12px;
+        letter-spacing:.14em;
+        text-transform:uppercase;
+        color:#8a8380;
+        padding:16px 8px 4px;
     }
 
     .discount-empty{
@@ -299,13 +312,13 @@ customer_layout_start();
 
         .discount-sale-price,
         .discount-old-price{
-            font-size:11px;
+            font-size:12px;
         }
 
         .discount-desc{
             font-size:12px;
             line-height:1.55;
-            min-height:2.55em;
+            min-height:4.96em;
         }
     }
 </style>
@@ -323,7 +336,7 @@ customer_layout_start();
             </div>
         </section>
 
-        <section class="discount-grid" aria-label="Discounted products">
+        <section class="discount-grid" id="discountGrid" aria-label="Discounted products" data-limit="<?= (int) $discountLimit ?>" data-next-offset="<?= count($discountProducts) ?>" data-has-more="<?= $discountHasMore ? '1' : '0' ?>">
             <?php if (!empty($discountProducts)): ?>
                 <?php foreach ($discountProducts as $product): ?>
                     <?php
@@ -360,7 +373,7 @@ customer_layout_start();
                         </a>
 
                         <div class="discount-body">
-                            <span class="discount-chip">Discounted Item</span>
+                            <span class="discount-chip"><?= htmlspecialchars($product['parent_category_name'] ?? $product['category_name'] ?? 'Discounted Item') ?></span>
                             <h2 class="discount-name">
                                 <a href="<?= htmlspecialchars($baseUrl . 'shop/product/' . $product['id']) ?>"><?= htmlspecialchars($product['title'] ?? 'Product') ?></a>
                             </h2>
@@ -401,8 +414,73 @@ customer_layout_start();
                     <p>When the admin marks products as discounted, they will appear here automatically.</p>
                 </div>
             <?php endif; ?>
+            <div id="discountInfiniteLoader" class="discount-infinite-loader" style="<?= $discountHasMore ? '' : 'display:none;' ?>">Loading more products...</div>
+            <div id="discountInfiniteSentinel" style="<?= $discountHasMore ? '' : 'display:none;' ?>" aria-hidden="true"></div>
         </section>
     </div>
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const grid = document.getElementById('discountGrid');
+    const loader = document.getElementById('discountInfiniteLoader');
+    const sentinel = document.getElementById('discountInfiniteSentinel');
+    if (!grid || !loader || !sentinel) return;
+
+    let isLoading = false;
+    let hasMore = grid.dataset.hasMore === '1';
+    let nextOffset = parseInt(grid.dataset.nextOffset || '0', 10) || 0;
+    const limit = parseInt(grid.dataset.limit || '20', 10) || 20;
+
+    const hideInfiniteUi = function () {
+        loader.style.display = 'none';
+        sentinel.style.display = 'none';
+    };
+
+    if (!hasMore) {
+        hideInfiniteUi();
+        return;
+    }
+
+    const loadMore = async function () {
+        if (isLoading || !hasMore) return;
+        isLoading = true;
+        loader.style.display = 'block';
+
+        try {
+            const url = <?= json_encode($baseUrl . 'discounts/loadMore') ?> + '?offset=' + encodeURIComponent(String(nextOffset)) + '&limit=' + encodeURIComponent(String(limit));
+            const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            const payload = await response.json();
+
+            if (!payload || !payload.success) throw new Error('Unable to load more products');
+
+            if (payload.html && String(payload.html).trim() !== '') {
+                sentinel.insertAdjacentHTML('beforebegin', payload.html);
+            }
+
+            nextOffset = Number(payload.next_offset || nextOffset);
+            hasMore = !!payload.has_more;
+            grid.dataset.nextOffset = String(nextOffset);
+            grid.dataset.hasMore = hasMore ? '1' : '0';
+
+            if (!hasMore || Number(payload.count || 0) === 0) {
+                hideInfiniteUi();
+            }
+        } catch (error) {
+            loader.textContent = 'Unable to load more products';
+        } finally {
+            isLoading = false;
+        }
+    };
+
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) loadMore();
+        });
+    }, { rootMargin: '300px 0px 300px 0px' });
+
+    observer.observe(sentinel);
+});
+</script>
 
 <?php customer_layout_end(); ?>

@@ -81,6 +81,14 @@ if (!function_exists('customer_layout_start')) {
         $whatsappLabel = FooterHelper::whatsappLabel($settings);
         $shopWhatsappDigits = FooterHelper::whatsappDigits($settings);
         $cartCount = customer_layout_cart_count();
+        $layoutRoute = trim((string) ($_GET['url'] ?? ''), '/');
+        if ($layoutRoute === '') {
+            $layoutRoute = trim((string) parse_url((string) ($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH), '/');
+        }
+        $layoutRoute = strtolower($layoutRoute);
+        $isHomeRoute = ($layoutRoute === '' || $layoutRoute === 'home' || $layoutRoute === 'home2' || $layoutRoute === 'index.php');
+        $headerDesktopBgUrl = $baseUrl . 'assets/header/header-pc.jpg?v=' . (@filemtime(ROOT_PATH . 'assets/header/header-pc.jpg') ?: time());
+        $headerMobileBgUrl = $baseUrl . 'assets/header/header-Mobile.jpg?v=' . (@filemtime(ROOT_PATH . 'assets/header/header-Mobile.jpg') ?: time());
         $currentRoute = trim((string) ($_GET['url'] ?? ''), '/');
         if ($currentRoute === '') {
             $currentRoute = trim((string) parse_url((string) ($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH), '/');
@@ -177,16 +185,6 @@ if (!function_exists('customer_layout_start')) {
                 'active' => (strpos($currentRoute, 'shop/categories') === 0),
             ],
             [
-                'label' => 'Discounts',
-                'url' => $baseUrl . 'discounts',
-                'active' => (strpos($currentRoute, 'discounts') === 0),
-            ],
-            [
-                'label' => 'My Orders',
-                'url' => $baseUrl . 'order/myOrders',
-                'active' => (strpos($currentRoute, 'order/myOrders') === 0),
-            ],
-            [
                 'label' => 'Contact Us',
                 'url' => $baseUrl . 'contact',
                 'active' => (strpos($currentRoute, 'contact') === 0),
@@ -281,7 +279,11 @@ if (!function_exists('customer_layout_start')) {
             position:sticky;
             top:0;
             z-index:60;
-            background:var(--header-bg);
+            background-color:var(--header-bg);
+            background-image:linear-gradient(rgba(0,0,0,.28), rgba(0,0,0,.28)), url('<?= htmlspecialchars($headerDesktopBgUrl, ENT_QUOTES, 'UTF-8') ?>');
+            background-size:cover;
+            background-position:center;
+            background-repeat:no-repeat;
             backdrop-filter:saturate(180%) blur(12px);
             border-bottom:1px solid var(--line);
             color:var(--header-text);
@@ -304,8 +306,8 @@ if (!function_exists('customer_layout_start')) {
         .site-brand img{
             width:auto;
             height:auto;
-            max-height:44px;
-            max-width:185px;
+            max-height:56px;
+            max-width:240px;
             object-fit:contain;
         }
         .site-nav{
@@ -320,15 +322,15 @@ if (!function_exists('customer_layout_start')) {
             white-space:nowrap;
         }
         .site-nav a{
-            color:var(--nav-desktop-link);
+            color:#ffffff;
             padding:10px 0 11px;
             border-bottom:1px solid transparent;
             transition:color .2s ease,border-color .2s ease;
         }
         .site-nav a:hover,
         .site-nav a.active{
-            color:var(--accent);
-            border-bottom-color:var(--accent);
+            color:#ffffff;
+            border-bottom-color:#ffffff;
         }
         .site-actions{
             display:flex;
@@ -366,13 +368,13 @@ if (!function_exists('customer_layout_start')) {
             height:18px;
             padding:0 5px;
             border-radius:999px;
-            background:var(--primary);
+            background:#d4af37;
             color:#fff;
             font-size:10px;
             font-weight:800;
             line-height:18px;
             text-align:center;
-            box-shadow:0 6px 16px color-mix(in srgb, var(--primary) 22%, transparent);
+            box-shadow:0 6px 16px rgba(212,175,55,.35);
         }
         .mobile-menu-toggle{
             display:none;
@@ -401,6 +403,149 @@ if (!function_exists('customer_layout_start')) {
             background:var(--nav-mobile-bg);
         }
         .mobile-nav-panel.open{display:block}
+        .site-search-overlay{
+            position:fixed;
+            inset:0;
+            z-index:110;
+            background:rgba(10,10,10,.52);
+            display:none;
+            align-items:flex-start;
+            justify-content:center;
+            padding:92px 16px 24px;
+            overflow:auto;
+        }
+        .site-search-overlay.open{
+            display:flex;
+        }
+        .site-search-modal{
+            width:min(920px,100%);
+            background:#fff;
+            border:1px solid rgba(28,27,27,.08);
+            box-shadow:0 26px 56px rgba(28,27,27,.22);
+            padding:18px;
+            display:grid;
+            gap:14px;
+        }
+        .site-search-head{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:12px;
+        }
+        .site-search-kicker{
+            font-size:10px;
+            font-weight:800;
+            letter-spacing:.2em;
+            text-transform:uppercase;
+            color:var(--primary);
+        }
+        .site-search-close{
+            width:36px;
+            height:36px;
+            border:1px solid rgba(28,27,27,.12);
+            background:#fff;
+            color:var(--ink);
+            cursor:pointer;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+        }
+        .site-search-form{
+            display:grid;
+            gap:12px;
+        }
+        .site-search-row{
+            display:grid;
+            grid-template-columns:minmax(0,1fr) auto;
+            gap:10px;
+        }
+        .site-search-input{
+            width:100%;
+            min-height:50px;
+            border:1px solid rgba(28,27,27,.14);
+            background:#fff;
+            color:var(--ink);
+            padding:0 14px;
+            font-size:15px;
+            outline:none;
+        }
+        .site-search-input:focus{
+            border-color:rgba(182,138,45,.5);
+            box-shadow:0 0 0 3px rgba(182,138,45,.12);
+        }
+        .site-search-submit{
+            min-height:50px;
+            border:0;
+            background:var(--ink);
+            color:#fff;
+            padding:0 20px;
+            font-size:11px;
+            font-weight:800;
+            letter-spacing:.2em;
+            text-transform:uppercase;
+            cursor:pointer;
+        }
+        .site-search-meta{
+            font-size:12px;
+            color:var(--muted);
+        }
+        .site-search-suggestions{
+            border:1px solid rgba(28,27,27,.08);
+            background:#fff;
+            max-height:340px;
+            overflow:auto;
+            display:none;
+        }
+        .site-search-suggestions.open{
+            display:block;
+        }
+        .site-search-suggestion{
+            display:grid;
+            grid-template-columns:52px minmax(0,1fr);
+            gap:10px;
+            align-items:center;
+            width:100%;
+            border:0;
+            border-bottom:1px solid rgba(28,27,27,.06);
+            background:#fff;
+            color:var(--ink);
+            text-align:left;
+            padding:10px 12px;
+            cursor:pointer;
+        }
+        .site-search-suggestion:last-child{
+            border-bottom:0;
+        }
+        .site-search-suggestion.active,
+        .site-search-suggestion:hover{
+            background:#f8f6f4;
+        }
+        .site-search-suggestion-thumb{
+            width:52px;
+            height:52px;
+            object-fit:cover;
+            background:#f0eded;
+        }
+        .site-search-suggestion-title{
+            font-size:14px;
+            font-weight:700;
+            line-height:1.35;
+            display:block;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        }
+        .site-search-suggestion-meta{
+            font-size:11px;
+            color:var(--muted);
+            letter-spacing:.08em;
+            text-transform:uppercase;
+            margin-top:2px;
+            display:block;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        }
         .mobile-nav-panel-head{
             width:min(1600px,calc(100% - 28px));
             margin:0 auto;
@@ -477,6 +622,20 @@ if (!function_exists('customer_layout_start')) {
         }
         .mobile-nav-contact-item span{
             word-break:break-word;
+        }
+        .mobile-nav-contact-item.whatsapp-btn{
+            background:#25d366;
+            color:#fff;
+            border:0;
+            padding:12px 14px;
+            box-shadow:0 10px 24px rgba(37,211,102,.24);
+            font-weight:700;
+        }
+        .mobile-nav-contact-item.whatsapp-btn i{
+            color:#fff;
+        }
+        .mobile-nav-contact-item.whatsapp-btn:hover{
+            background:#20bd5a;
         }
         .mobile-nav-links a{
             padding:12px 0;
@@ -647,7 +806,7 @@ if (!function_exists('customer_layout_start')) {
                 gap:16px;
             }
             .site-nav{gap:20px;font-size:10px}
-            .site-brand img{max-height:40px;max-width:165px}
+            .site-brand img{max-height:50px;max-width:210px}
             .site-footer{
                 padding:56px 0 22px;
             }
@@ -661,8 +820,13 @@ if (!function_exists('customer_layout_start')) {
             }
         }
         @media (max-width: 760px){
+            body.is-non-home-page{
+                padding-left:0 !important;
+                padding-right:0 !important;
+            }
             .site-header{
                 overflow:visible;
+                background-image:linear-gradient(rgba(0,0,0,.28), rgba(0,0,0,.28)), url('<?= htmlspecialchars($headerMobileBgUrl, ENT_QUOTES, 'UTF-8') ?>');
             }
             #mobileNavToggleState:checked ~ .mobile-nav-panel{
                 transform:translateX(0);
@@ -670,14 +834,16 @@ if (!function_exists('customer_layout_start')) {
                 pointer-events:auto;
             }
             .site-header-inner{
-                width:min(100% - 20px,1600px);
+                width:100%;
                 height:76px;
                 grid-template-columns:auto 1fr auto;
                 gap:12px;
+                padding-left:12px;
+                padding-right:12px;
             }
             .site-brand img{
-                max-height:42px;
-                max-width:140px;
+                max-height:52px;
+                max-width:210px;
             }
             .site-nav{display:none}
             .site-actions{gap:10px;justify-content:flex-end}
@@ -706,6 +872,19 @@ if (!function_exists('customer_layout_start')) {
                 transition:transform .28s ease, opacity .28s ease;
                 z-index:80;
                 will-change:transform,opacity;
+            }
+            .site-search-overlay{
+                padding:84px 10px 16px;
+            }
+            .site-search-modal{
+                padding:14px;
+                gap:12px;
+            }
+            .site-search-row{
+                grid-template-columns:1fr;
+            }
+            .site-search-submit{
+                width:100%;
             }
             .mobile-nav-panel.open{
                 transform:translateX(0);
@@ -776,8 +955,8 @@ if (!function_exists('customer_layout_start')) {
                 margin-right:0 !important;
             }
             .site-footer-shell{
-                padding-left:0 !important;
-                padding-right:0 !important;
+                padding-left:12px !important;
+                padding-right:12px !important;
             }
         }
         @media (max-width: 420px){
@@ -789,13 +968,16 @@ if (!function_exists('customer_layout_start')) {
                 padding:14px 18px 12px;
             }
             .site-header-inner{
-                width:min(100% - 14px,1600px);
+                width:100%;
+                max-width:none;
                 gap:8px;
                 height:72px;
+                padding-left:12px;
+                padding-right:12px;
             }
             .site-brand img{
-                max-height:38px;
-                max-width:124px;
+                max-height:48px;
+                max-width:185px;
             }
             .site-action,
             .mobile-menu-toggle{
@@ -808,8 +990,9 @@ if (!function_exists('customer_layout_start')) {
             }
             .mobile-menu-toggle .bars span{width:18px}
             .site-footer-shell{
-                width:min(100% - 14px,1600px);
-                padding:18px 14px 16px;
+                width:100%;
+                max-width:none;
+                padding:18px 12px 16px;
             }
             .site-footer-payment-card{
                 width:100%;
@@ -817,7 +1000,7 @@ if (!function_exists('customer_layout_start')) {
         }
     </style>
 </head>
-<body>
+<body class="<?= $isHomeRoute ? 'is-home-page' : 'is-non-home-page' ?>">
 <script>
     window.toggleMobileMenu = window.toggleMobileMenu || function (button) {
         const mobileMenuToggle = button || document.querySelector('[data-mobile-menu-toggle]');
@@ -858,7 +1041,7 @@ if (!function_exists('customer_layout_start')) {
             </nav>
 
             <div class="site-actions" aria-label="Header actions">
-                <a class="site-action" href="<?= htmlspecialchars($baseUrl . 'shop/categories') ?>" aria-label="Browse categories">
+                <a class="site-action no-loader" href="<?= htmlspecialchars($baseUrl . 'shop/categories') ?>" aria-label="Search products" data-header-search>
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                         <circle cx="11" cy="11" r="6.5"></circle>
                         <path d="M16 16l4.5 4.5"></path>
@@ -866,8 +1049,9 @@ if (!function_exists('customer_layout_start')) {
                 </a>
                 <a class="site-action" href="<?= htmlspecialchars($baseUrl . 'cart') ?>" aria-label="View cart" data-cart-link>
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <path d="M6 8h12l-1.2 11H7.2L6 8Z"></path>
-                        <path d="M9 8a3 3 0 0 1 6 0"></path>
+                        <circle cx="9" cy="20" r="1.5"></circle>
+                        <circle cx="18" cy="20" r="1.5"></circle>
+                        <path d="M3 4h2l2.2 10.5a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 8H7.4"></path>
                     </svg>
                     <span class="site-action-badge" data-cart-count-badge style="<?= $cartCount > 0 ? '' : 'display:none;' ?>"><?= (int) $cartCount ?></span>
                 </a>
@@ -891,13 +1075,12 @@ if (!function_exists('customer_layout_start')) {
                 <?php foreach ($menuItems as $menuItem): ?>
                     <a class="<?= !empty($menuItem['active']) ? 'active' : '' ?>" href="<?= htmlspecialchars($menuItem['url']) ?>"><?= htmlspecialchars($menuItem['label']) ?></a>
                 <?php endforeach; ?>
-                <a href="<?= htmlspecialchars($baseUrl . 'shop/categories') ?>">Categories</a>
                 <a href="<?= htmlspecialchars($baseUrl . 'cart') ?>">Cart</a>
             </nav>
             <div class="mobile-nav-contact" aria-label="Contact details">
                 <div class="mobile-nav-contact-head">Contact Details</div>
                 <?php if (!empty($shopWhatsappDigits)): ?>
-                    <a class="mobile-nav-contact-item" href="<?= htmlspecialchars($whatsappLink) ?>" target="_blank" rel="noopener noreferrer">
+                    <a class="mobile-nav-contact-item whatsapp-btn" href="<?= htmlspecialchars($whatsappLink) ?>" target="_blank" rel="noopener noreferrer">
                         <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
                         <span><?= htmlspecialchars($whatsappLabel) ?></span>
                     </a>
@@ -911,6 +1094,31 @@ if (!function_exists('customer_layout_start')) {
             </div>
         </div>
     </header>
+    <div class="site-search-overlay" data-site-search-overlay aria-hidden="true">
+        <div class="site-search-modal" role="dialog" aria-modal="true" aria-label="Search products">
+            <div class="site-search-head">
+                <span class="site-search-kicker">Product Search</span>
+                <button class="site-search-close" type="button" aria-label="Close search" data-site-search-close>
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+            <form class="site-search-form no-loader" action="<?= htmlspecialchars($baseUrl . 'shop/categories') ?>" method="get" data-site-search-form>
+                <div class="site-search-row">
+                    <input
+                        class="site-search-input"
+                        type="search"
+                        name="search"
+                        placeholder="Search products by name, SKU, or keyword"
+                        autocomplete="off"
+                        spellcheck="false"
+                        data-site-search-input>
+                    <button class="site-search-submit" type="submit">Search</button>
+                </div>
+                <div class="site-search-meta">Type at least 2 characters for live suggestions.</div>
+                <div class="site-search-suggestions" data-site-search-suggestions></div>
+            </form>
+        </div>
+    </div>
     <div class="site-content">
 <?php
     }
@@ -970,6 +1178,205 @@ if (!function_exists('customer_layout_start')) {
             window.updateCartUi(data.count || 0);
         }).catch(function () {});
         };
+
+        window.addEventListener('DOMContentLoaded', function () {
+            const searchLinks = document.querySelectorAll('[data-header-search]');
+            const searchOverlay = document.querySelector('[data-site-search-overlay]');
+            const searchForm = document.querySelector('[data-site-search-form]');
+            const searchInput = document.querySelector('[data-site-search-input]');
+            const searchCloseButton = document.querySelector('[data-site-search-close]');
+            const suggestionsBox = document.querySelector('[data-site-search-suggestions]');
+
+            if (!searchLinks.length || !searchOverlay || !searchForm || !searchInput || !searchCloseButton || !suggestionsBox) {
+                return;
+            }
+
+            let activeSuggestionIndex = -1;
+            let currentSuggestions = [];
+            let pendingFetchController = null;
+            let searchDebounceTimer = null;
+
+            const escapeHtml = function (value) {
+                return String(value || '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            };
+
+            const closeSearch = function () {
+                searchOverlay.classList.remove('open');
+                searchOverlay.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+                activeSuggestionIndex = -1;
+                currentSuggestions = [];
+                suggestionsBox.innerHTML = '';
+                suggestionsBox.classList.remove('open');
+            };
+
+            const openSearch = function () {
+                searchOverlay.classList.add('open');
+                searchOverlay.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+                window.setTimeout(function () {
+                    searchInput.focus();
+                    searchInput.select();
+                }, 0);
+            };
+
+            const renderSuggestions = function (items) {
+                currentSuggestions = Array.isArray(items) ? items : [];
+                activeSuggestionIndex = -1;
+                if (!currentSuggestions.length) {
+                    suggestionsBox.innerHTML = '';
+                    suggestionsBox.classList.remove('open');
+                    return;
+                }
+
+                suggestionsBox.innerHTML = currentSuggestions.map(function (item, index) {
+                    const title = escapeHtml(item.title || 'Product');
+                    const category = escapeHtml(item.category_name || 'Shop');
+                    const thumb = escapeHtml(item.thumbnail_url || '');
+                    const price = escapeHtml(item.price_label || '');
+                    return '' +
+                        '<button type="button" class="site-search-suggestion" data-search-suggestion-index="' + index + '" data-search-suggestion-url="' + escapeHtml(item.url || (baseUrl + 'shop/categories')) + '">' +
+                            '<img class="site-search-suggestion-thumb" src="' + thumb + '" alt="' + title + '">' +
+                            '<span>' +
+                                '<span class="site-search-suggestion-title">' + title + '</span>' +
+                                '<span class="site-search-suggestion-meta">' + category + (price ? ' · ' + price : '') + '</span>' +
+                            '</span>' +
+                        '</button>';
+                }).join('');
+                suggestionsBox.classList.add('open');
+            };
+
+            const applyActiveSuggestion = function () {
+                const nodes = suggestionsBox.querySelectorAll('[data-search-suggestion-index]');
+                nodes.forEach(function (node, idx) {
+                    if (idx === activeSuggestionIndex) {
+                        node.classList.add('active');
+                        node.scrollIntoView({ block: 'nearest' });
+                    } else {
+                        node.classList.remove('active');
+                    }
+                });
+            };
+
+            const fetchSuggestions = function (term) {
+                if (pendingFetchController) {
+                    pendingFetchController.abort();
+                }
+                pendingFetchController = new AbortController();
+
+                const url = baseUrl + 'shop/searchSuggestions?term=' + encodeURIComponent(term);
+                fetch(url, {
+                    headers: { 'Accept': 'application/json' },
+                    signal: pendingFetchController.signal
+                }).then(function (res) {
+                    return res.json();
+                }).then(function (data) {
+                    if (!data || !data.success) {
+                        renderSuggestions([]);
+                        return;
+                    }
+                    renderSuggestions(data.items || []);
+                }).catch(function () {
+                    renderSuggestions([]);
+                });
+            };
+
+            searchLinks.forEach(function (searchLink) {
+                searchLink.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    openSearch();
+                });
+            });
+
+            searchCloseButton.addEventListener('click', closeSearch);
+            searchOverlay.addEventListener('click', function (event) {
+                if (event.target === searchOverlay) {
+                    closeSearch();
+                }
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape' && searchOverlay.classList.contains('open')) {
+                    closeSearch();
+                }
+            });
+
+            searchInput.addEventListener('input', function () {
+                const term = searchInput.value.trim();
+                if (searchDebounceTimer) {
+                    clearTimeout(searchDebounceTimer);
+                }
+
+                if (term.length < 2) {
+                    renderSuggestions([]);
+                    return;
+                }
+
+                searchDebounceTimer = window.setTimeout(function () {
+                    fetchSuggestions(term);
+                }, 180);
+            });
+
+            searchInput.addEventListener('keydown', function (event) {
+                if (event.key === 'ArrowDown') {
+                    if (!currentSuggestions.length) {
+                        return;
+                    }
+                    event.preventDefault();
+                    activeSuggestionIndex = (activeSuggestionIndex + 1) % currentSuggestions.length;
+                    applyActiveSuggestion();
+                    return;
+                }
+
+                if (event.key === 'ArrowUp') {
+                    if (!currentSuggestions.length) {
+                        return;
+                    }
+                    event.preventDefault();
+                    activeSuggestionIndex = activeSuggestionIndex <= 0
+                        ? (currentSuggestions.length - 1)
+                        : (activeSuggestionIndex - 1);
+                    applyActiveSuggestion();
+                    return;
+                }
+
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    if (!currentSuggestions.length) {
+                        return;
+                    }
+                    const targetIndex = activeSuggestionIndex >= 0 ? activeSuggestionIndex : 0;
+                    const targetSuggestion = currentSuggestions[targetIndex];
+                    if (targetSuggestion && targetSuggestion.url) {
+                        window.location.href = targetSuggestion.url;
+                    }
+                }
+            });
+
+            suggestionsBox.addEventListener('click', function (event) {
+                const target = event.target.closest('[data-search-suggestion-url]');
+                if (!target) {
+                    return;
+                }
+                const suggestionUrl = target.getAttribute('data-search-suggestion-url') || '';
+                if (suggestionUrl !== '') {
+                    window.location.href = suggestionUrl;
+                }
+            });
+
+            searchForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                const term = searchInput.value.trim();
+                searchInput.value = term;
+                return false;
+            });
+        });
 
         window.addToCart = function (productId, productTitle, productPrice, productImg, quantity, variants, variantKey) {
             const qty = Math.max(1, parseInt(quantity, 10) || 1);

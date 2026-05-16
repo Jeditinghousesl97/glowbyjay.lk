@@ -36,6 +36,37 @@ class Category extends BaseModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Get categories sorted by active product count (high -> low)
+     */
+    public function getAllByProductCountDesc()
+    {
+        if (!$this->conn instanceof PDO) {
+            return [];
+        }
+
+        $sql = "SELECT c.*,
+                       (
+                           SELECT COUNT(DISTINCT p.id)
+                           FROM products p
+                           WHERE p.is_active = 1
+                             AND (
+                                 p.category_id = c.id
+                                 OR EXISTS (
+                                     SELECT 1
+                                     FROM product_categories pc
+                                     WHERE pc.product_id = p.id
+                                       AND pc.category_id = c.id
+                                 )
+                             )
+                       ) AS product_count
+                FROM categories c
+                ORDER BY product_count DESC, c.name ASC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getById($id)
     {
         $sql = "SELECT * FROM categories WHERE id = :id LIMIT 1";

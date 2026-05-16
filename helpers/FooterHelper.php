@@ -51,6 +51,10 @@ class FooterHelper
                 'url' => $baseUrl . 'order/myOrders',
             ],
             [
+                'label' => 'Discounts',
+                'url' => $baseUrl . 'discounts',
+            ],
+            [
                 'label' => 'Contact Us',
                 'url' => $baseUrl . 'contact',
             ],

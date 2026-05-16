@@ -12,12 +12,10 @@ $current_page = $current_page ?? 'dashboard';
         <span>Products</span>
     </a>
     
-    <!--
     <a href="<?= BASE_URL ?>feedback/index" class="nav-item <?= $current_page == 'feedback' ? 'active' : '' ?>" onclick="showGlobalLoader()">
-        <img src="<?= BASE_URL ?>assets/icons/feedback.png" class="nav-icon-img" alt="Feed">
-        <span>Feedback</span>
+        <img src="<?= BASE_URL ?>assets/icons/reviews.png" class="nav-icon-img" alt="Reviews">
+        <span>Reviews</span>
     </a>
-    -->
     
     <a href="<?= BASE_URL ?>order/manage" class="nav-item <?= $current_page == 'orders' ? 'active' : '' ?>" onclick="showGlobalLoader()">
         <img src="<?= BASE_URL ?>assets/icons/dashboard.png" class="nav-icon-img" alt="Orders">

@@ -10,7 +10,15 @@ $kokoLogoUrl = BASE_URL . 'assets/icons/payment-gateways/koko-home.png?v=' . (@f
 $shopProducts = array_values(array_filter($products ?? [], static function ($product) {
     return !empty($product['id']);
 }));
+$shopCategories = array_values(array_filter($categories ?? [], static function ($category) {
+    return !empty($category['id']);
+}));
 $shopCount = count($shopProducts);
+$shopStoreTotalCount = max(0, (int) ($shop_store_total_products ?? $shopCount));
+$shopLimit = max(1, (int) ($shop_limit ?? 20));
+$shopHasMore = !empty($shop_has_more);
+$filterSearch = trim((string) ($filter_search ?? ''));
+$filterCategory = (string) ($filter_category ?? '');
 
 customer_layout_start();
 ?>
@@ -55,7 +63,7 @@ customer_layout_start();
 
     .shop-title{
         margin:0;
-        font-family:"Noto Serif",serif;
+        font-family:sans-serif;
         font-size:clamp(34px,4vw,54px);
         line-height:1.02;
         letter-spacing:-.04em;
@@ -81,8 +89,64 @@ customer_layout_start();
     .shop-grid{
         display:grid;
         grid-template-columns:repeat(4,minmax(0,1fr));
-        gap:28px 24px;
+        gap:40px 24px;
         align-items:start;
+    }
+    .shop-filter{
+        margin:0 0 26px;
+        padding:16px;
+        border:1px solid rgba(28,27,27,.1);
+        background:#fff;
+    }
+    .shop-filter-form{
+        display:grid;
+        grid-template-columns:2fr 1fr auto auto;
+        gap:10px;
+        align-items:end;
+    }
+    .shop-filter-field label{
+        display:block;
+        margin-bottom:6px;
+        font-size:10px;
+        letter-spacing:.16em;
+        text-transform:uppercase;
+        color:#8a8380;
+        font-weight:800;
+    }
+    .shop-filter-field input,.shop-filter-field select{
+        width:100%;
+        height:42px;
+        border:1px solid rgba(28,27,27,.14);
+        background:#fff;
+        color:#1c1b1b;
+        padding:0 12px;
+        font:inherit;
+    }
+    .shop-filter-btn{
+        height:42px;
+        border:0;
+        padding:0 16px;
+        background:#1c1b1b;
+        color:#fff;
+        font-size:10px;
+        letter-spacing:.16em;
+        text-transform:uppercase;
+        font-weight:800;
+        cursor:pointer;
+    }
+    .shop-filter-reset{
+        height:42px;
+        border:1px solid rgba(28,27,27,.14);
+        padding:0 16px;
+        background:#fff;
+        color:#1c1b1b;
+        font-size:10px;
+        letter-spacing:.16em;
+        text-transform:uppercase;
+        font-weight:800;
+        display:inline-flex;
+        align-items:center;
+        text-decoration:none;
     }
 
     .shop-card{
@@ -114,7 +178,7 @@ customer_layout_start();
         position:absolute;
         top:16px;
         right:16px;
-        background:var(--primary);
+        background:#d4af37;
         color:#fff;
         padding:8px 12px;
         font-size:10px;
@@ -138,14 +202,16 @@ customer_layout_start();
 
     .shop-name{
         margin:0;
-        font-family:"Noto Serif",serif;
+        font-family:sans-serif;
         font-size:18px;
         line-height:1.25;
         letter-spacing:-.02em;
-        white-space:nowrap;
+        display:-webkit-box;
+        -webkit-line-clamp:2;
+        -webkit-box-orient:vertical;
         overflow:hidden;
         text-overflow:ellipsis;
-        min-height:1.25em;
+        min-height:2.5em;
     }
 
     .shop-name a{
@@ -157,18 +223,19 @@ customer_layout_start();
         align-items:center;
         gap:12px;
         flex-wrap:wrap;
+        font-size:16px;
     }
 
     .shop-sale-price{
-        font-size:12px;
+        font-size:16px;
         font-weight:800;
         letter-spacing:.1em;
         text-transform:uppercase;
-        color:var(--primary);
+        color:#d4af37;
     }
 
     .shop-old-price{
-        font-size:12px;
+        font-size:13px;
         font-weight:700;
         color:#8c8785;
         text-decoration:line-through;
@@ -209,10 +276,10 @@ customer_layout_start();
         font-size:13px;
         line-height:1.7;
         display:-webkit-box;
-        -webkit-line-clamp:2;
+        -webkit-line-clamp:4;
         -webkit-box-orient:vertical;
         overflow:hidden;
-        min-height:2.85em;
+        min-height:6.8em;
     }
 
     .shop-empty{
@@ -234,6 +301,16 @@ customer_layout_start();
         line-height:1.8;
     }
 
+    .shop-infinite-loader{
+        grid-column:1 / -1;
+        text-align:center;
+        font-size:12px;
+        letter-spacing:.14em;
+        text-transform:uppercase;
+        color:#8a8380;
+        padding:16px 8px 4px;
+    }
+
     @media (max-width: 1180px){
         .shop-shell{
             width:min(100% - 48px,1600px);
@@ -241,6 +318,9 @@ customer_layout_start();
 
         .shop-grid{
             grid-template-columns:repeat(2,minmax(0,1fr));
+        }
+        .shop-filter-form{
+            grid-template-columns:1fr 1fr;
         }
     }
 
@@ -261,7 +341,14 @@ customer_layout_start();
 
         .shop-grid{
             grid-template-columns:repeat(2,minmax(0,1fr));
-            gap:18px 14px;
+            gap:28px 14px;
+        }
+        .shop-filter{
+            padding:12px;
+            margin-bottom:18px;
+        }
+        .shop-filter-form{
+            grid-template-columns:1fr;
         }
 
         .shop-badge{
@@ -276,15 +363,13 @@ customer_layout_start();
             min-height:1.25em;
         }
 
-        .shop-sale-price,
-        .shop-old-price{
-            font-size:11px;
-        }
+        .shop-sale-price{font-size:14px}
+        .shop-old-price{font-size:12px}
 
         .shop-desc{
             font-size:12px;
             line-height:1.55;
-            min-height:2.55em;
+            min-height:4.96em;
         }
     }
 </style>
@@ -296,13 +381,33 @@ customer_layout_start();
                 <div class="shop-head-left">
                     <span class="shop-kicker"><?= htmlspecialchars($shopName) ?> New Arrivals</span>
                     <h1 class="shop-title">Shop</h1>
-                    <p class="shop-copy">Browse the latest products in a clean, aligned grid with the same editorial feel as the discounts page.</p>
+                    <p class="shop-copy">Discover our curated beauty collection with premium essentials, signature favorites, and fresh arrivals selected for your daily routine.</p>
                 </div>
-                <div class="shop-count"><?= (int) $shopCount ?> products</div>
+                <div class="shop-count"><?= (int) $shopStoreTotalCount ?> products</div>
             </div>
         </section>
 
-        <section class="shop-grid" aria-label="Shop products">
+        <section class="shop-filter" aria-label="Shop filters">
+            <form class="shop-filter-form" method="get" action="<?= htmlspecialchars($baseUrl . 'shop') ?>">
+                <div class="shop-filter-field">
+                    <label for="shopSearch">Search</label>
+                    <input type="search" id="shopSearch" name="search" value="<?= htmlspecialchars($filterSearch) ?>" placeholder="Search products">
+                </div>
+                <div class="shop-filter-field">
+                    <label for="shopCategory">Category</label>
+                    <select id="shopCategory" name="category">
+                        <option value="">All</option>
+                        <?php foreach ($shopCategories as $category): ?>
+                            <option value="<?= (int) $category['id'] ?>" <?= $filterCategory === (string) (int) $category['id'] ? 'selected' : '' ?>><?= htmlspecialchars((string) ($category['name'] ?? 'Category')) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <button type="submit" class="shop-filter-btn">Apply</button>
+                <a href="<?= htmlspecialchars($baseUrl . 'shop') ?>" class="shop-filter-reset">Reset</a>
+            </form>
+        </section>
+
+        <section class="shop-grid" id="shopGrid" aria-label="Shop products" data-limit="<?= (int) $shopLimit ?>" data-next-offset="<?= (int) $shopCount ?>" data-has-more="<?= $shopHasMore ? '1' : '0' ?>">
             <?php if (!empty($shopProducts)): ?>
                 <?php foreach ($shopProducts as $product): ?>
                     <?php
@@ -381,8 +486,82 @@ customer_layout_start();
                     <p>When products are added and marked active, they will appear here automatically.</p>
                 </div>
             <?php endif; ?>
+            <div id="shopInfiniteLoader" class="shop-infinite-loader" style="<?= $shopHasMore ? '' : 'display:none;' ?>">Loading more products...</div>
+            <div id="shopInfiniteSentinel" style="<?= $shopHasMore ? '' : 'display:none;' ?>" aria-hidden="true"></div>
         </section>
     </div>
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const grid = document.getElementById('shopGrid');
+    const loader = document.getElementById('shopInfiniteLoader');
+    const sentinel = document.getElementById('shopInfiniteSentinel');
+    if (!grid || !loader || !sentinel) return;
+
+    let isLoading = false;
+    let hasMore = grid.dataset.hasMore === '1';
+    let nextOffset = parseInt(grid.dataset.nextOffset || '0', 10) || 0;
+    const limit = parseInt(grid.dataset.limit || '20', 10) || 20;
+
+    const hideInfiniteUi = function () {
+        loader.style.display = 'none';
+        sentinel.style.display = 'none';
+    };
+
+    if (!hasMore) {
+        hideInfiniteUi();
+        return;
+    }
+
+    const loadMore = async function () {
+        if (isLoading || !hasMore) return;
+        isLoading = true;
+        loader.style.display = 'block';
+
+        try {
+            const currentParams = new URLSearchParams(window.location.search);
+            const filteredParams = new URLSearchParams();
+            ['search', 'category'].forEach(function (key) {
+                if (currentParams.has(key) && String(currentParams.get(key) || '').trim() !== '') {
+                    filteredParams.set(key, String(currentParams.get(key)));
+                }
+            });
+            filteredParams.set('offset', String(nextOffset));
+            filteredParams.set('limit', String(limit));
+            const url = <?= json_encode($baseUrl . 'shop/loadMore') ?> + '?' + filteredParams.toString();
+            const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            const payload = await response.json();
+
+            if (!payload || !payload.success) throw new Error('Unable to load more products');
+
+            if (payload.html && String(payload.html).trim() !== '') {
+                sentinel.insertAdjacentHTML('beforebegin', payload.html);
+            }
+
+            nextOffset = Number(payload.next_offset || nextOffset);
+            hasMore = !!payload.has_more;
+            grid.dataset.nextOffset = String(nextOffset);
+            grid.dataset.hasMore = hasMore ? '1' : '0';
+
+            if (!hasMore || Number(payload.count || 0) === 0) {
+                hideInfiniteUi();
+            }
+        } catch (error) {
+            loader.textContent = 'Unable to load more products';
+        } finally {
+            isLoading = false;
+        }
+    };
+
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) loadMore();
+        });
+    }, { rootMargin: '300px 0px 300px 0px' });
+
+    observer.observe(sentinel);
+});
+</script>
 
 <?php customer_layout_end(); ?>
