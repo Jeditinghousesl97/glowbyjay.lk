@@ -56,3 +56,5 @@
 {"time":"2026-05-05T10:15:51+02:00","event":"direct_sms_finished","context":{"event":"payment_received","order_id":137}}
 {"time":"2026-05-05T11:03:22+02:00","event":"direct_sms_started","context":{"event":"order_placed","order_id":138}}
 {"time":"2026-05-05T11:03:22+02:00","event":"direct_sms_finished","context":{"event":"order_placed","order_id":138}}
+{"time":"2026-05-17T06:51:59+02:00","event":"direct_sms_started","context":{"event":"order_placed","order_id":139}}
+{"time":"2026-05-17T06:51:59+02:00","event":"direct_sms_finished","context":{"event":"order_placed","order_id":139}}
