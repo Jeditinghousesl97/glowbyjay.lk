@@ -613,6 +613,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     }
     async function submitCheckout() {
         const payload = {
+            _csrf: (typeof csrfToken !== 'undefined' ? csrfToken : ''),
             customer_name: customerName ? customerName.value.trim() : '',
             email: customerEmail ? customerEmail.value.trim() : '',
             phone: customerPhone ? customerPhone.value.trim() : '',
