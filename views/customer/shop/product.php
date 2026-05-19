@@ -270,7 +270,7 @@ customer_layout_start([
         .cart-confirm-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.58);z-index:10030}
         .cart-confirm{width:min(92vw,420px);background:var(--surface);border:1px solid rgba(31,31,31,.10);box-shadow:none;padding:24px 22px 22px;display:grid;gap:18px}
         .cart-confirm-head{display:grid;gap:8px;justify-items:center;text-align:center}
-        .cart-confirm-head h3{margin:0;font-size:24px;line-height:1.1;font-weight:900;color:#111;letter-spacing:-.03em;font-family:sans-serif}
+        .cart-confirm-head h3{margin:0;font-size:24px;line-height:1.1;font-weight:700;color:#111;letter-spacing:-.03em;font-family:sans-serif}
         .cart-confirm-head p{margin:0;color:#777;font-size:13px;line-height:1.7}
         .cart-confirm-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
         .cart-confirm-actions button{min-width:128px;min-height:46px;border:1px solid var(--ink);background:var(--ink);color:#fff;font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;padding:0 14px}
