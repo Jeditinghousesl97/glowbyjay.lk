@@ -537,7 +537,7 @@ customer_layout_start([
 
                             <div class="summary-actions">
                                 <button class="btn-action btn-add-cart" type="button" data-purchase-action="add-cart" onclick="addToCartFromProductPage()" <?= $initialPurchaseDisabled ? 'disabled aria-disabled="true"' : '' ?>><i class="fas fa-cart-plus"></i><span>Add to Cart</span></button>
-                                <button class="btn-action btn-buy-now" type="button" data-purchase-action="buy-now" onclick="openPaymentMethodSheet()" <?= $initialPurchaseDisabled ? 'disabled aria-disabled="true"' : '' ?>><i class="fas fa-bag-shopping"></i><span>Buy It Now</span></button>
+                                <button class="btn-action btn-buy-now" type="button" data-purchase-action="buy-now" onclick="openPaymentMethodSheet()" <?= $initialPurchaseDisabled ? 'disabled aria-disabled="true"' : '' ?>><i class="fas fa-bag-shopping"></i><span>Buy / Order</span></button>
                             </div>
 
                             <?php if (!empty($paymentModeLogos)): ?>
