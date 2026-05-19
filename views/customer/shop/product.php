@@ -112,9 +112,11 @@ $operationalShareIcon = $baseUrl . 'assets/icons/operational/' . rawurlencode('s
 $inquiryWhatsappUrl = '';
 if ($shopWhatsappTarget !== '') {
     $inquiryPrice = $productSalePrice !== null ? $productSalePrice : $productRegularPrice;
+    $productLink = $baseUrl . 'shop/product/' . (int) ($product['id'] ?? 0);
     $inquiryMessage = "Hi, I'm interested in this product.\n"
         . 'Product: ' . (string) ($product['title'] ?? 'Product') . "\n"
-        . 'Price: ' . (string) $currency . ' ' . number_format((float) $inquiryPrice, 0);
+        . 'Price: ' . (string) $currency . ' ' . number_format((float) $inquiryPrice, 0) . "\n"
+        . 'Link: ' . $productLink;
     $inquiryWhatsappUrl = 'https://wa.me/' . $shopWhatsappTarget . '?text=' . rawurlencode($inquiryMessage);
 }
 ?>
