@@ -2,7 +2,15 @@
 $hide_mobile_welcome = true;
 require_once ROOT_PATH . 'helpers/ImageHelper.php';
 require_once 'views/layouts/customer_layout.php';
-customer_layout_start();
+customer_layout_start([
+    'seo_title' => $seo_title ?? ($title ?? ''),
+    'seo_description' => $seo_description ?? '',
+    'seo_image' => $seo_image ?? '',
+    'seo_canonical' => $seo_canonical ?? '',
+    'seo_type' => $seo_type ?? 'website',
+    'seo_robots' => $seo_robots ?? '',
+    'seo_json_ld' => $seo_json_ld ?? []
+]);
 ?>
 
 <div style="max-width: 920px; margin: 40px auto 0; padding: 0 0 48px;">

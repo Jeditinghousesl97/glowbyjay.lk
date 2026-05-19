@@ -14,7 +14,15 @@ $discountLimit = max(1, (int) ($discounts_limit ?? 20));
 $discountHasMore = !empty($discounts_has_more);
 $discountCount = max(0, (int) ($discounts_total_products ?? count($discountProducts)));
 
-customer_layout_start();
+customer_layout_start([
+    'seo_title' => $seo_title ?? ($title ?? ''),
+    'seo_description' => $seo_description ?? '',
+    'seo_image' => $seo_image ?? '',
+    'seo_canonical' => $seo_canonical ?? '',
+    'seo_type' => $seo_type ?? 'website',
+    'seo_robots' => $seo_robots ?? '',
+    'seo_json_ld' => $seo_json_ld ?? []
+]);
 ?>
 
 <style>

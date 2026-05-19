@@ -104,7 +104,18 @@ function shopExcerpt(string $text, int $length = 120): string
 }
 
 ?>
-<?php require_once 'views/layouts/customer_layout.php'; customer_layout_start(); ?>
+<?php
+require_once 'views/layouts/customer_layout.php';
+customer_layout_start([
+    'seo_title' => $seo_title ?? ($title ?? ''),
+    'seo_description' => $seo_description ?? '',
+    'seo_image' => $seo_image ?? '',
+    'seo_canonical' => $seo_canonical ?? '',
+    'seo_type' => $seo_type ?? 'website',
+    'seo_robots' => $seo_robots ?? '',
+    'seo_json_ld' => $seo_json_ld ?? []
+]);
+?>
 <style>
         :root{--primary:var(--accent, #b68a2d);--primary-strong:var(--accent-red, #d4af37);--surface:#fcf9f8;--surface-low:#f6f3f2;--surface-mid:#f0eded;--surface-high:#eae7e7;--surface-highest:#e5e2e1;--ink:#1c1b1b;--muted:#6d6665;--shadow:0 24px 60px rgba(28,27,27,.08);--shadow-soft:0 14px 30px rgba(28,27,27,.06)}
         *{box-sizing:border-box} html{scroll-behavior:smooth;background:#fff} body{margin:0;font-family:"Manrope",sans-serif;background:#fff;color:var(--ink)} h1,h2,h3,h4,h5{font-family:"Noto Serif",serif;font-weight:400;margin:0} a{color:inherit;text-decoration:none} img{display:block;max-width:100%}

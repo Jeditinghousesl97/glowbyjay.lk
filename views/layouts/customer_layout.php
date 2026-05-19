@@ -66,7 +66,7 @@ if (!function_exists('customer_layout_start')) {
             : (isset($seo_description) ? $seo_description : ($settings['shop_about'] ?? ''));
         $metaImage = isset($options['seo_image']) && $options['seo_image'] !== ''
             ? (string) $options['seo_image']
-            : (isset($seo_image) ? $seo_image : ($settings['shop_logo'] ?? ''));
+            : (isset($seo_image) ? $seo_image : ($settings['shop_favicon'] ?? ($settings['shop_logo'] ?? '')));
         $metaImage = SeoHelper::normalizeAssetUrl($metaImage);
         $metaImageMime = '';
         if ($metaImage !== '') {

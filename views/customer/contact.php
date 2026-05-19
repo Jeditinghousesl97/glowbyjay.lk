@@ -62,7 +62,15 @@ foreach ($socialDefinitions as $socialDefinition) {
     ];
 }
 
-customer_layout_start();
+customer_layout_start([
+    'seo_title' => $seo_title ?? ($title ?? ''),
+    'seo_description' => $seo_description ?? '',
+    'seo_image' => $seo_image ?? '',
+    'seo_canonical' => $seo_canonical ?? '',
+    'seo_type' => $seo_type ?? 'website',
+    'seo_robots' => $seo_robots ?? '',
+    'seo_json_ld' => $seo_json_ld ?? []
+]);
 ?>
 
 <style>

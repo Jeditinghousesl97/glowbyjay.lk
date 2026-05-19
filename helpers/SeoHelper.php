@@ -175,7 +175,7 @@ class SeoHelper
             'seo_title' => $shopName,
             'seo_description' => self::defaultDescription($settings),
             'seo_canonical' => self::currentUrl(false),
-            'seo_image' => self::normalizeAssetUrl($settings['shop_logo'] ?? ''),
+            'seo_image' => self::normalizeAssetUrl($settings['shop_favicon'] ?? ($settings['shop_logo'] ?? '')),
             'seo_type' => 'website',
             'seo_robots' => 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
             'seo_json_ld' => []
@@ -342,4 +342,3 @@ class SeoHelper
         return $schema;
     }
 }
-
