@@ -1307,12 +1307,18 @@ customer_layout_start([
     function closePaymentMethodSheet() { document.getElementById('paymentMethodSheet').style.display = 'none'; }
     function openOrderModal() { hydrateCustomerProfile(); document.getElementById('orderModal').style.display = 'flex'; updateOrderTotals(); }
     function closeOrderModal() { document.getElementById('orderModal').style.display = 'none'; }
+    function syncOrderSubmitWhatsAppStyle() {
+        const submitButton = document.getElementById('orderSubmitButton');
+        if (!submitButton) return;
+        const isWhatsAppMode = orderMode === 'whatsapp' || /send via whatsapp/i.test(String(submitButton.textContent || ''));
+        submitButton.classList.toggle('order-submit-whatsapp', isWhatsAppMode);
+    }
     function updateOrderButtonLabel() {
         const submitButton = document.getElementById('orderSubmitButton');
         const bankDetailsBox = document.getElementById('bankTransferDetailsBox');
         if (!submitButton) return;
         submitButton.textContent = orderMode === 'whatsapp' ? 'Send via WhatsApp' : (orderMode === 'payhere' ? 'Proceed to Card Payments' : (orderMode === 'koko' ? 'Proceed to KOKO Payments' : (orderMode === 'bank_transfer' ? 'Submit Bank Transfer Order' : 'Place Order')));
-        submitButton.classList.toggle('order-submit-whatsapp', orderMode === 'whatsapp');
+        syncOrderSubmitWhatsAppStyle();
         if (bankDetailsBox) bankDetailsBox.style.display = orderMode === 'bank_transfer' ? 'block' : 'none';
         updateOrderTotals();
     }
@@ -1524,6 +1530,7 @@ customer_layout_start([
         hydrateCustomerProfile();
         updateDisplayedPrice(); updateOrderTotals(); updateDisplayedVariantImage();
         updatePurchaseButtonsState();
+        syncOrderSubmitWhatsAppStyle();
     });
     document.addEventListener('keydown', handleImageModalKeydown);
     document.addEventListener('keydown', handleShareModalKeydown);
