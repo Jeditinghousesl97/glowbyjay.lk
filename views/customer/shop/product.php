@@ -293,9 +293,9 @@ customer_layout_start([
         #orderModal .modal-actions{display:flex;gap:10px;margin-top:2px}
         #orderModal .modal-actions button{flex:1;min-height:48px;border:1px solid rgba(31,31,31,.14);background:#f7f7f7;color:#111;font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
         #orderModal .modal-actions .primary,#orderModal .modal-actions #orderSubmitButton{background:var(--btn-ordernow-bg, var(--primary)) !important;border-color:var(--btn-ordernow-bg, var(--primary)) !important;color:var(--btn-ordernow-text, #fff) !important;box-shadow:none}
-        #orderModal .bank-details-box{display:none;background:#f4f8ff;border:1px solid #d8e4ff;padding:14px}
-        #orderModal .bank-details-box strong{display:block;font-size:13px;font-weight:900;color:#123b7a;margin-bottom:6px}
-        #orderModal .bank-details-box .text{font-size:12px;color:#345;line-height:1.7;white-space:pre-wrap}
+        #orderModal .bank-details-box{display:none;background:#fee2e2;border:1px solid #fecaca;padding:14px}
+        #orderModal .bank-details-box strong{display:block;font-size:13px;font-weight:900;color:#000;margin-bottom:6px}
+        #orderModal .bank-details-box .text{font-size:12px;color:#000;line-height:1.7;white-space:pre-wrap}
         .qty-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
         .qty-row .qty-box{height:44px}
         .summary-actions{display:flex;align-items:stretch;gap:14px}
