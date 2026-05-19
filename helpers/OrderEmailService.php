@@ -189,14 +189,18 @@ class OrderEmailService
             $itemsHtml = '<tr><td colspan="3" style="padding:10px 0;color:#777;">No items recorded.</td></tr>';
         }
 
-        $customerBlock = $forCustomer ? '' : '
+        $customerDetailsBlock = '
             <div style="margin-top:24px; padding:16px; background:#fafafa; border-radius:16px;">
-                <div style="font-weight:700; margin-bottom:8px;">Customer Details</div>
-                <div style="font-size:14px; color:#444; line-height:1.7;">
-                    ' . htmlspecialchars($order['customer_name'] ?? '-') . '<br>
-                    ' . htmlspecialchars($order['email'] ?? '-') . '<br>
-                    ' . htmlspecialchars($order['phone'] ?? '-') . '<br>
-                    ' . htmlspecialchars($order['address'] ?? '-') . ', ' . htmlspecialchars($order['city'] ?? '-') . '
+                <div style="font-weight:700; margin-bottom:10px;">Customer Details</div>
+                <div style="font-size:14px; color:#444; line-height:1.8;">
+                    <div><strong>Full Name:</strong> ' . htmlspecialchars($order['customer_name'] ?? '-') . '</div>
+                    <div><strong>Email Address:</strong> ' . htmlspecialchars($order['email'] ?? '-') . '</div>
+                    <div><strong>Phone Number 1:</strong> ' . htmlspecialchars($order['phone'] ?? '-') . '</div>
+                    <div><strong>Phone Number 2:</strong> ' . htmlspecialchars($order['phone_alt'] ?? '-') . '</div>
+                    <div><strong>Address:</strong> ' . htmlspecialchars($order['address'] ?? '-') . '</div>
+                    <div><strong>City:</strong> ' . htmlspecialchars($order['city'] ?? '-') . '</div>
+                    <div><strong>District:</strong> ' . htmlspecialchars($order['district'] ?? '-') . '</div>
+                    <div><strong>Special Note:</strong> ' . htmlspecialchars($order['note'] ?? '-') . '</div>
                 </div>
             </div>';
 
@@ -217,6 +221,9 @@ class OrderEmailService
                             <div><strong>Order Status:</strong> ' . htmlspecialchars($statusLabel) . '</div>
                             <div><strong>Courier Service:</strong> ' . htmlspecialchars($order['courier_service'] ?? '-') . '</div>
                             <div><strong>Tracking Number:</strong> ' . htmlspecialchars($order['tracking_number'] ?? '-') . '</div>
+                            <div><strong>Subtotal:</strong> ' . htmlspecialchars($currency) . ' ' . number_format((float) ($order['subtotal_amount'] ?? 0), 2) . '</div>
+                            <div><strong>Shipping Fee:</strong> ' . htmlspecialchars($currency) . ' ' . number_format((float) ($order['shipping_fee'] ?? 0), 2) . '</div>
+                            <div><strong>Handling Fee:</strong> ' . htmlspecialchars($currency) . ' ' . number_format((float) ($order['handling_fee'] ?? 0), 2) . '</div>
                             <div><strong>Total:</strong> ' . htmlspecialchars($currency) . ' ' . number_format((float) ($order['total_amount'] ?? 0), 2) . '</div>
                         </div>
                         <div style="font-size:15px; font-weight:700; margin-bottom:10px;">Order Items</div>
@@ -230,7 +237,7 @@ class OrderEmailService
                             </thead>
                             <tbody>' . $itemsHtml . '</tbody>
                         </table>
-                        ' . $customerBlock . '
+                        ' . $customerDetailsBlock . '
                         <div style="margin-top:24px; padding-top:18px; border-top:1px solid #f0f0f0; color:#666; font-size:13px; line-height:1.7;">
                             ' . ($shopAbout !== '' ? '<div style="margin-bottom:8px;">' . $shopAbout . '</div>' : '') . '
                             ' . ($shopWhatsapp !== '' ? '<div>WhatsApp: ' . $shopWhatsapp . '</div>' : '') . '
@@ -255,7 +262,20 @@ class OrderEmailService
             'Order Status: ' . $statusLabel,
             'Courier Service: ' . ($order['courier_service'] ?? '-'),
             'Tracking Number: ' . ($order['tracking_number'] ?? '-'),
+            'Subtotal: ' . $currency . ' ' . number_format((float) ($order['subtotal_amount'] ?? 0), 2),
+            'Shipping Fee: ' . $currency . ' ' . number_format((float) ($order['shipping_fee'] ?? 0), 2),
+            'Handling Fee: ' . $currency . ' ' . number_format((float) ($order['handling_fee'] ?? 0), 2),
             'Total: ' . $currency . ' ' . number_format((float) ($order['total_amount'] ?? 0), 2),
+            '',
+            'Customer Details:',
+            'Full Name: ' . ($order['customer_name'] ?? '-'),
+            'Email Address: ' . ($order['email'] ?? '-'),
+            'Phone Number 1: ' . ($order['phone'] ?? '-'),
+            'Phone Number 2: ' . ($order['phone_alt'] ?? '-'),
+            'Address: ' . ($order['address'] ?? '-'),
+            'City: ' . ($order['city'] ?? '-'),
+            'District: ' . ($order['district'] ?? '-'),
+            'Special Note: ' . ($order['note'] ?? '-'),
             ''
         ];
 

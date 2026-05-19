@@ -321,8 +321,9 @@ customer_layout_start([
         .share-modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
         .share-modal-head h3{margin:0;font-size:18px;letter-spacing:.08em;text-transform:uppercase;font-family:sans-serif}
         .share-modal-close{width:34px;height:34px;border:1px solid rgba(28,27,27,.16);background:var(--surface);cursor:pointer}
-        .share-modal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-        .share-modal-btn{min-height:42px;border:1px solid rgba(28,27,27,.14);background:var(--surface);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+        .share-modal-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+        .share-modal-btn{min-height:48px;min-width:48px;border:1px solid rgba(28,27,27,.14);background:var(--surface);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:18px;color:#1c1b1b;transition:border-color .2s ease,color .2s ease,transform .2s ease}
+        .share-modal-btn:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-1px)}
         .share-modal-copy-status{margin-top:10px;font-size:12px;color:#17663b;min-height:18px}
         .summary-long-description{display:grid;gap:12px;padding:18px 0 0;margin-top:4px;border-top:1px solid rgba(28,27,27,.08)}
         .summary-long-description h3{font-size:18px;letter-spacing:-.02em;text-transform:uppercase}
@@ -744,11 +745,11 @@ customer_layout_start([
             </button>
         </div>
         <div class="share-modal-grid">
-            <button type="button" class="share-modal-btn" onclick="shareTo('facebook')">Facebook</button>
-            <button type="button" class="share-modal-btn" onclick="shareTo('instagram')">Instagram</button>
-            <button type="button" class="share-modal-btn" onclick="shareTo('x')">X</button>
-            <button type="button" class="share-modal-btn" onclick="shareTo('linkedin')">LinkedIn</button>
-            <button type="button" class="share-modal-btn" onclick="copyProductLink()">Copy Link</button>
+            <button type="button" class="share-modal-btn" onclick="shareTo('facebook')" aria-label="Share to Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></button>
+            <button type="button" class="share-modal-btn" onclick="shareTo('instagram')" aria-label="Share to Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></button>
+            <button type="button" class="share-modal-btn" onclick="shareTo('x')" aria-label="Share to X"><i class="fa-brands fa-twitter" aria-hidden="true"></i></button>
+            <button type="button" class="share-modal-btn" onclick="shareTo('linkedin')" aria-label="Share to LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></button>
+            <button type="button" class="share-modal-btn" onclick="copyProductLink()" aria-label="Copy product link"><i class="fa-solid fa-link" aria-hidden="true"></i></button>
         </div>
         <div id="shareCopyStatus" class="share-modal-copy-status"></div>
     </div>
