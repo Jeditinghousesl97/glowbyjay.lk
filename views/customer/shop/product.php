@@ -1,5 +1,6 @@
 ﻿<?php
 require_once ROOT_PATH . 'helpers/ImageHelper.php';
+require_once ROOT_PATH . 'helpers/SeoHelper.php';
 require_once ROOT_PATH . 'helpers/KokoPricingHelper.php';
 require_once ROOT_PATH . 'helpers/KokoGateway.php';
 require_once ROOT_PATH . 'helpers/RecaptchaHelper.php';
@@ -112,7 +113,7 @@ $operationalShareIcon = $baseUrl . 'assets/icons/operational/' . rawurlencode('s
 $inquiryWhatsappUrl = '';
 if ($shopWhatsappTarget !== '') {
     $inquiryPrice = $productSalePrice !== null ? $productSalePrice : $productRegularPrice;
-    $productLink = $baseUrl . 'shop/product/' . (int) ($product['id'] ?? 0);
+    $productLink = SeoHelper::absoluteUrl($baseUrl . 'shop/product/' . (int) ($product['id'] ?? 0));
     $inquiryMessage = "Hi, I'm interested in this product.\n"
         . 'Product: ' . (string) ($product['title'] ?? 'Product') . "\n"
         . 'Price: ' . (string) $currency . ' ' . number_format((float) $inquiryPrice, 0) . "\n"
