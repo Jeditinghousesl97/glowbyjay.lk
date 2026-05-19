@@ -239,9 +239,9 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     .cart-page .modal-actions button:disabled{opacity:.45;cursor:not-allowed}
     .cart-page .modal-actions .primary,.cart-page .modal-actions #checkoutSubmit{background:var(--btn-ordernow-bg, var(--primary)) !important;border-color:var(--btn-ordernow-bg, var(--primary)) !important;color:var(--btn-ordernow-text, #fff) !important;box-shadow:none}
     .cart-page .modal-actions #checkoutSubmit.checkout-submit-whatsapp{background:#289b26 !important;border-color:#289b26 !important;color:#fff !important}
-    .cart-page .bank-details-box{display:none;background:#f4f8ff;border:1px solid #d8e4ff;padding:14px}
-    .cart-page .bank-details-box strong{display:block;font-size:13px;font-weight:900;color:#123b7a;margin-bottom:6px}
-    .cart-page .bank-details-box .text{font-size:12px;color:#345;line-height:1.7;white-space:pre-wrap}
+    .cart-page .bank-details-box{display:none;background:#ef4444;border:1px solid #dc2626;padding:14px}
+    .cart-page .bank-details-box strong{display:block;font-size:13px;font-weight:900;color:#000;margin-bottom:6px}
+    .cart-page .bank-details-box .text{font-size:12px;color:#000;line-height:1.7;white-space:pre-wrap}
     .cart-page .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(18px);opacity:0;pointer-events:none;z-index:10010;display:flex;align-items:center;gap:12px;min-width:240px;max-width:min(92vw,420px);padding:14px 18px;background:#111;color:#fff;box-shadow:0 16px 30px rgba(0,0,0,.18);transition:opacity .2s ease, transform .2s ease}
     .cart-page .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
     .cart-page .toast.success{background:#17663b}
