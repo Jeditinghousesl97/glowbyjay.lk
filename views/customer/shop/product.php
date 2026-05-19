@@ -293,6 +293,7 @@ customer_layout_start([
         #orderModal .modal-actions{display:flex;gap:10px;margin-top:2px}
         #orderModal .modal-actions button{flex:1;min-height:48px;border:1px solid rgba(31,31,31,.14);background:#f7f7f7;color:#111;font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
         #orderModal .modal-actions .primary,#orderModal .modal-actions #orderSubmitButton{background:var(--btn-ordernow-bg, var(--primary)) !important;border-color:var(--btn-ordernow-bg, var(--primary)) !important;color:var(--btn-ordernow-text, #fff) !important;box-shadow:none}
+        #orderModal .modal-actions #orderSubmitButton.order-submit-whatsapp{background:#289b26 !important;border-color:#289b26 !important;color:#fff !important}
         #orderModal .bank-details-box{display:none;background:#fee2e2;border:1px solid #fecaca;padding:14px}
         #orderModal .bank-details-box strong{display:block;font-size:13px;font-weight:900;color:#000;margin-bottom:6px}
         #orderModal .bank-details-box .text{font-size:12px;color:#000;line-height:1.7;white-space:pre-wrap}
@@ -1311,6 +1312,7 @@ customer_layout_start([
         const bankDetailsBox = document.getElementById('bankTransferDetailsBox');
         if (!submitButton) return;
         submitButton.textContent = orderMode === 'whatsapp' ? 'Send via WhatsApp' : (orderMode === 'payhere' ? 'Proceed to Card Payments' : (orderMode === 'koko' ? 'Proceed to KOKO Payments' : (orderMode === 'bank_transfer' ? 'Submit Bank Transfer Order' : 'Place Order')));
+        submitButton.classList.toggle('order-submit-whatsapp', orderMode === 'whatsapp');
         if (bankDetailsBox) bankDetailsBox.style.display = orderMode === 'bank_transfer' ? 'block' : 'none';
         updateOrderTotals();
     }
