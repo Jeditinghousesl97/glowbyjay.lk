@@ -231,6 +231,18 @@
                 max-width: 320px;
             }
         }
+
+        .settings-page-footer {
+            margin: 18px 0 88px;
+            text-align: center;
+        }
+
+        .settings-page-footer img {
+            height: 34px;
+            width: auto;
+            margin: 0 auto;
+            opacity: 0.88;
+        }
     </style>
 </head>
 
@@ -415,8 +427,32 @@
                         <input type="file" name="shop_favicon" id="favInput" style="display:none;">
                     </div>
                 </div>
-                <!-- Empty spacer to keep alignment if needed, or just let it be left aligned -->
-                <div class="img-card" style="visibility: hidden;"></div>
+                <div class="img-card">
+                    <span class="label">Frontend Footer Logo</span>
+                    <div class="img-upload-box" onclick="document.getElementById('footerLogoInput').click()">
+                        <?php if (!empty($settings['footer_logo'])): ?>
+                            <?php
+                            $settingsFooterLogoUrl = ImageHelper::settingsImageUrl($settings['footer_logo'] ?? '', '');
+                            $settingsFooterLogoFile = basename((string) parse_url($settingsFooterLogoUrl, PHP_URL_PATH));
+                            ?>
+                            <?= ImageHelper::renderResponsivePicture(
+                                $settingsFooterLogoFile,
+                                $settingsFooterLogoUrl,
+                                [
+                                    'class' => 'preview-thumb',
+                                    'alt' => 'Frontend footer logo',
+                                    'loading' => 'lazy',
+                                    'decoding' => 'async',
+                                    'fetchpriority' => 'low'
+                                ],
+                                'logo'
+                            ) ?>
+                        <?php endif; ?>
+                        <div style="font-size:20px;">ðŸ“·</div>
+                        <p style="font-size:10px; color:#999;">Tap here to<br>upload a photo</p>
+                        <input type="file" name="footer_logo" id="footerLogoInput" style="display:none;">
+                    </div>
+                </div>
             </div>
 
             <label class="label">Shop About</label>
@@ -838,6 +874,10 @@
             <!-- Global Styles Button -->
             <a href="<?= BASE_URL ?>settings/styles" class="btn-global-styles">Global Styles</a>
             <a href="<?= BASE_URL ?>settings/delivery" class="btn-delivery-settings">Delivery Settings</a>
+
+            <div class="settings-page-footer" aria-label="Settings page footer logo">
+                <img src="<?= BASE_URL ?>assets/icons/Asseminate-Logo.png" alt="Asseminate">
+            </div>
 
         </div>
     </form>

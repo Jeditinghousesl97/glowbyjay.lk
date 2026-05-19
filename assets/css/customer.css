@@ -2372,24 +2372,12 @@ p {
     pointer-events: all;
 }
 
-/* Spinner Animation */
-.global-loader-spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid #e0e0e0;
-    border-top: 5px solid var(--primary-color, #b68a2d);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
+/* GIF Loader */
+.global-loader-gif {
+    width: 92px;
+    height: 92px;
+    object-fit: contain;
+    display: block;
 }
 
 .global-loader-text {
@@ -2690,10 +2678,6 @@ body {
 .floating-cart,
 .global-loader-text {
     color: #fff;
-}
-
-.global-loader-spinner {
-    border-top-color: var(--primary-color);
 }
 
 .ct-message-pill {

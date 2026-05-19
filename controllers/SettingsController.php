@@ -58,6 +58,7 @@ class SettingsController extends BaseController
             'shop_slogan',
             'shop_url',
             'shop_logo',
+            'footer_logo',
             'shop_favicon',
             'shop_qr',
             'shop_about',
@@ -184,6 +185,20 @@ class SettingsController extends BaseController
                     }
 
                     $this->settingModel->set('shop_qr', ImageHelper::storedAssetUrl($fileName, BASE_URL . "assets/uploads/" . $fileName));
+                }
+            }
+
+            // Handle Footer Logo
+            if (isset($_FILES['footer_logo']) && $_FILES['footer_logo']['error'] == 0) {
+                $fileName = ImageHelper::storeUploadedFile($_FILES['footer_logo'], 'footer_logo');
+                if ($fileName !== '') {
+                    $oldUrl = $this->settingModel->get('footer_logo');
+                    if (!empty($oldUrl)) {
+                        $oldFile = basename((string) parse_url((string) $oldUrl, PHP_URL_PATH));
+                        $this->deleteFile($oldFile);
+                    }
+
+                    $this->settingModel->set('footer_logo', ImageHelper::storedAssetUrl($fileName, BASE_URL . "assets/uploads/" . $fileName));
                 }
             }
 

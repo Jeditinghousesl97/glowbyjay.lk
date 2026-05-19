@@ -21,6 +21,10 @@ $current_page = $current_page ?? 'dashboard';
         <img src="<?= BASE_URL ?>assets/icons/dashboard.png" class="nav-icon-img" alt="Orders">
         <span>Orders</span>
     </a>
+    <a href="<?= BASE_URL ?>promo/index" class="nav-item <?= $current_page == 'promo' ? 'active' : '' ?>" onclick="showGlobalLoader()">
+        <img src="<?= BASE_URL ?>assets/icons/discount.png" class="nav-icon-img" alt="Promo">
+        <span>Promo</span>
+    </a>
     <a href="<?= BASE_URL ?>myShop/index" class="nav-item <?= $current_page == 'myshop' ? 'active' : '' ?>" onclick="showGlobalLoader()">
         <!-- Using Dashboard icon as placeholder as requested -->
         <img src="<?= BASE_URL ?>assets/icons/Myshop.png" class="nav-icon-img" alt="Shop">

@@ -22,19 +22,11 @@
         pointer-events: all; 
     }
 
-    /* Spinner */
-    .admin-loader-spinner {
-        width: 50px;
-        height: 50px;
-        border: 5px solid #e0e0e0;
-        border-top: 5px solid #000; /* Admin generic black or primary */
-        border-radius: 50%;
-        animation: admin-spin 1s linear infinite;
-    }
-
-    @keyframes admin-spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+    .admin-loader-gif {
+        width: 92px;
+        height: 92px;
+        object-fit: contain;
+        display: block;
     }
 
     .admin-loader-text {
@@ -48,7 +40,7 @@
 
 <!-- HTML Structure -->
 <div id="adminGlobalLoader" class="admin-global-loader-overlay">
-    <div class="admin-loader-spinner"></div>
+    <img src="<?= htmlspecialchars((defined('BASE_URL') ? BASE_URL : '/') . 'assets/preloader.gif', ENT_QUOTES, 'UTF-8') ?>" alt="Loading" class="admin-loader-gif">
     <div class="admin-loader-text">Loading...</div>
 </div>
 

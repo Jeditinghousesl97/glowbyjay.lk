@@ -167,6 +167,22 @@ if (!function_exists('customer_layout_start')) {
         $btnCartPayhereText = trim((string) ($settings['btn_cart_payhere_text'] ?? '#ffffff')) ?: '#ffffff';
         $btnCartKokoBg = trim((string) ($settings['btn_cart_koko_bg'] ?? '#fff3dc')) ?: '#fff3dc';
         $btnCartKokoText = trim((string) ($settings['btn_cart_koko_text'] ?? '#111111')) ?: '#111111';
+        $promoEnabled = !empty($settings['promo_enabled']);
+        $promoImageUrl = '';
+        $promoLink = trim((string) ($settings['promo_link'] ?? ''));
+        $promoOpenNewTab = !isset($settings['promo_open_new_tab'])
+            || $settings['promo_open_new_tab'] === ''
+            || !empty($settings['promo_open_new_tab']);
+        if ($promoEnabled) {
+            $promoImageUrl = ImageHelper::settingsImageUrl((string) ($settings['promo_image'] ?? ''), '');
+            if ($promoImageUrl === '') {
+                $promoEnabled = false;
+            }
+        }
+        if ($promoLink !== '' && !preg_match('#^https?://#i', $promoLink) && strpos($promoLink, '/') !== 0) {
+            $promoLink = 'https://' . $promoLink;
+        }
+        $promoStateKey = hash('sha256', $promoImageUrl . '|' . $promoLink);
 
         $menuItems = [
             [
@@ -285,7 +301,7 @@ if (!function_exists('customer_layout_start')) {
             background-position:center;
             background-repeat:no-repeat;
             backdrop-filter:saturate(180%) blur(12px);
-            border-bottom:1px solid var(--line);
+            border-bottom:none;
             color:var(--header-text);
         }
         .site-header-inner{
@@ -306,8 +322,8 @@ if (!function_exists('customer_layout_start')) {
         .site-brand img{
             width:auto;
             height:auto;
-            max-height:56px;
-            max-width:240px;
+            max-height:68px;
+            max-width:280px;
             object-fit:contain;
         }
         .site-nav{
@@ -649,6 +665,51 @@ if (!function_exists('customer_layout_start')) {
             flex:1 0 auto;
             padding-top:0;
         }
+        .site-promo-popup{
+            position:fixed;
+            top:92px;
+            right:18px;
+            z-index:1300;
+            width:min(34vw, 220px);
+            min-width:130px;
+            max-width:220px;
+        }
+        .site-promo-popup[hidden]{
+            display:none !important;
+        }
+        .site-promo-popup-inner{
+            position:relative;
+            display:block;
+            border-radius:10px;
+            overflow:hidden;
+            box-shadow:none;
+            background:transparent;
+        }
+        .site-promo-popup-image{
+            display:block;
+            width:100%;
+            height:auto;
+        }
+        .site-promo-popup-close{
+            position:absolute;
+            top:6px;
+            right:6px;
+            width:24px;
+            height:24px;
+            border:0;
+            border-radius:999px;
+            background:rgba(17,17,17,.78);
+            color:#fff;
+            font-size:16px;
+            line-height:1;
+            display:grid;
+            place-items:center;
+            cursor:pointer;
+            padding:0;
+        }
+        .site-promo-popup-close:hover{
+            background:rgba(17,17,17,.92);
+        }
         .site-footer{
             background:var(--footer-bg);
             border-top:1px solid var(--line);
@@ -660,6 +721,16 @@ if (!function_exists('customer_layout_start')) {
             margin:0 auto;
             background:var(--footer-bg);
             padding:34px 36px 24px;
+        }
+        .site-footer-top-badge-image{
+            margin:-25px 0 50px;
+            text-align:center;
+        }
+        .site-footer-top-badge-image img{
+            display:block;
+            width:min(100%, 560px);
+            height:auto;
+            margin:0 auto;
         }
         .site-footer-grid{
             display:grid;
@@ -680,6 +751,9 @@ if (!function_exists('customer_layout_start')) {
             text-transform:uppercase;
             color:var(--footer-link);
             font-weight:700;
+        }
+        .site-footer-brand .site-footer-eyebrow{
+            color:#000;
         }
         .site-footer-brand-title{
             margin:0 0 12px;
@@ -820,6 +894,12 @@ if (!function_exists('customer_layout_start')) {
             }
         }
         @media (max-width: 760px){
+            .site-promo-popup{
+                top:82px;
+                right:10px;
+                width:min(44vw, 180px);
+                min-width:110px;
+            }
             body.is-non-home-page{
                 padding-left:0 !important;
                 padding-right:0 !important;
@@ -836,25 +916,40 @@ if (!function_exists('customer_layout_start')) {
             .site-header-inner{
                 width:100%;
                 height:76px;
-                grid-template-columns:auto 1fr auto;
+                grid-template-columns:minmax(0,1fr) auto;
                 gap:12px;
                 padding-left:12px;
                 padding-right:12px;
             }
+            .site-brand{
+                width:100%;
+            }
             .site-brand img{
-                max-height:52px;
-                max-width:210px;
+                max-height:68px;
+                max-width:100%;
+                width:100%;
+                object-position:left center;
             }
             .site-nav{display:none}
             .site-actions{gap:10px;justify-content:flex-end}
+            .site-action[data-cart-link]{display:none}
             .site-action{
                 width:40px;
                 height:40px;
             }
+            .site-action.no-loader[data-header-search],
+            .mobile-menu-toggle{
+                background:linear-gradient(135deg,#b68a2d 0%,#d4af37 56%,#a8791d 100%);
+                border-color:rgba(255,255,255,.35);
+                box-shadow:0 8px 18px rgba(182,138,45,.32);
+            }
+            .site-action.no-loader[data-header-search]{
+                color:#fff;
+            }
             .site-action svg{width:19px;height:19px}
             .mobile-menu-toggle{display:inline-flex;width:40px;height:40px}
             .mobile-menu-toggle .bars{gap:4px}
-            .mobile-menu-toggle .bars span{width:19px}
+            .mobile-menu-toggle .bars span{width:19px;background:#fff}
             .mobile-nav-panel{
                 display:block;
                 position:fixed;
@@ -975,9 +1070,14 @@ if (!function_exists('customer_layout_start')) {
                 padding-left:12px;
                 padding-right:12px;
             }
+            .site-brand{
+                width:100%;
+            }
             .site-brand img{
-                max-height:48px;
-                max-width:185px;
+                max-height:68px;
+                max-width:100%;
+                width:100%;
+                object-position:left center;
             }
             .site-action,
             .mobile-menu-toggle{
@@ -1119,6 +1219,27 @@ if (!function_exists('customer_layout_start')) {
             </form>
         </div>
     </div>
+    <?php if ($promoEnabled && $promoImageUrl !== ''): ?>
+        <div
+            class="site-promo-popup"
+            data-site-promo-popup
+            data-promo-state-key="<?= htmlspecialchars($promoStateKey, ENT_QUOTES, 'UTF-8') ?>">
+            <?php if ($promoLink !== ''): ?>
+                <a
+                    class="site-promo-popup-inner"
+                    href="<?= htmlspecialchars($promoLink, ENT_QUOTES, 'UTF-8') ?>"
+                    <?= $promoOpenNewTab ? 'target="_blank" rel="noopener noreferrer"' : '' ?>
+                    aria-label="Open special promo">
+                    <img class="site-promo-popup-image" src="<?= htmlspecialchars($promoImageUrl, ENT_QUOTES, 'UTF-8') ?>" alt="Special promo">
+                </a>
+            <?php else: ?>
+                <div class="site-promo-popup-inner" aria-label="Special promo">
+                    <img class="site-promo-popup-image" src="<?= htmlspecialchars($promoImageUrl, ENT_QUOTES, 'UTF-8') ?>" alt="Special promo">
+                </div>
+            <?php endif; ?>
+            <button type="button" class="site-promo-popup-close" data-site-promo-close aria-label="Close promo popup">&times;</button>
+        </div>
+    <?php endif; ?>
     <div class="site-content">
 <?php
     }
@@ -1131,7 +1252,7 @@ if (!function_exists('customer_layout_start')) {
     </div>
     <?php require_once ROOT_PATH . 'views/layouts/customer_footer.php'; customer_footer_render(is_array($settings) ? $settings : [], defined('BASE_URL') ? BASE_URL : '/'); ?>
     <div id="globalLoader" class="global-loader-overlay">
-        <div class="global-loader-spinner"></div>
+        <img src="<?= htmlspecialchars((defined('BASE_URL') ? BASE_URL : '/') . 'assets/preloader.gif', ENT_QUOTES, 'UTF-8') ?>" alt="Loading" class="global-loader-gif">
         <div class="global-loader-text">Loading...</div>
     </div>
     <script>
@@ -1495,6 +1616,38 @@ if (!function_exists('customer_layout_start')) {
             showGlobalLoader();
         }, false);
         window.addEventListener('pageshow', function() { hideGlobalLoader(); });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const promoPopup = document.querySelector('[data-site-promo-popup]');
+            if (!promoPopup) {
+                return;
+            }
+
+            const promoClose = promoPopup.querySelector('[data-site-promo-close]');
+            const promoStateKey = promoPopup.getAttribute('data-promo-state-key') || '';
+            const storageKey = 'style1_promo_closed_' + promoStateKey;
+
+            try {
+                if (promoStateKey && sessionStorage.getItem(storageKey) === '1') {
+                    promoPopup.hidden = true;
+                    return;
+                }
+            } catch (error) {}
+
+            if (promoClose) {
+                promoClose.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    promoPopup.hidden = true;
+                    try {
+                        if (promoStateKey) {
+                            sessionStorage.setItem(storageKey, '1');
+                        }
+                    } catch (error) {}
+                });
+            }
+        });
     </script>
 </div>
 </body>

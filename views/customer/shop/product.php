@@ -105,6 +105,18 @@ $hasGalleryCarousel = $galleryCount > 1;
 $deliveryApplyAllDistricts = !empty($settings['delivery_apply_all_districts']);
 $deliveryAllFirstKg = (float) ($settings['delivery_all_first_kg'] ?? 0);
 $deliveryAllAdditionalKg = (float) ($settings['delivery_all_additional_kg'] ?? 0);
+$operationalWhatsappIcon = $baseUrl . 'assets/icons/operational/whatsapp-inquiry.png';
+$operationalHeartIcon = $baseUrl . 'assets/icons/operational/' . rawurlencode('like product.png');
+$operationalHeartIconActive = $baseUrl . 'assets/icons/operational/' . rawurlencode('active like product.png');
+$operationalShareIcon = $baseUrl . 'assets/icons/operational/' . rawurlencode('share product.png');
+$inquiryWhatsappUrl = '';
+if ($shopWhatsappTarget !== '') {
+    $inquiryPrice = $productSalePrice !== null ? $productSalePrice : $productRegularPrice;
+    $inquiryMessage = "Hi, I'm interested in this product.\n"
+        . 'Product: ' . (string) ($product['title'] ?? 'Product') . "\n"
+        . 'Price: ' . (string) $currency . ' ' . number_format((float) $inquiryPrice, 0);
+    $inquiryWhatsappUrl = 'https://wa.me/' . $shopWhatsappTarget . '?text=' . rawurlencode($inquiryMessage);
+}
 ?>
 <?php require_once 'views/layouts/customer_layout.php'; customer_layout_start(); ?>
 <?php if ($recaptchaCheckoutEnabled && $recaptchaSiteKey !== ''): ?>
@@ -217,6 +229,11 @@ $deliveryAllAdditionalKg = (float) ($settings['delivery_all_additional_kg'] ?? 0
         .summary-chips{display:flex;flex-wrap:wrap;gap:8px}
         .summary-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid rgba(28,27,27,.12);background:var(--surface);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(28,27,27,.72);transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease}
         .summary-chip:hover{border-color:var(--accent-red, var(--primary));transform:translateY(-1px);box-shadow:0 8px 18px rgba(31,31,31,.06)}
+        .summary-operational-icons{display:none;align-items:center;gap:12px;margin-left:auto}
+        .summary-operational-icon{display:inline-flex;align-items:center;justify-content:center}
+        .summary-operational-icon-link{display:inline-flex;align-items:center;justify-content:center}
+        .summary-operational-icon-btn{border:0;background:transparent;padding:0;cursor:pointer}
+        .summary-operational-icon img{display:block;width:30px;height:30px;object-fit:contain}
         .summary-title{font-family:sans-serif !important;font-size:clamp(24px,2.2vw,32px);line-height:1.12;letter-spacing:0;text-transform:none !important;margin:0}
         .summary-price-stack{display:grid;gap:10px}
         .summary-prices{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
@@ -246,7 +263,7 @@ $deliveryAllAdditionalKg = (float) ($settings['delivery_all_additional_kg'] ?? 0
         .cart-confirm-actions .btn-view-cart{background:var(--btn-ordernow-bg, var(--primary));border-color:var(--btn-ordernow-bg, var(--primary));color:var(--btn-ordernow-text, #fff)}
         #orderModal .modal{width:min(92vw,610px);max-height:90vh;overflow-y:auto;background:var(--surface);border:1px solid rgba(31,31,31,.10);box-shadow:none;padding:24px 24px 22px;border-radius:0}
         #orderModal .modal-head{position:relative;display:grid;gap:6px;justify-items:center;text-align:center;margin-bottom:18px;padding-right:42px}
-        #orderModal .modal-head h3{margin:0;font-size:28px;line-height:1.05;font-weight:900;color:#111;letter-spacing:-.03em}
+        #orderModal .modal-head h3{margin:0;font-size:28px;line-height:1.05;font-weight:900;color:#111;letter-spacing:-.03em;font-family:sans-serif}
         #orderModal .modal-head p{margin:0;max-width:430px;color:#777;font-size:13px;line-height:1.6}
         #orderModal .modal-close{position:absolute;right:0;top:0;width:38px;height:38px;border:1px solid rgba(31,31,31,.14);background:var(--surface);color:#111;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
         #orderModal .modal-form{display:grid;gap:12px}
@@ -283,6 +300,16 @@ $deliveryAllAdditionalKg = (float) ($settings['delivery_all_additional_kg'] ?? 0
         .summary-payment-logos{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
         .summary-payment-logo{display:inline-flex;align-items:center;justify-content:center;width:82px;height:50px;padding:8px 10px;border:1px solid rgba(28,27,27,.12);background:var(--surface);box-shadow:0 6px 16px rgba(28,27,27,.05)}
         .summary-payment-logo img{max-width:100%;max-height:100%;object-fit:contain}
+        .summary-operational-icons-desktop{display:inline-flex;align-items:center;gap:14px;margin-top:12px}
+        .summary-operational-icons-desktop .summary-operational-icon img{width:30px;height:30px}
+        .share-modal-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.5);z-index:3250}
+        .share-modal{width:min(92vw,420px);background:var(--surface);border:1px solid rgba(28,27,27,.14);padding:18px}
+        .share-modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+        .share-modal-head h3{margin:0;font-size:18px;letter-spacing:.08em;text-transform:uppercase;font-family:sans-serif}
+        .share-modal-close{width:34px;height:34px;border:1px solid rgba(28,27,27,.16);background:var(--surface);cursor:pointer}
+        .share-modal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+        .share-modal-btn{min-height:42px;border:1px solid rgba(28,27,27,.14);background:var(--surface);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+        .share-modal-copy-status{margin-top:10px;font-size:12px;color:#17663b;min-height:18px}
         .summary-long-description{display:grid;gap:12px;padding:18px 0 0;margin-top:4px;border-top:1px solid rgba(28,27,27,.08)}
         .summary-long-description h3{font-size:18px;letter-spacing:-.02em;text-transform:uppercase}
         .summary-long-description .text{color:var(--muted);line-height:1.85;font-size:14px}
@@ -305,7 +332,7 @@ $deliveryAllAdditionalKg = (float) ($settings['delivery_all_additional_kg'] ?? 0
         .related-card .product-btn{display:none}
         .gallery-dots{display:none}
         @media (max-width:1180px){.product-showcase{grid-template-columns:1fr}.gallery-rail{grid-template-columns:82px minmax(0,1fr)}.product-summary{position:relative;top:0;padding:0}.related-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-        @media (max-width:760px){.product-ui{padding:18px 0 64px}.gallery-rail{grid-template-columns:1fr;gap:10px}.gallery-thumb-rail{position:relative;top:0;flex-direction:row;gap:8px;max-height:none;overflow-x:auto;overflow-y:hidden;padding-right:0;padding-bottom:4px}.gallery-thumb-btn{min-width:72px;max-width:72px}.gallery-main{aspect-ratio:auto !important;overflow:visible;border:1px solid rgba(28,27,27,.12);box-shadow:var(--shadow-soft);background:var(--surface);border-radius:0 !important}.gallery-slider{height:auto !important;border-radius:0 !important;background:var(--surface) !important}.gallery-slide{padding:0;align-items:flex-start;justify-content:flex-start;min-height:0;background:var(--surface);height:auto}.gallery-open-btn{justify-content:flex-start;align-items:flex-start;height:auto}.gallery-slide picture,.gallery-slide img,.gallery-open-btn picture,.gallery-open-btn img{width:100% !important;max-width:100%;height:auto !important;max-height:none !important;object-fit:contain !important;aspect-ratio:auto !important;border-radius:0 !important}.gallery-slide picture,.gallery-open-btn picture{overflow:visible !important}.gallery-nav{width:36px;height:36px}.summary-actions{display:grid;grid-template-columns:1fr}.summary-payment-logo{width:72px;height:44px;padding:7px 8px}.summary-title{font-size:24px}.summary-sale-price{font-size:24px}.related-heading{align-items:flex-start;flex-direction:column}.related-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 14px}.related-title{font-size:12px}#orderModal .modal{padding:18px}#orderModal .modal-head{padding-right:0}#orderModal .modal-close{position:static;justify-self:center;margin-top:6px}#orderModal .modal-actions{flex-direction:column}#orderModal .input-row{grid-template-columns:1fr}}
+        @media (max-width:760px){.product-ui{padding:18px 0 64px}.gallery-rail{grid-template-columns:1fr;gap:10px}.gallery-thumb-rail{position:relative;top:0;flex-direction:row;gap:8px;max-height:none;overflow-x:auto;overflow-y:hidden;padding-right:0;padding-bottom:4px}.gallery-thumb-btn{min-width:72px;max-width:72px}.gallery-main{aspect-ratio:auto !important;overflow:visible;border:1px solid rgba(28,27,27,.12);box-shadow:var(--shadow-soft);background:var(--surface);border-radius:0 !important}.gallery-slider{height:auto !important;border-radius:0 !important;background:var(--surface) !important}.gallery-slide{padding:0;align-items:flex-start;justify-content:flex-start;min-height:0;background:var(--surface);height:auto}.gallery-open-btn{justify-content:flex-start;align-items:flex-start;height:auto}.gallery-slide picture,.gallery-slide img,.gallery-open-btn picture,.gallery-open-btn img{width:100% !important;max-width:100%;height:auto !important;max-height:none !important;object-fit:contain !important;aspect-ratio:auto !important;border-radius:0 !important}.gallery-slide picture,.gallery-open-btn picture{overflow:visible !important}.gallery-nav{width:36px;height:36px}.summary-operational-icons{display:inline-flex}.summary-operational-icons-desktop{display:none}.summary-actions{display:grid;grid-template-columns:1fr}.summary-payment-logo{width:72px;height:44px;padding:7px 8px}.summary-title{font-size:24px}.summary-sale-price{font-size:24px}.related-heading{align-items:flex-start;flex-direction:column}.related-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 14px}.related-title{font-size:12px}#orderModal .modal{padding:18px}#orderModal .modal-head{padding-right:0}#orderModal .modal-close{position:static;justify-self:center;margin-top:6px}#orderModal .modal-actions{flex-direction:column}#orderModal .input-row{grid-template-columns:1fr}}
 </style>
 
     <main class="main product-ui">
@@ -402,6 +429,28 @@ $deliveryAllAdditionalKg = (float) ($settings['delivery_all_additional_kg'] ?? 0
                         <div class="summary-chips">
                             <?php if (!empty($parentCategoryLink) && !empty($parentCategoryLink['name'])): ?><a class="summary-chip" href="<?= htmlspecialchars($baseUrl . 'shop/category/' . $parentCategoryLink['id']) ?>"><?= htmlspecialchars($parentCategoryLink['name']) ?></a><?php endif; ?>
                             <?php if (!empty($currentCategoryLink) && !empty($currentCategoryLink['name'])): ?><a class="summary-chip" href="<?= htmlspecialchars($baseUrl . 'shop/category/' . $currentCategoryLink['id']) ?>"><?= htmlspecialchars($currentCategoryLink['name']) ?></a><?php endif; ?>
+                            <span class="summary-operational-icons">
+                                <?php if ($inquiryWhatsappUrl !== ''): ?>
+                                    <a class="summary-operational-icon summary-operational-icon-link" href="<?= htmlspecialchars($inquiryWhatsappUrl) ?>" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp inquiry">
+                                        <img src="<?= htmlspecialchars($operationalWhatsappIcon) ?>" alt="WhatsApp inquiry icon">
+                                    </a>
+                                <?php else: ?>
+                                    <span class="summary-operational-icon"><img src="<?= htmlspecialchars($operationalWhatsappIcon) ?>" alt="WhatsApp inquiry icon"></span>
+                                <?php endif; ?>
+                                <button
+                                    type="button"
+                                    class="summary-operational-icon summary-operational-icon-btn"
+                                    onclick="toggleLikeIcon(this)"
+                                    data-like-icon-button
+                                    data-default-icon="<?= htmlspecialchars($operationalHeartIcon) ?>"
+                                    data-active-icon="<?= htmlspecialchars($operationalHeartIconActive) ?>"
+                                    aria-label="Like product">
+                                    <img src="<?= htmlspecialchars($operationalHeartIcon) ?>" alt="Wishlist icon">
+                                </button>
+                                <button type="button" class="summary-operational-icon summary-operational-icon-btn" onclick="openSharePopup(event)" aria-label="Share product">
+                                    <img src="<?= htmlspecialchars($operationalShareIcon) ?>" alt="Share icon">
+                                </button>
+                            </span>
                             <?php if (!empty($product['free_shipping'])): ?><span class="summary-chip">Free Shipping</span><?php endif; ?>
                         </div>
 
@@ -485,6 +534,28 @@ $deliveryAllAdditionalKg = (float) ($settings['delivery_all_additional_kg'] ?? 0
                                                 <img src="<?= htmlspecialchars($modeLogo['src']) ?>" alt="<?= htmlspecialchars($modeLogo['alt']) ?>">
                                             </span>
                                         <?php endforeach; ?>
+                                    </div>
+                                    <div class="summary-operational-icons-desktop">
+                                        <?php if ($inquiryWhatsappUrl !== ''): ?>
+                                            <a class="summary-operational-icon summary-operational-icon-link" href="<?= htmlspecialchars($inquiryWhatsappUrl) ?>" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp inquiry">
+                                                <img src="<?= htmlspecialchars($operationalWhatsappIcon) ?>" alt="WhatsApp inquiry icon">
+                                            </a>
+                                        <?php else: ?>
+                                            <span class="summary-operational-icon"><img src="<?= htmlspecialchars($operationalWhatsappIcon) ?>" alt="WhatsApp inquiry icon"></span>
+                                        <?php endif; ?>
+                                        <button
+                                            type="button"
+                                            class="summary-operational-icon summary-operational-icon-btn"
+                                            onclick="toggleLikeIcon(this)"
+                                            data-like-icon-button
+                                            data-default-icon="<?= htmlspecialchars($operationalHeartIcon) ?>"
+                                            data-active-icon="<?= htmlspecialchars($operationalHeartIconActive) ?>"
+                                            aria-label="Like product">
+                                            <img src="<?= htmlspecialchars($operationalHeartIcon) ?>" alt="Wishlist icon">
+                                        </button>
+                                        <button type="button" class="summary-operational-icon summary-operational-icon-btn" onclick="openSharePopup(event)" aria-label="Share product">
+                                            <img src="<?= htmlspecialchars($operationalShareIcon) ?>" alt="Share icon">
+                                        </button>
                                     </div>
                                 </div>
                             <?php endif; ?>
@@ -573,15 +644,15 @@ $deliveryAllAdditionalKg = (float) ($settings['delivery_all_additional_kg'] ?? 0
     <div class="payment-sheet" onclick="event.stopPropagation()" style="width:min(100%,720px);max-height:calc(100vh - 12px);max-height:calc(100dvh - 12px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--surface);border-radius:24px 24px 0 0;padding:18px 18px calc(24px + env(safe-area-inset-bottom, 0px));box-shadow:0 -20px 40px rgba(0,0,0,.18);">
         <div style="width:54px;height:5px;border-radius:999px;background:#e7e3e1;margin:0 auto 16px;"></div>
         <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px;">
-            <div><div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a0a0a0;margin-bottom:6px;">Choose Payment Method</div><h3 style="margin:0;font-size:22px;">Select how you want to order</h3></div>
+            <div><div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a0a0a0;margin-bottom:6px;">Choose Payment Method</div><h3 style="margin:0;font-size:22px;font-family:sans-serif;">Select how you want to order</h3></div>
             <button type="button" onclick="closePaymentMethodSheet()" style="border:0;background:transparent;font-size:20px;cursor:pointer;"><i class="fas fa-times"></i></button>
         </div>
         <div style="display:grid;gap:12px;">
-            <?php if ($whatsappEnabled): ?><button type="button" class="payment-method-card" onclick="choosePaymentMethod('whatsapp')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #eee;border-radius:18px;background:linear-gradient(180deg,color-mix(in srgb, var(--btn-cart-whatsapp-bg, #25d366) 12%, var(--surface)) 0%, var(--surface) 100%);color:var(--btn-cart-whatsapp-bg, #25d366);cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--btn-cart-whatsapp-bg, #25d366) 18%, #ffffff);color:inherit;font-size:18px;"><i class="fab fa-whatsapp"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">WhatsApp Order</strong><small style="color:color-mix(in srgb, var(--btn-cart-whatsapp-bg, #25d366) 78%, transparent);line-height:1.5;">Send your order details directly to the shop on WhatsApp.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
-            <?php if ($codEnabled): ?><button type="button" class="payment-method-card" onclick="choosePaymentMethod('cod')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #eee;border-radius:18px;background:linear-gradient(180deg,color-mix(in srgb, #d4af37 12%, var(--surface)) 0%, var(--surface) 100%);color:#8f6b00;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, #d4af37 18%, #ffffff);color:inherit;font-size:18px;"><i class="fas fa-hand-holding-dollar"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">Cash on Delivery</strong><small style="color:color-mix(in srgb, #8f6b00 78%, transparent);line-height:1.5;">Place the order now and pay when it is delivered.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
-            <?php if ($payhereReady): ?><button type="button" class="payment-method-card" onclick="choosePaymentMethod('payhere')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #eee;border-radius:18px;background:linear-gradient(180deg,color-mix(in srgb, var(--btn-cart-payhere-bg, #111111) 10%, var(--surface)) 0%, var(--surface) 100%);color:var(--btn-cart-payhere-bg, #111111);cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--btn-cart-payhere-bg, #111111) 16%, #ffffff);color:inherit;font-size:18px;"><i class="fas fa-credit-card"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">Card Payments</strong><small style="color:color-mix(in srgb, var(--btn-cart-payhere-bg, #111111) 78%, transparent);line-height:1.5;">Pay online securely before your order is confirmed.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
-            <?php if ($kokoReady): ?><button type="button" class="payment-method-card" onclick="choosePaymentMethod('koko')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #eee;border-radius:18px;background:linear-gradient(180deg,color-mix(in srgb, var(--btn-cart-koko-bg, #fff3dc) 12%, var(--surface)) 0%, var(--surface) 100%);color:var(--btn-cart-koko-text, #111111);cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--btn-cart-koko-bg, #fff3dc) 18%, #ffffff);color:inherit;font-size:18px;"><i class="fas fa-layer-group"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">KOKO Payments</strong><small style="color:color-mix(in srgb, var(--btn-cart-koko-text, #111111) 78%, transparent);line-height:1.5;">Split your payment into 3 interest-free installments.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
-            <?php if ($bankTransferEnabled): ?><button type="button" class="payment-method-card" onclick="choosePaymentMethod('bank_transfer')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #eee;border-radius:18px;background:linear-gradient(180deg,color-mix(in srgb, #7b4d1a 12%, var(--surface)) 0%, var(--surface) 100%);cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, #7b4d1a 16%, #ffffff);color:#7b4d1a;font-size:18px;"><i class="fas fa-building-columns"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;">Bank Transfer</strong><small style="color:#666;line-height:1.5;">Place the order now and send the payment using the bank details provided.</small></span><i class="fas fa-chevron-right" style="color:#999;"></i></button><?php endif; ?>
+            <?php if ($payhereReady): ?><button type="button" class="payment-method-card" onclick="choosePaymentMethod('payhere')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #d4af37;border-radius:18px;background:linear-gradient(135deg,#b68a2d 0%,#d4af37 52%,#a8791d 100%);color:#111111;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.34);color:inherit;font-size:18px;"><i class="fas fa-credit-card"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">Card Payments</strong><small style="color:rgba(17,17,17,.78);line-height:1.5;">Pay online securely before your order is confirmed.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
+            <?php if ($kokoReady): ?><button type="button" class="payment-method-card" onclick="choosePaymentMethod('koko')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #e8b9d5;border-radius:18px;background:linear-gradient(135deg,#f4d0e5 0%,#f8e0ee 52%,#e9b7d4 100%);color:#111111;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.45);color:inherit;font-size:18px;"><i class="fas fa-layer-group"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">KOKO Payments</strong><small style="color:rgba(17,17,17,.78);line-height:1.5;">Split your payment into 3 interest-free installments.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
+            <?php if ($whatsappEnabled): ?><button type="button" class="payment-method-card" onclick="choosePaymentMethod('whatsapp')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #1fae57;border-radius:18px;background:linear-gradient(135deg,#25d366 0%,#1ebe5d 48%,#128c7e 100%);color:#ffffff;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.24);color:inherit;font-size:18px;"><i class="fab fa-whatsapp"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">WhatsApp Order</strong><small style="color:rgba(255,255,255,.9);line-height:1.5;">Send your order details directly to the shop on WhatsApp.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
+            <?php if ($codEnabled): ?><button type="button" class="payment-method-card" onclick="choosePaymentMethod('cod')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #d8d8d8;border-radius:18px;background:linear-gradient(135deg,#f3f3f3 0%,#ebebeb 50%,#dfdfdf 100%);color:#2d2d2d;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.7);color:inherit;font-size:18px;"><i class="fas fa-hand-holding-dollar"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">Cash on Delivery</strong><small style="color:rgba(45,45,45,.78);line-height:1.5;">Place the order now and pay when it is delivered.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
+            <?php if ($bankTransferEnabled): ?><button type="button" class="payment-method-card" onclick="choosePaymentMethod('bank_transfer')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #4a4a4a;border-radius:18px;background:linear-gradient(135deg,#4f4f4f 0%,#3f3f3f 50%,#2f2f2f 100%);color:#ffffff;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.16);color:inherit;font-size:18px;"><i class="fas fa-building-columns"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">Bank Transfer</strong><small style="color:rgba(255,255,255,.88);line-height:1.5;">Place the order now and send the payment using the bank details provided.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
         </div>
     </div>
 </div>
@@ -650,7 +721,26 @@ $deliveryAllAdditionalKg = (float) ($settings['delivery_all_additional_kg'] ?? 0
     </div>
 </div>
 
-    <script>
+<div id="shareModal" class="share-modal-overlay" onclick="closeSharePopup(event)">
+    <div class="share-modal" onclick="event.stopPropagation()">
+        <div class="share-modal-head">
+            <h3>Share Product</h3>
+            <button type="button" class="share-modal-close" onclick="closeSharePopup()" aria-label="Close share popup">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="share-modal-grid">
+            <button type="button" class="share-modal-btn" onclick="shareTo('facebook')">Facebook</button>
+            <button type="button" class="share-modal-btn" onclick="shareTo('instagram')">Instagram</button>
+            <button type="button" class="share-modal-btn" onclick="shareTo('x')">X</button>
+            <button type="button" class="share-modal-btn" onclick="shareTo('linkedin')">LinkedIn</button>
+            <button type="button" class="share-modal-btn" onclick="copyProductLink()">Copy Link</button>
+        </div>
+        <div id="shareCopyStatus" class="share-modal-copy-status"></div>
+    </div>
+</div>
+
+<script>
     const productId = <?= (int) ($product['id'] ?? 0) ?>;
     const productTitle = <?= json_encode((string) ($product['title'] ?? 'Product')) ?>;
     const currencyCode = <?= json_encode((string) $currency) ?>;
@@ -665,6 +755,7 @@ $deliveryAllAdditionalKg = (float) ($settings['delivery_all_additional_kg'] ?? 0
     const deliveryRatesMap = <?= json_encode($deliveryRatesMap ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
     const variantStockRows = <?= json_encode($variant_stock_rows ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
     const defaultProductImageUrl = <?= json_encode($mainImageUrl) ?>;
+    const productSku = <?= json_encode(trim((string) ($product['sku'] ?? ''))) ?>;
     const shopWhatsappTarget = <?= json_encode($shopWhatsappTarget) ?>;
     const recaptchaCheckoutEnabled = <?= json_encode($recaptchaCheckoutEnabled) ?>;
     const recaptchaSiteKey = <?= json_encode($recaptchaSiteKey) ?>;
@@ -887,6 +978,12 @@ $deliveryAllAdditionalKg = (float) ($settings['delivery_all_additional_kg'] ?? 0
             moveImageModal(1);
         }
     }
+    function handleShareModalKeydown(event) {
+        if (event.key !== 'Escape') return;
+        const modal = document.getElementById('shareModal');
+        if (!modal || modal.style.display === 'none') return;
+        closeSharePopup();
+    }
 
     function openSizeGuide() {
         const modal = document.getElementById('sgModal');
@@ -967,6 +1064,16 @@ $deliveryAllAdditionalKg = (float) ($settings['delivery_all_additional_kg'] ?? 0
         const activeVariant = getActiveVariantRow();
         if (activeVariant && activeVariant.image_url) return activeVariant.image_url;
         return defaultProductImageUrl;
+    }
+
+    function getCurrentSku() {
+        const activeVariant = getActiveVariantRow();
+        if (activeVariant) {
+            const variantSku = String(activeVariant.variant_sku || activeVariant.sku || '').trim();
+            if (variantSku) return variantSku;
+        }
+        const baseSku = String(productSku || '').trim();
+        return baseSku || 'N/A';
     }
 
     function isVariantOutOfStock(variantRow) {
@@ -1175,7 +1282,139 @@ $deliveryAllAdditionalKg = (float) ($settings['delivery_all_additional_kg'] ?? 0
     function choosePaymentMethod(mode) { orderMode = mode; closePaymentMethodSheet(); openOrderModal(); updateOrderButtonLabel(); }
     function buildOrderPayload() { return { _csrf: (typeof csrfToken !== 'undefined' ? csrfToken : ''), product_id: productId, quantity: parseInt(document.getElementById('qtyInput').value, 10) || 1, variants: getVariantText(), variant_key: getSelectedVariantKey(), customer_name: document.getElementById('ordName').value.trim(), email: document.getElementById('ordEmail').value.trim(), phone: document.getElementById('ordPhone1').value.trim(), phone_alt: document.getElementById('ordPhone2').value.trim(), address: document.getElementById('ordAddress').value.trim(), city: document.getElementById('ordCity').value.trim(), district: document.getElementById('ordDistrict').value.trim(), note: document.getElementById('ordNote').value.trim() }; }
     function validateOrderPayload(payload) { if (!payload.customer_name || !payload.email || !payload.phone || !payload.address || !payload.city || !payload.district) { alert('Please fill in all required fields.'); return false; } if (!hasCompletedVariationSelection() && getRequiredVariationCount() > 0) { alert('Please choose all product options before checkout.'); return false; } return true; }
-    function openWhatsAppOrder(payload) { if (!shopWhatsappTarget) { alert('WhatsApp ordering is not configured yet.'); return; } const lines = ['*New Product Order*', 'Product: ' + productTitle, 'Quantity: ' + payload.quantity, payload.variants ? 'Variant: ' + payload.variants : '', 'Name: ' + payload.customer_name, 'Email: ' + payload.email, 'Phone: ' + payload.phone, payload.phone_alt ? 'Phone 2: ' + payload.phone_alt : '', 'Address: ' + payload.address, 'City: ' + payload.city, 'District: ' + payload.district, payload.note ? 'Note: ' + payload.note : ''].filter(Boolean); window.open('https://wa.me/' + shopWhatsappTarget + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener'); }
+    function openWhatsAppOrder(payload) {
+        if (!shopWhatsappTarget) { alert('WhatsApp ordering is not configured yet.'); return; }
+        const quote = updateOrderTotals() || calculateShippingQuote(payload.district || '');
+        const baseTotal = (quote.hasRate || quote.chargeableWeight === 0) ? Number(quote.total || 0) : Number(quote.subtotal || 0);
+        const handlingFee = calculateKokoHandlingFee(baseTotal);
+        const deliveryFeeText = quote.chargeableWeight === 0 ? 'Free' : (quote.hasRate ? formatMoney(quote.shipping) : 'Select district');
+        const orderTotalText = formatMoney(baseTotal + handlingFee);
+        const lines = [
+            '\u2728 *Hi, I would like to place an order!*',
+            '',
+            '\u2713 *Product Details*',
+            '\u2022 *Product Name:* _' + productTitle + '_',
+            '\u2022 *Product Price:* _' + formatMoney(getCurrentUnitPrice()) + '_',
+            '\u2022 *SKU:* _' + getCurrentSku() + '_',
+            payload.variants ? '\u2022 *Variant:* _' + payload.variants + '_' : '',
+            '\u2022 *Quantity:* _' + payload.quantity + '_',
+            '',
+            '',
+            '\u2713 *Delivery Details*',
+            '\u2022 *Full Name:* _' + payload.customer_name + '_',
+            '\u2022 *Email Address:* _' + payload.email + '_',
+            '\u2022 *Address:* _' + payload.address + '_',
+            '\u2022 *City:* _' + payload.city + '_',
+            '\u2022 *District:* _' + payload.district + '_',
+            '\u2022 *Phone Number 1:* _' + payload.phone + '_',
+            '\u2022 *Phone Number 2:* _' + (payload.phone_alt || 'N/A') + '_',
+            '\u2022 *Special Note:* _' + (payload.note || 'N/A') + '_',
+            '',
+            '',
+            '\u2713 *Order Summary*',
+            '\u2022 *Subtotal:* _' + formatMoney(quote.subtotal) + '_',
+            '\u2022 *Delivery Fee:* _' + deliveryFeeText + '_',
+            '\u2022 *Order Total:* _' + orderTotalText + '_',
+            '',
+            '\uD83D\uDE4F _Thank you!_'
+        ];
+        window.open('https://wa.me/' + shopWhatsappTarget + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
+    }
+    function openSharePopup(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        const isMobileViewport = window.matchMedia('(max-width: 992px)').matches;
+        const isMobileUa = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+        const isMobileContext = isMobileViewport || isMobileUa;
+
+        if (isMobileContext && navigator.share) {
+            navigator.share({
+                title: document.title || 'Product',
+                text: productTitle || (document.title || 'Product'),
+                url: window.location.href
+            }).catch(function () {
+                // On mobile, do not open popup; keep UX native-only.
+            });
+            return;
+        }
+        if (isMobileContext) {
+            copyProductLink();
+            showProductToast('Link copied. You can share it now.', 'success');
+            return;
+        }
+        const modal = document.getElementById('shareModal');
+        const status = document.getElementById('shareCopyStatus');
+        if (status) status.textContent = '';
+        if (modal) modal.style.display = 'flex';
+    }
+    function closeSharePopup(event) {
+        if (event && event.target && event.currentTarget && event.target !== event.currentTarget) return;
+        const modal = document.getElementById('shareModal');
+        if (modal) modal.style.display = 'none';
+    }
+    function shareTo(platform) {
+        const url = window.location.href;
+        const title = document.title || 'Product';
+        let shareUrl = '';
+        if (platform === 'facebook') {
+            shareUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
+        } else if (platform === 'x') {
+            shareUrl = 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(title);
+        } else if (platform === 'linkedin') {
+            shareUrl = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(url);
+        } else if (platform === 'instagram') {
+            shareUrl = 'https://www.instagram.com/';
+            const status = document.getElementById('shareCopyStatus');
+            if (status) status.textContent = 'Instagram does not support direct URL share. Use Copy Link.';
+        }
+        if (shareUrl !== '') {
+            window.open(shareUrl, '_blank', 'noopener,noreferrer');
+        }
+    }
+    function copyProductLink() {
+        const url = window.location.href;
+        const status = document.getElementById('shareCopyStatus');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(function () {
+                if (status) status.textContent = 'Link copied.';
+            }).catch(function () {
+                if (status) status.textContent = 'Unable to copy automatically.';
+            });
+            return;
+        }
+        const helper = document.createElement('textarea');
+        helper.value = url;
+        helper.setAttribute('readonly', '');
+        helper.style.position = 'absolute';
+        helper.style.left = '-9999px';
+        document.body.appendChild(helper);
+        helper.select();
+        try {
+            document.execCommand('copy');
+            if (status) status.textContent = 'Link copied.';
+        } catch (error) {
+            if (status) status.textContent = 'Unable to copy automatically.';
+        }
+        document.body.removeChild(helper);
+    }
+    function toggleLikeIcon(button) {
+        if (!button) return;
+        const img = button.querySelector('img');
+        if (!img) return;
+        const defaultIcon = button.getAttribute('data-default-icon') || '';
+        const activeIcon = button.getAttribute('data-active-icon') || '';
+        if (!defaultIcon || !activeIcon) return;
+        const isActive = button.getAttribute('data-liked') === '1';
+        if (isActive) {
+            img.setAttribute('src', defaultIcon);
+            button.setAttribute('data-liked', '0');
+        } else {
+            img.setAttribute('src', activeIcon);
+            button.setAttribute('data-liked', '1');
+        }
+    }
     async function submitOrder() {
         const payload = buildOrderPayload(); if (!validateOrderPayload(payload)) return;
         saveCustomerProfile(payload);
@@ -1237,4 +1476,5 @@ $deliveryAllAdditionalKg = (float) ($settings['delivery_all_additional_kg'] ?? 0
         updatePurchaseButtonsState();
     });
     document.addEventListener('keydown', handleImageModalKeydown);
+    document.addEventListener('keydown', handleShareModalKeydown);
 </script>

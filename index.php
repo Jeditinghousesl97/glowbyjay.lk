@@ -150,8 +150,8 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
         .hero-slide img{display:block;width:100% !important;height:auto !important;max-width:100%;max-height:none !important;object-fit:contain !important;object-position:center center;border-radius:0 !important}
         .hero-media > img{display:block;width:100% !important;height:auto !important;max-width:100%;max-height:none !important;object-fit:contain !important;object-position:center center;border-radius:0 !important}
         .hero-slider-dots{position:absolute;left:0;right:0;bottom:18px;z-index:3;display:flex;justify-content:center;gap:8px;padding:0 16px;pointer-events:none}
-        .hero-slider-dot{width:18px;height:3px;border:0;background:rgba(28,27,27,.22);padding:0;pointer-events:auto;cursor:pointer}
-        .hero-slider-dot.active{background:var(--primary)}
+        .hero-slider-dot{width:18px;height:3px;border:0;background:#d4af37;padding:0;pointer-events:auto;cursor:pointer}
+        .hero-slider-dot.active{background:#b68a2d}
         .hero-overlay{display:none}
         .section{padding:88px 0}.section-surface-low{background:var(--surface-low)}.section-dark{background:#1a1a1a;color:#fff;padding:118px 0 132px}
         .section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:28px}
@@ -285,6 +285,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
         .featured-products-section .section-title,
         .recently-added-section .section-title{
             font-family:"Manrope",sans-serif !important;
+            text-transform:uppercase;
         }
         .featured-products-section .product-price{
             color:#d4af37 !important;
@@ -307,6 +308,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
         }
         .sale-archive-section .section-title{
             font-family:"Manrope",sans-serif !important;
+            text-transform:uppercase;
         }
         .sale-archive-section .label{
             color:rgba(28,27,27,.55);

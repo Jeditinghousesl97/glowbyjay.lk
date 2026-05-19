@@ -3,3 +3,4 @@
 {"time":"2026-04-11T19:56:50+08:00","event":"notify_received","ip":"104.23.239.41","context":{"order_number":"ORD-260411-2471","payment_id":"320032590665","status_code":"2"}}
 {"time":"2026-04-11T19:56:50+08:00","event":"notify_processed","ip":"104.23.239.41","context":{"order_number":"ORD-260411-2471","payment_id":"320032590665","payment_status":"paid","status_code":"2"}}
 {"time":"2026-05-17T06:51:59+02:00","event":"checkout_redirect_ready","ip":"::1","context":{"order_id":139,"order_number":"ORD-260517-5696","source":"single_payhere","amount":"5300.00","currency":"LKR","items":"Glow by JAY Order","endpoint":"https://sandbox.payhere.lk/pay/checkout"}}
+{"time":"2026-05-17T05:58:04+01:00","event":"checkout_redirect_ready","ip":"112.134.197.73","context":{"order_id":140,"order_number":"ORD-260517-1426","source":"single_payhere","amount":"4840.00","currency":"LKR","items":"Glow by JAY Order","endpoint":"https://sandbox.payhere.lk/pay/checkout"}}

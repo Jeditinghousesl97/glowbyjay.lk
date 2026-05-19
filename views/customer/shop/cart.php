@@ -14,6 +14,7 @@ $cartItems = is_array($cart ?? null) ? array_values($cart) : [];
 $cartCount = 0;
 $subtotal = 0.0;
 $jsItems = [];
+$jsCartWhatsappItems = [];
 foreach ($cartItems as $idx => $item) {
     $qty = max(1, (int)($item['qty'] ?? 1));
     $price = (float)($item['price'] ?? 0);
@@ -21,6 +22,12 @@ foreach ($cartItems as $idx => $item) {
     $subtotal += $price * $qty;
     $cartCount += $qty;
     $jsItems[] = ['index' => $idx, 'qty' => $qty, 'price' => $price, 'weight' => $weight, 'free' => !empty($item['is_free_shipping'])];
+    $jsCartWhatsappItems[] = [
+        'title' => trim((string)($item['title'] ?? 'Product')),
+        'variants' => trim((string)($item['variants'] ?? '')),
+        'qty' => $qty,
+        'price' => $price
+    ];
 }
 
 $districts = isset($deliveryDistricts) && is_array($deliveryDistricts) ? $deliveryDistricts : DeliveryHelper::districtList();
@@ -51,10 +58,10 @@ $kokoReady = class_exists('KokoGateway') && KokoGateway::isConfigured($settings)
 $recaptchaCheckoutEnabled = RecaptchaHelper::shouldProtectCheckout($settings);
 $recaptchaSiteKey = $recaptchaCheckoutEnabled ? RecaptchaHelper::siteKey($settings) : '';
 $modes = [];
-if (!empty($settings['whatsapp_ordering_enabled']) && $whatsappLink !== '') $modes[] = ['key' => 'whatsapp', 'label' => 'WhatsApp', 'icon' => 'fa-brands fa-whatsapp'];
-if (!empty($settings['cod_enabled'])) $modes[] = ['key' => 'cod', 'label' => 'Cash on Delivery', 'icon' => 'fa-solid fa-truck-fast'];
 if ($payhereReady) $modes[] = ['key' => 'payhere', 'label' => 'Card Payments', 'icon' => 'fa-solid fa-credit-card'];
 if ($kokoReady) $modes[] = ['key' => 'koko', 'label' => 'KOKO Payments', 'icon' => 'fa-solid fa-wallet'];
+if (!empty($settings['whatsapp_ordering_enabled']) && $whatsappLink !== '') $modes[] = ['key' => 'whatsapp', 'label' => 'WhatsApp', 'icon' => 'fa-brands fa-whatsapp'];
+if (!empty($settings['cod_enabled'])) $modes[] = ['key' => 'cod', 'label' => 'Cash on Delivery', 'icon' => 'fa-solid fa-truck-fast'];
 if (!empty($settings['bank_transfer_enabled']) && trim((string)($settings['bank_transfer_details'] ?? '')) !== '') $modes[] = ['key' => 'bank_transfer', 'label' => 'Bank Transfer', 'icon' => 'fa-solid fa-building-columns'];
 if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-solid fa-check'];
 ?>
@@ -165,21 +172,21 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
         flex-shrink:0;
         box-shadow:inset 0 0 0 1px rgba(31,31,31,.04)
     }
-    .cart-page .payment-method-card.whatsapp{background:linear-gradient(180deg,color-mix(in srgb, var(--btn-cart-whatsapp-bg, #25d366) 12%, var(--surface)) 0%, var(--surface) 100%)}
-    .cart-page .payment-method-card.whatsapp::before{background:var(--btn-cart-whatsapp-bg, #25d366)}
-    .cart-page .payment-method-card.whatsapp .payment-method-icon{background:color-mix(in srgb, var(--btn-cart-whatsapp-bg, #25d366) 18%, #ffffff);color:var(--btn-cart-whatsapp-bg, #25d366)}
-    .cart-page .payment-method-card.cod{background:linear-gradient(180deg,color-mix(in srgb, #d4af37 12%, var(--surface)) 0%, var(--surface) 100%);color:#8f6b00}
-    .cart-page .payment-method-card.cod::before{background:#d4af37}
-    .cart-page .payment-method-card.cod .payment-method-icon{background:color-mix(in srgb, #d4af37 18%, #ffffff);color:#8f6b00}
-    .cart-page .payment-method-card.payhere{background:linear-gradient(180deg,color-mix(in srgb, var(--btn-cart-payhere-bg, #111111) 10%, var(--surface)) 0%, var(--surface) 100%)}
-    .cart-page .payment-method-card.payhere::before{background:var(--btn-cart-payhere-bg, #111111)}
-    .cart-page .payment-method-card.payhere .payment-method-icon{background:color-mix(in srgb, var(--btn-cart-payhere-bg, #111111) 16%, #ffffff);color:var(--btn-cart-payhere-bg, #111111)}
-    .cart-page .payment-method-card.koko{background:linear-gradient(180deg,color-mix(in srgb, var(--btn-cart-koko-bg, #fff3dc) 12%, var(--surface)) 0%, var(--surface) 100%)}
-    .cart-page .payment-method-card.koko::before{background:var(--btn-cart-koko-bg, #fff3dc)}
-    .cart-page .payment-method-card.koko .payment-method-icon{background:color-mix(in srgb, var(--btn-cart-koko-bg, #fff3dc) 18%, #ffffff);color:var(--btn-cart-koko-text, #111111)}
-    .cart-page .payment-method-card.bank_transfer{background:linear-gradient(180deg,color-mix(in srgb, #7b4d1a 12%, var(--surface)) 0%, var(--surface) 100%)}
-    .cart-page .payment-method-card.bank_transfer::before{background:#7b4d1a}
-    .cart-page .payment-method-card.bank_transfer .payment-method-icon{background:color-mix(in srgb, #7b4d1a 16%, #ffffff);color:#7b4d1a}
+    .cart-page .payment-method-card.payhere{border-color:#d4af37;background:linear-gradient(135deg,#b68a2d 0%,#d4af37 52%,#a8791d 100%);color:#111111}
+    .cart-page .payment-method-card.payhere::before{background:#d4af37}
+    .cart-page .payment-method-card.payhere .payment-method-icon{background:rgba(255,255,255,.34);color:#111111}
+    .cart-page .payment-method-card.koko{border-color:#e8b9d5;background:linear-gradient(135deg,#f4d0e5 0%,#f8e0ee 52%,#e9b7d4 100%);color:#111111}
+    .cart-page .payment-method-card.koko::before{background:#e8b9d5}
+    .cart-page .payment-method-card.koko .payment-method-icon{background:rgba(255,255,255,.45);color:#111111}
+    .cart-page .payment-method-card.whatsapp{border-color:#1fae57;background:linear-gradient(135deg,#25d366 0%,#1ebe5d 48%,#128c7e 100%);color:#ffffff}
+    .cart-page .payment-method-card.whatsapp::before{background:#1fae57}
+    .cart-page .payment-method-card.whatsapp .payment-method-icon{background:rgba(255,255,255,.24);color:#ffffff}
+    .cart-page .payment-method-card.cod{border-color:#d5d7dc;background:linear-gradient(135deg,#f3f4f6 0%,#e5e7eb 55%,#d1d5db 100%);color:#1f2937}
+    .cart-page .payment-method-card.cod::before{background:#cbd5e1}
+    .cart-page .payment-method-card.cod .payment-method-icon{background:rgba(255,255,255,.78);color:#1f2937}
+    .cart-page .payment-method-card.bank_transfer{border-color:#4b5563;background:linear-gradient(135deg,#4b5563 0%,#374151 55%,#1f2937 100%);color:#ffffff}
+    .cart-page .payment-method-card.bank_transfer::before{background:#4b5563}
+    .cart-page .payment-method-card.bank_transfer .payment-method-icon{background:rgba(255,255,255,.18);color:#ffffff}
     .cart-page .payment-method-copy{min-width:0;flex:1}
     .cart-page .payment-method-copy strong{display:block;font-size:14px;font-weight:900;letter-spacing:.01em;color:inherit;margin-bottom:4px;line-height:1.3}
     .cart-page .payment-method-copy small{display:block;color:inherit;opacity:.82;font-size:11px;line-height:1.55}
@@ -446,6 +453,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     const recaptchaCheckoutEnabled = <?= json_encode($recaptchaCheckoutEnabled) ?>;
     const recaptchaSiteKey = <?= json_encode($recaptchaSiteKey) ?>;
     const modes = <?= json_encode($modes, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
+    const whatsappCartItems = <?= json_encode($jsCartWhatsappItems, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
     const customerProfileStorageKey = 'style1_customer_order_profile_v1';
     const customerName = document.getElementById('customerName');
     const customerEmail = document.getElementById('customerEmail');
@@ -630,7 +638,45 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
         }
         if (selectedMode === 'whatsapp') {
             if (!whatsappLink) return toast('WhatsApp checkout is not configured.', 'error');
-            const lines = ['*New Cart Order*', 'Customer: ' + payload.customer_name, 'Email: ' + payload.email, 'Phone: ' + payload.phone, payload.phone_alt ? 'Alt Phone: ' + payload.phone_alt : '', 'Address: ' + payload.address, 'City: ' + payload.city, 'District: ' + payload.district, payload.note ? 'Note: ' + payload.note : ''].filter(Boolean);
+            const summarySubtotalEl = document.querySelector('[data-summary-subtotal]');
+            const summaryShippingEl = document.querySelector('[data-summary-shipping]');
+            const summaryTotalEl = document.querySelector('[data-summary-total]');
+            const productLines = ['\u2713 *Cart Products*', ''];
+            (Array.isArray(whatsappCartItems) ? whatsappCartItems : []).forEach(function (item, idx) {
+                const qty = Math.max(1, Number(item && item.qty ? item.qty : 1));
+                const unitPrice = Math.max(0, Number(item && item.price ? item.price : 0));
+                const title = String(item && item.title ? item.title : 'Product').trim() || 'Product';
+                const variant = String(item && item.variants ? item.variants : '').trim();
+                productLines.push((idx + 1) + '. *' + title + '*');
+                if (variant) productLines.push('   \u2022 *Variant:* _' + variant + '_');
+                productLines.push('   \u2022 *Qty:* _' + qty + '_');
+                productLines.push('   \u2022 *Unit Price:* _' + money(unitPrice) + '_');
+                productLines.push('   \u2022 *Line Total:* _' + money(unitPrice * qty) + '_');
+                productLines.push('');
+            });
+            const lines = [
+                '\u2728 *Hi, I would like to place a cart order!*',
+                '',
+                ...productLines,
+                '',
+                '\u2713 *Delivery Details*',
+                '\u2022 *Full Name:* _' + payload.customer_name + '_',
+                '\u2022 *Email Address:* _' + payload.email + '_',
+                '\u2022 *Address:* _' + payload.address + '_',
+                '\u2022 *City:* _' + payload.city + '_',
+                '\u2022 *District:* _' + payload.district + '_',
+                '\u2022 *Phone Number 1:* _' + payload.phone + '_',
+                '\u2022 *Phone Number 2:* _' + (payload.phone_alt || 'N/A') + '_',
+                '\u2022 *Special Note:* _' + (payload.note || 'N/A') + '_',
+                '',
+                '',
+                '\u2713 *Order Summary*',
+                '\u2022 *Subtotal:* _' + (summarySubtotalEl ? summarySubtotalEl.textContent : '') + '_',
+                '\u2022 *Delivery Fee:* _' + (summaryShippingEl ? summaryShippingEl.textContent : '') + '_',
+                '\u2022 *Order Total:* _' + (summaryTotalEl ? summaryTotalEl.textContent : '') + '_',
+                '',
+                '\uD83D\uDE4F _Thank you!_'
+            ];
             window.open(whatsappLink + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
             openOverlay('checkoutModal', false);
             return;

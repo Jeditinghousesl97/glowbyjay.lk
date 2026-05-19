@@ -7,7 +7,7 @@ if (!function_exists('customer_footer_render')) {
             $shopName = 'Online Shop';
         }
         $shopLogoUrl = ImageHelper::settingsImageUrl(
-            (string) ($settings['shop_logo'] ?? ''),
+            (string) ($settings['footer_logo'] ?? $settings['shop_logo'] ?? ''),
             'assets/uploads/1774110158_logo_logo.jpg'
         );
 
@@ -123,15 +123,19 @@ if (!function_exists('customer_footer_render')) {
         <?php endif; ?>
         <footer class="site-footer" aria-label="Site footer">
             <div class="site-footer-shell">
+                <div class="site-footer-top-badge-image">
+                    <img
+                        src="<?= htmlspecialchars($baseUrl . 'assets/footer-badges.png?v=' . (@filemtime(ROOT_PATH . 'assets/footer-badges.png') ?: time())) ?>"
+                        alt="Store trust badges"
+                        loading="lazy"
+                        decoding="async">
+                </div>
                 <div class="site-footer-grid">
                     <section class="site-footer-brand">
                         <span class="site-footer-eyebrow">Brand Story</span>
                         <a class="site-footer-brand-logo" href="<?= htmlspecialchars($baseUrl) ?>" aria-label="<?= htmlspecialchars($shopName) ?>">
                             <img src="<?= htmlspecialchars($shopLogoUrl) ?>" alt="<?= htmlspecialchars($shopName) ?>">
                         </a>
-                        <?php if (!empty($settings['shop_slogan'])): ?>
-                            <p class="site-footer-slogan"><?= htmlspecialchars($settings['shop_slogan']) ?></p>
-                        <?php endif; ?>
                         <p class="site-footer-copy"><?= htmlspecialchars($brandSummary) ?></p>
                         <?php if (!empty($socialLinks)): ?>
                             <div class="site-footer-social" aria-label="Social media links">
@@ -248,10 +252,10 @@ if (!function_exists('customer_footer_render')) {
                     aria-expanded="false"
                     aria-controls="siteFloatingContactPanel"
                     aria-label="Open quick contact menu">
-                    <span class="site-floating-contact-toggle-icon" aria-hidden="true">
-                        <i class="fa-brands fa-whatsapp"></i>
-                    </span>
-                    <span class="site-floating-contact-toggle-text">WHATSAPP</span>
+                    <img
+                        class="site-floating-contact-toggle-image"
+                        src="<?= htmlspecialchars($baseUrl . 'assets/whatsapp-floating-button.png?v=' . (@filemtime(ROOT_PATH . 'assets/whatsapp-floating-button.png') ?: time())) ?>"
+                        alt="WhatsApp">
                 </button>
             </div>
         <?php endif; ?>
@@ -396,39 +400,23 @@ if (!function_exists('customer_footer_render')) {
             .site-floating-contact-toggle{
                 display:inline-flex;
                 align-items:center;
-                gap:10px;
-                min-height:54px;
-                padding:0 18px 0 14px;
-                border:1px solid rgba(37,211,102,.18);
-                background:linear-gradient(135deg,#25d366 0%,#128c7e 100%);
-                color:#fff;
-                box-shadow:0 18px 38px rgba(18,140,126,.28);
+                justify-content:center;
+                padding:0;
+                border:0;
+                background:transparent;
+                box-shadow:none;
                 cursor:pointer;
-                transition:transform .2s ease, box-shadow .2s ease, filter .2s ease;
+                transition:transform .2s ease, filter .2s ease;
             }
             .site-floating-contact-toggle:hover{
                 transform:translateY(-2px);
-                box-shadow:0 22px 44px rgba(18,140,126,.34);
                 filter:saturate(1.05);
             }
-            .site-floating-contact-toggle-icon{
-                width:32px;
-                height:32px;
-                display:inline-flex;
-                align-items:center;
-                justify-content:center;
-                background:rgba(255,255,255,.18);
-            }
-            .site-floating-contact-toggle-icon i{
-                font-size:18px;
-                line-height:1;
-            }
-            .site-floating-contact-toggle-text{
-                font-size:10px;
-                font-weight:800;
-                letter-spacing:.18em;
-                text-transform:uppercase;
-                white-space:nowrap;
+            .site-floating-contact-toggle-image{
+                display:block;
+                width:170px;
+                max-width:42vw;
+                height:auto;
             }
             .site-footer-brand-logo{
                 display:inline-flex;
@@ -534,6 +522,7 @@ if (!function_exists('customer_footer_render')) {
                 font-style:normal;
                 font-size:24px;
                 line-height:24px;
+                text-transform:uppercase;
                 color:rgb(36, 24, 15);
             }
             .site-prefooter-reviews-head{
@@ -718,15 +707,11 @@ if (!function_exists('customer_footer_render')) {
                     padding:14px;
                 }
                 .site-floating-contact-toggle{
-                    min-height:48px;
-                    padding:0 14px 0 12px;
+                    padding:0;
                 }
-                .site-floating-contact-toggle-icon{
-                    width:28px;
-                    height:28px;
-                }
-                .site-floating-contact-toggle-text{
-                    font-size:9px;
+                .site-floating-contact-toggle-image{
+                    width:150px;
+                    max-width:48vw;
                 }
                 .site-footer-brand-logo{
                     max-width:240px;
