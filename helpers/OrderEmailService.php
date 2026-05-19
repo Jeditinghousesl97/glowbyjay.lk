@@ -207,7 +207,7 @@ class OrderEmailService
         return '
             <div style="margin:0; padding:24px; background:#f4f6fb; font-family:Arial,sans-serif; color:#111;">
                 <div style="max-width:680px; margin:0 auto; background:#ffffff; border-radius:24px; overflow:hidden; box-shadow:0 12px 32px rgba(0,0,0,0.08);">
-                    <div style="padding:28px 28px 18px; background:linear-gradient(135deg,#111111,#2f5dff); color:#fff;">
+                    <div style="padding:28px 28px 18px; background:linear-gradient(135deg,#a8791d 0%,#d4af37 55%,#b68a2d 100%); color:#111;">
                         ' . (!empty($logoUrl) ? '<img src="' . htmlspecialchars($logoUrl) . '" alt="' . htmlspecialchars($shopName) . '" style="width:64px;height:64px;border-radius:16px;object-fit:cover;background:#fff;padding:6px;margin-bottom:14px;">' : '') . '
                         <div style="font-size:24px; font-weight:800; margin-bottom:6px;">' . htmlspecialchars($shopName) . '</div>
                         <div style="font-size:14px; opacity:0.88;">' . htmlspecialchars($heading) . '</div>
