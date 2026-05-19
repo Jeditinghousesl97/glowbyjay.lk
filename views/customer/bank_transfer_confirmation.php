@@ -36,7 +36,7 @@ if (!empty($order) && $shopWhatsappNumber !== '') {
         <div style="width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:18px; background:#edf4ff; color:#1f5aa6; font-size:28px;">
             <i class="fas fa-building-columns"></i>
         </div>
-        <h1 style="margin:0 0 8px; font-size:30px; color:#111;">Bank Transfer Order Placed</h1>
+        <h1 style="margin:0 0 8px; font-size:30px; color:#111; font-family:sans-serif;">Bank Transfer Order Placed</h1>
         <p style="margin:0 0 24px; color:#666; line-height:1.7;">Your order has been placed. Please use the bank details below to complete the payment, then contact the shop owner with your payment reference if needed.</p>
 
         <?php if (!empty($order)): ?>
@@ -58,7 +58,7 @@ if (!empty($order) && $shopWhatsappNumber !== '') {
 
         <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:24px;">
             <?php if ($bankTransferWhatsappUrl !== ''): ?>
-                <a href="<?= htmlspecialchars($bankTransferWhatsappUrl) ?>" target="_blank" rel="noopener" style="padding:12px 18px; border-radius:999px; background:#25d366; color:#fff; text-decoration:none;">Send Receipt via WhatsApp</a>
+                <a href="<?= htmlspecialchars($bankTransferWhatsappUrl) ?>" target="_blank" rel="noopener" style="padding:12px 18px; border-radius:999px; background:#289b26; color:#fff; text-decoration:none;">Send Receipt via WhatsApp</a>
             <?php endif; ?>
             <a href="<?= BASE_URL ?>order/myOrders" style="padding:12px 18px; border-radius:999px; background:#111; color:#fff; text-decoration:none;">View My Orders</a>
             <a href="<?= BASE_URL ?>" style="padding:12px 18px; border-radius:999px; background:#f2f2f2; color:#222; text-decoration:none;">Back to Home</a>
