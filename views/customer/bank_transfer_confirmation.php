@@ -10,6 +10,25 @@ customer_layout_start([
     'seo_robots' => $seo_robots ?? '',
     'seo_json_ld' => $seo_json_ld ?? []
 ]);
+
+$shopWhatsappNumber = preg_replace('/[^0-9]/', '', (string) ($settings['shop_whatsapp'] ?? ''));
+if ($shopWhatsappNumber === '') {
+    $shopWhatsappNumber = preg_replace('/[^0-9]/', '', (string) ($settings['social_whatsapp'] ?? ''));
+}
+$bankTransferWhatsappUrl = '';
+if (!empty($order) && $shopWhatsappNumber !== '') {
+    $orderCurrency = (string) ($order['currency'] ?? 'LKR');
+    $orderTotal = number_format((float) ($order['total_amount'] ?? 0), 2);
+    $bankTransferMessage = "Hi, I sent the Bank Transfer receipt for my order.\n"
+        . "Order Number: " . (string) ($order['order_number'] ?? '') . "\n"
+        . "Customer Name: " . (string) ($order['customer_name'] ?? '') . "\n"
+        . "Amount: " . $orderCurrency . " " . $orderTotal . "\n"
+        . "Payment Method: Bank Transfer\n"
+        . "Email: " . (string) ($order['email'] ?? '') . "\n"
+        . "Phone: " . (string) ($order['phone'] ?? '') . "\n"
+        . "Note: Please verify my transfer and confirm this order.";
+    $bankTransferWhatsappUrl = 'https://wa.me/' . $shopWhatsappNumber . '?text=' . rawurlencode($bankTransferMessage);
+}
 ?>
 
 <div style="max-width: 760px; margin: 60px auto 0; padding: 24px 0 48px;">
@@ -38,6 +57,9 @@ customer_layout_start([
         <?php endif; ?>
 
         <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:24px;">
+            <?php if ($bankTransferWhatsappUrl !== ''): ?>
+                <a href="<?= htmlspecialchars($bankTransferWhatsappUrl) ?>" target="_blank" rel="noopener" style="padding:12px 18px; border-radius:999px; background:#25d366; color:#fff; text-decoration:none;">Send Receipt via WhatsApp</a>
+            <?php endif; ?>
             <a href="<?= BASE_URL ?>order/myOrders" style="padding:12px 18px; border-radius:999px; background:#111; color:#fff; text-decoration:none;">View My Orders</a>
             <a href="<?= BASE_URL ?>" style="padding:12px 18px; border-radius:999px; background:#f2f2f2; color:#222; text-decoration:none;">Back to Home</a>
         </div>

@@ -170,7 +170,7 @@ class OrderEmailService
 
     private function renderTemplate(array $settings, $heading, $intro, array $order, $currency, $statusLabel, $paymentLabel, $methodLabel, $forCustomer)
     {
-        $logoUrl = SeoHelper::normalizeAssetUrl($settings['shop_logo'] ?? '');
+        $logoUrl = SeoHelper::normalizeAssetUrl($settings['shop_favicon'] ?? ($settings['shop_logo'] ?? ''));
         $shopName = SeoHelper::shopName($settings);
         $shopAbout = nl2br(htmlspecialchars((string) ($settings['shop_about'] ?? '')));
         $shopWhatsapp = htmlspecialchars((string) ($settings['shop_whatsapp'] ?? ''));
