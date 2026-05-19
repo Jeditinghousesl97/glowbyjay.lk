@@ -11,6 +11,12 @@ customer_layout_start([
     'seo_json_ld' => $seo_json_ld ?? []
 ]);
 
+$orderTopIcon = !empty($settings['shop_favicon'])
+    ? ImageHelper::settingsImageUrl($settings['shop_favicon'], str_replace('/Ecom-CMS/', BASE_URL, (string) $settings['shop_favicon']))
+    : (!empty($settings['shop_logo'])
+        ? ImageHelper::settingsImageUrl($settings['shop_logo'], str_replace('/Ecom-CMS/', BASE_URL, (string) $settings['shop_logo']))
+        : BASE_URL . 'assets/images/placeholder.png');
+
 $shopWhatsappNumber = preg_replace('/[^0-9]/', '', (string) ($settings['shop_whatsapp'] ?? ''));
 if ($shopWhatsappNumber === '') {
     $shopWhatsappNumber = preg_replace('/[^0-9]/', '', (string) ($settings['social_whatsapp'] ?? ''));
@@ -33,8 +39,8 @@ if (!empty($order) && $shopWhatsappNumber !== '') {
 
 <div style="max-width: 760px; margin: 60px auto 0; padding: 24px 0 48px;">
     <div style="background: #fff; border-radius: 28px; padding: 28px; box-shadow: 0 16px 40px rgba(0,0,0,0.06);">
-        <div style="width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:18px; background:#edf4ff; color:#1f5aa6; font-size:28px;">
-            <i class="fas fa-building-columns"></i>
+        <div style="display:flex; align-items:center; justify-content:flex-start; margin-bottom:18px;">
+            <img src="<?= htmlspecialchars($orderTopIcon) ?>" alt="Website favicon" style="width:56px; height:56px; object-fit:contain;">
         </div>
         <h1 style="margin:0 0 8px; font-size:30px; color:#111; font-family:sans-serif;">Bank Transfer Order Placed</h1>
         <p style="margin:0 0 24px; color:#666; line-height:1.7;">Your order has been placed. Please use the bank details below to complete the payment, then contact the shop owner with your payment reference if needed.</p>

@@ -237,21 +237,21 @@ customer_layout_start([
         justify-content:center;
         min-height:40px;
         padding:0 16px;
-        background:#25d366;
+        background:#289b26;
         color:#fff !important;
         font-size:11px;
         font-weight:700;
         letter-spacing:.16em;
         text-transform:uppercase;
         text-decoration:none;
-        box-shadow:0 10px 22px rgba(37,211,102,.24);
+        box-shadow:0 10px 22px rgba(40,155,38,.24);
         transition:transform .2s ease, box-shadow .2s ease, background-color .2s ease;
     }
 
     .contact-whatsapp-btn:hover{
-        background:#20bd5a;
+        background:#289b26;
         transform:translateY(-1px);
-        box-shadow:0 14px 26px rgba(37,211,102,.3);
+        box-shadow:0 14px 26px rgba(40,155,38,.3);
     }
 
     .contact-care-social{
@@ -376,7 +376,7 @@ customer_layout_start([
     .contact-submit{
         min-width:214px;
         border:0;
-        background:#25d366;
+        background:#289b26;
         color:#fff;
         padding:18px 28px;
         font-size:11px;
@@ -385,12 +385,12 @@ customer_layout_start([
         font-weight:600;
         cursor:pointer;
         transition:transform .2s ease, box-shadow .2s ease, background-color .2s ease;
-        box-shadow:0 14px 28px rgba(37,211,102,.24);
+        box-shadow:0 14px 28px rgba(40,155,38,.24);
     }
 
     .contact-submit:hover{
         transform:translateY(-1px);
-        box-shadow:0 18px 34px rgba(37,211,102,.3);
+        box-shadow:0 18px 34px rgba(40,155,38,.3);
     }
 
     .contact-submit:disabled{

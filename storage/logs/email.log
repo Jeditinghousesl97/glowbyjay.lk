@@ -45,3 +45,6 @@
 {"time":"2026-05-19T13:08:38+02:00","event":"order_placed","recipient":"asseminate@gmail.com","message":"SMTP error: 501 Could not decode user and password for AUTH LOGIN"}
 {"time":"2026-05-19T13:08:40+02:00","event":"order_placed","recipient":"jeditinghousesl@gmail.com","message":"SMTP error: 501 Could not decode user and password for AUTH LOGIN"}
 {"time":"2026-05-19T13:08:42+02:00","event":"order_placed","recipient":"no-reply@glowbyjay.lk","message":"SMTP error: 501 Could not decode user and password for AUTH LOGIN"}
+{"time":"2026-05-19T13:22:56+02:00","event":"order_placed","recipient":"asseminate@gmail.com","message":"SMTP error: 501 Could not decode user and password for AUTH LOGIN"}
+{"time":"2026-05-19T13:22:58+02:00","event":"order_placed","recipient":"jeditinghousesl@gmail.com","message":"SMTP error: 501 Could not decode user and password for AUTH LOGIN"}
+{"time":"2026-05-19T13:23:00+02:00","event":"order_placed","recipient":"no-reply@glowbyjay.lk","message":"SMTP error: 501 Could not decode user and password for AUTH LOGIN"}

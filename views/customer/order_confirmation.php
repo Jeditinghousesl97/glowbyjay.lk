@@ -10,12 +10,18 @@ customer_layout_start([
     'seo_robots' => $seo_robots ?? '',
     'seo_json_ld' => $seo_json_ld ?? []
 ]);
+
+$orderTopIcon = !empty($settings['shop_favicon'])
+    ? ImageHelper::settingsImageUrl($settings['shop_favicon'], str_replace('/Ecom-CMS/', BASE_URL, (string) $settings['shop_favicon']))
+    : (!empty($settings['shop_logo'])
+        ? ImageHelper::settingsImageUrl($settings['shop_logo'], str_replace('/Ecom-CMS/', BASE_URL, (string) $settings['shop_logo']))
+        : BASE_URL . 'assets/images/placeholder.png');
 ?>
 
 <div style="max-width: 760px; margin: 60px auto 0; padding: 24px 0 48px;">
     <div style="background: #fff; border-radius: 28px; padding: 28px; box-shadow: 0 16px 40px rgba(0,0,0,0.06);">
-        <div style="width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:18px; background:#fff5e8; color:#c97b10; font-size:28px;">
-            <i class="fas fa-box"></i>
+        <div style="display:flex; align-items:center; justify-content:flex-start; margin-bottom:18px;">
+            <img src="<?= htmlspecialchars($orderTopIcon) ?>" alt="Website favicon" style="width:56px; height:56px; object-fit:contain;">
         </div>
         <h1 style="margin:0 0 8px; font-size:30px; color:#111;">Order Placed</h1>
         <p style="margin:0 0 24px; color:#666; line-height:1.7;">Your Cash on Delivery order has been placed successfully. We will contact you before delivery if needed.</p>

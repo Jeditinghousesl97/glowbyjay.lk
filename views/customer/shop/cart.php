@@ -196,8 +196,8 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     .cart-page .payment-method-card.koko{border-color:#e8b9d5;background:linear-gradient(135deg,#f4d0e5 0%,#f8e0ee 52%,#e9b7d4 100%);color:#111111}
     .cart-page .payment-method-card.koko::before{background:#e8b9d5}
     .cart-page .payment-method-card.koko .payment-method-icon{background:rgba(255,255,255,.45);color:#111111}
-    .cart-page .payment-method-card.whatsapp{border-color:#1fae57;background:linear-gradient(135deg,#25d366 0%,#1ebe5d 48%,#128c7e 100%);color:#ffffff}
-    .cart-page .payment-method-card.whatsapp::before{background:#1fae57}
+    .cart-page .payment-method-card.whatsapp{border-color:#289b26;background:#289b26;color:#ffffff}
+    .cart-page .payment-method-card.whatsapp::before{background:#289b26}
     .cart-page .payment-method-card.whatsapp .payment-method-icon{background:rgba(255,255,255,.24);color:#ffffff}
     .cart-page .payment-method-card.cod{border-color:#d5d7dc;background:linear-gradient(135deg,#f3f4f6 0%,#e5e7eb 55%,#d1d5db 100%);color:#1f2937}
     .cart-page .payment-method-card.cod::before{background:#cbd5e1}

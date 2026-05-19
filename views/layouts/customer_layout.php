@@ -672,18 +672,18 @@ if (!function_exists('customer_layout_start')) {
             word-break:break-word;
         }
         .mobile-nav-contact-item.whatsapp-btn{
-            background:#25d366;
+            background:#289b26;
             color:#fff;
             border:0;
             padding:12px 14px;
-            box-shadow:0 10px 24px rgba(37,211,102,.24);
+            box-shadow:0 10px 24px rgba(40,155,38,.24);
             font-weight:700;
         }
         .mobile-nav-contact-item.whatsapp-btn i{
             color:#fff;
         }
         .mobile-nav-contact-item.whatsapp-btn:hover{
-            background:#20bd5a;
+            background:#289b26;
         }
         .mobile-nav-links a{
             padding:12px 0;
