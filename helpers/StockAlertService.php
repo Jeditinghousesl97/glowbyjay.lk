@@ -85,8 +85,8 @@ class StockAlertService
     private function sendOwnerEmail(array $state)
     {
         $settings = $this->settingModel->getAllPairs();
-        $ownerEmail = trim((string) ($settings['shop_owner_email'] ?? ''));
-        if ($ownerEmail === '' || empty($settings['smtp_host']) || empty($settings['smtp_port']) || empty($settings['smtp_from_email'])) {
+        $ownerEmails = $this->resolveOwnerEmails($settings);
+        if (empty($ownerEmails) || empty($settings['smtp_host']) || empty($settings['smtp_port']) || empty($settings['smtp_from_email'])) {
             return;
         }
 
@@ -98,11 +98,42 @@ class StockAlertService
             . '<p>Threshold: <strong>' . htmlspecialchars((string) ($state['threshold'] ?? 0)) . '</strong></p>';
 
         $mailer = new SmtpMailer();
-        try {
-            $mailer->send($settings, $ownerEmail, $settings['shop_name'] ?? 'Shop Owner', $subject, $body, strip_tags(str_replace('</p>', PHP_EOL, $body)));
-        } catch (Exception $e) {
-            $this->logFailure('email', $e->getMessage(), $state);
+        foreach ($ownerEmails as $ownerEmail) {
+            try {
+                $mailer->send($settings, $ownerEmail, $settings['shop_name'] ?? 'Shop Owner', $subject, $body, strip_tags(str_replace('</p>', PHP_EOL, $body)));
+            } catch (Exception $e) {
+                $this->logFailure('email', $e->getMessage(), $state);
+            }
         }
+    }
+
+    private function resolveOwnerEmails(array $settings)
+    {
+        $rawValues = [];
+        $rawValues[] = (string) ($settings['shop_owner_email'] ?? '');
+        $rawValues[] = (string) ($settings['shop_email'] ?? '');
+        $rawValues[] = (string) ($settings['smtp_from_email'] ?? '');
+
+        $emails = [];
+        foreach ($rawValues as $rawValue) {
+            $parts = preg_split('/[;,]+/', $rawValue);
+            if (!is_array($parts)) {
+                $parts = [$rawValue];
+            }
+            foreach ($parts as $part) {
+                $email = trim((string) $part);
+                if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    continue;
+                }
+                $normalized = strtolower($email);
+                if (isset($emails[$normalized])) {
+                    continue;
+                }
+                $emails[$normalized] = $email;
+            }
+        }
+
+        return array_values($emails);
     }
 
     private function sendOwnerSms(array $state)

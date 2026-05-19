@@ -80,15 +80,45 @@ class OrderEmailService
             ];
         }
 
-        if (!empty($settings['shop_owner_email'])) {
+        $ownerEmails = $this->resolveOwnerEmails($settings);
+        foreach ($ownerEmails as $ownerEmail) {
             $recipients[] = [
                 'type' => 'owner',
-                'email' => $settings['shop_owner_email'],
+                'email' => $ownerEmail,
                 'name' => $settings['shop_name'] ?? 'Shop Owner'
             ];
         }
 
         return $recipients;
+    }
+
+    private function resolveOwnerEmails(array $settings)
+    {
+        $rawValues = [];
+        $rawValues[] = (string) ($settings['shop_owner_email'] ?? '');
+        $rawValues[] = (string) ($settings['shop_email'] ?? '');
+        $rawValues[] = (string) ($settings['smtp_from_email'] ?? '');
+
+        $emails = [];
+        foreach ($rawValues as $rawValue) {
+            $parts = preg_split('/[;,]+/', $rawValue);
+            if (!is_array($parts)) {
+                $parts = [$rawValue];
+            }
+            foreach ($parts as $part) {
+                $email = trim((string) $part);
+                if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    continue;
+                }
+                $normalized = strtolower($email);
+                if (isset($emails[$normalized])) {
+                    continue;
+                }
+                $emails[$normalized] = $email;
+            }
+        }
+
+        return array_values($emails);
     }
 
     private function buildEmailData(array $order, array $settings, $eventKey)
