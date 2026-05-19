@@ -50,9 +50,9 @@ if (!empty($order) && $shopWhatsappNumber !== '') {
         <?php endif; ?>
 
         <?php if (!empty($settings['bank_transfer_details'])): ?>
-            <div style="background:#f4f8ff; border:1px solid #d8e4ff; border-radius:20px; padding:20px;">
-                <div style="font-size:15px; font-weight:800; color:#123b7a; margin-bottom:10px;">Bank Transfer Details</div>
-                <div style="font-size:14px; color:#345; line-height:1.8; white-space:pre-wrap;"><?= nl2br(htmlspecialchars($settings['bank_transfer_details'])) ?></div>
+            <div style="background:#fee2e2; border:1px solid #fecaca; border-radius:20px; padding:20px;">
+                <div style="font-size:15px; font-weight:800; color:#000; margin-bottom:10px;">Bank Transfer Details</div>
+                <div style="font-size:14px; color:#000; line-height:1.8; white-space:pre-wrap;"><?= nl2br(htmlspecialchars($settings['bank_transfer_details'])) ?></div>
             </div>
         <?php endif; ?>
 
