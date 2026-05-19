@@ -118,7 +118,18 @@ if ($shopWhatsappTarget !== '') {
     $inquiryWhatsappUrl = 'https://wa.me/' . $shopWhatsappTarget . '?text=' . rawurlencode($inquiryMessage);
 }
 ?>
-<?php require_once 'views/layouts/customer_layout.php'; customer_layout_start(); ?>
+<?php
+require_once 'views/layouts/customer_layout.php';
+customer_layout_start([
+    'seo_title' => $seo_title ?? ($product['title'] ?? ''),
+    'seo_description' => $seo_description ?? ($product['description'] ?? $shortDescription ?? ''),
+    'seo_image' => $seo_image ?? ($product['main_image'] ?? ''),
+    'seo_canonical' => $seo_canonical ?? '',
+    'seo_type' => $seo_type ?? 'product',
+    'seo_robots' => $seo_robots ?? '',
+    'seo_json_ld' => $seo_json_ld ?? []
+]);
+?>
 <?php if ($recaptchaCheckoutEnabled && $recaptchaSiteKey !== ''): ?>
     <script src="https://www.google.com/recaptcha/api.js?render=<?= htmlspecialchars($recaptchaSiteKey) ?>"></script>
 <?php endif; ?>

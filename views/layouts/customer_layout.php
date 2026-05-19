@@ -58,13 +58,29 @@ if (!function_exists('customer_layout_start')) {
         $customerCssVersion = @filemtime(ROOT_PATH . 'assets/css/customer.css') ?: time();
         $desktopCssVersion = @filemtime(ROOT_PATH . 'assets/css/customer-desktop-refresh.css') ?: time();
         $baseUrl = defined('BASE_URL') ? BASE_URL : '/';
-        $metaTitle = isset($seo_title) ? $seo_title : (isset($title) ? $title : SeoHelper::shopName($settings));
-        $metaDescription = isset($seo_description) ? $seo_description : ($settings['shop_about'] ?? '');
-        $metaImage = isset($seo_image) ? $seo_image : ($settings['shop_logo'] ?? '');
+        $metaTitle = isset($options['seo_title']) && $options['seo_title'] !== ''
+            ? (string) $options['seo_title']
+            : (isset($seo_title) ? $seo_title : (isset($title) ? $title : SeoHelper::shopName($settings)));
+        $metaDescription = isset($options['seo_description']) && $options['seo_description'] !== ''
+            ? (string) $options['seo_description']
+            : (isset($seo_description) ? $seo_description : ($settings['shop_about'] ?? ''));
+        $metaImage = isset($options['seo_image']) && $options['seo_image'] !== ''
+            ? (string) $options['seo_image']
+            : (isset($seo_image) ? $seo_image : ($settings['shop_logo'] ?? ''));
         $metaImage = SeoHelper::normalizeAssetUrl($metaImage);
-        $metaUrl = isset($seo_canonical) ? $seo_canonical : SeoHelper::currentUrl(false);
-        $metaRobots = isset($seo_robots) ? $seo_robots : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1';
-        $metaType = isset($seo_type) && $seo_type === 'product' ? 'product' : 'website';
+        $metaUrl = isset($options['seo_canonical']) && $options['seo_canonical'] !== ''
+            ? (string) $options['seo_canonical']
+            : (isset($seo_canonical) ? $seo_canonical : SeoHelper::currentUrl(false));
+        $metaRobots = isset($options['seo_robots']) && $options['seo_robots'] !== ''
+            ? (string) $options['seo_robots']
+            : (isset($seo_robots) ? $seo_robots : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1');
+        $seoTypeValue = isset($options['seo_type']) && $options['seo_type'] !== ''
+            ? (string) $options['seo_type']
+            : (isset($seo_type) ? (string) $seo_type : 'website');
+        $metaType = $seoTypeValue === 'product' ? 'product' : 'website';
+        $metaJsonLd = isset($options['seo_json_ld']) && is_array($options['seo_json_ld'])
+            ? $options['seo_json_ld']
+            : (isset($seo_json_ld) && is_array($seo_json_ld) ? $seo_json_ld : []);
         $siteLogoUrl = ImageHelper::settingsImageUrl(
             (string) ($settings['shop_logo'] ?? ''),
             'assets/uploads/1774110158_logo_logo.jpg'
@@ -231,8 +247,8 @@ if (!function_exists('customer_layout_start')) {
     <meta name="twitter:url" content="<?= htmlspecialchars($metaUrl) ?>">
     <?php if (!empty($metaDescription)): ?><meta name="twitter:description" content="<?= htmlspecialchars($metaDescription) ?>"><?php endif; ?>
     <?php if (!empty($metaImage)): ?><meta name="twitter:image" content="<?= htmlspecialchars($metaImage) ?>"><?php endif; ?>
-    <?php if (!empty($seo_json_ld) && is_array($seo_json_ld)): ?>
-        <?php foreach ($seo_json_ld as $schema): ?>
+    <?php if (!empty($metaJsonLd)): ?>
+        <?php foreach ($metaJsonLd as $schema): ?>
             <?php if (!empty($schema)): ?>
                 <script type="application/ld+json"><?= json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?></script>
             <?php endif; ?>
