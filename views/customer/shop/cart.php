@@ -221,7 +221,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     .cart-page .modal-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.58);z-index:9999}
     .cart-page .modal{width:min(92vw,610px);max-height:90vh;overflow-y:auto;background:var(--surface);border:1px solid rgba(31,31,31,.10);box-shadow:none;padding:24px 24px 22px;border-radius:0}
     .cart-page .modal-head{position:relative;display:grid;gap:6px;justify-items:center;text-align:center;margin-bottom:18px;padding-right:42px}
-    .cart-page .modal-head h3{margin:0;font-size:28px;line-height:1.05;font-weight:900;color:#111;letter-spacing:-.03em}
+    .cart-page .modal-head h3{margin:0;font-size:28px;line-height:1.05;font-weight:900;color:#111;letter-spacing:-.03em;font-family:sans-serif}
     .cart-page .modal-head p{margin:0;max-width:430px;color:#777;font-size:13px;line-height:1.6}
     .cart-page .modal-close{position:absolute;right:0;top:0;width:38px;height:38px;border:1px solid rgba(31,31,31,.14);background:var(--surface);color:#111;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
     .cart-page .modal-form{display:grid;gap:12px}
@@ -238,6 +238,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     .cart-page .modal-actions button{flex:1;min-height:48px;border:1px solid rgba(31,31,31,.14);background:#f7f7f7;color:#111;font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
     .cart-page .modal-actions button:disabled{opacity:.45;cursor:not-allowed}
     .cart-page .modal-actions .primary,.cart-page .modal-actions #checkoutSubmit{background:var(--btn-ordernow-bg, var(--primary)) !important;border-color:var(--btn-ordernow-bg, var(--primary)) !important;color:var(--btn-ordernow-text, #fff) !important;box-shadow:none}
+    .cart-page .modal-actions #checkoutSubmit.checkout-submit-whatsapp{background:#289b26 !important;border-color:#289b26 !important;color:#fff !important}
     .cart-page .bank-details-box{display:none;background:#f4f8ff;border:1px solid #d8e4ff;padding:14px}
     .cart-page .bank-details-box strong{display:block;font-size:13px;font-weight:900;color:#123b7a;margin-bottom:6px}
     .cart-page .bank-details-box .text{font-size:12px;color:#345;line-height:1.7;white-space:pre-wrap}
@@ -468,7 +469,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
                 <div class="totals-row"><span>Shipping Fee</span><strong data-modal-shipping><?= htmlspecialchars($shippingLabel) ?></strong></div>
                 <div class="totals-row"><span>Order Total</span><strong data-modal-total><?= htmlspecialchars($currency . ' ' . number_format($total, 2)) ?></strong></div>
             </div>
-            <div class="modal-actions"><button type="button" data-close-checkout-modal>Cancel</button><button type="submit" class="primary" id="checkoutSubmit" style="background:var(--btn-ordernow-bg, var(--primary)) !important;border-color:var(--btn-ordernow-bg, var(--primary)) !important;color:var(--btn-ordernow-text, #fff) !important;" <?= $cartHasBlockedItems ? 'disabled aria-disabled="true"' : '' ?>>Place Order</button></div>
+            <div class="modal-actions"><button type="button" data-close-checkout-modal>Cancel</button><button type="submit" class="primary" id="checkoutSubmit" <?= $cartHasBlockedItems ? 'disabled aria-disabled="true"' : '' ?>>Place Order</button></div>
         </form>
     </div>
 </div>
@@ -657,6 +658,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
                 cod: 'Place Order'
             };
             submit.textContent = map[selectedMode] || 'Place Order';
+            submit.classList.toggle('checkout-submit-whatsapp', selectedMode === 'whatsapp');
         }
         if (title) {
             const labelMap = {
