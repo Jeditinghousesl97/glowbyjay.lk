@@ -787,7 +787,7 @@ if (!function_exists('customer_layout_start')) {
         .site-footer-links a{
             color:color-mix(in srgb, var(--footer-text) 72%, transparent);
             font-size:12px;
-            letter-spacing:.18em;
+            letter-spacing:.08em;
             text-transform:uppercase;
             transition:color .2s ease;
         }
