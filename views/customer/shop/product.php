@@ -243,11 +243,11 @@ customer_layout_start([
         .summary-chips{display:flex;flex-wrap:wrap;gap:8px}
         .summary-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid rgba(28,27,27,.12);background:var(--surface);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(28,27,27,.72);transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease}
         .summary-chip:hover{border-color:var(--accent-red, var(--primary));transform:translateY(-1px);box-shadow:0 8px 18px rgba(31,31,31,.06)}
-        .summary-operational-icons{display:none;align-items:center;gap:12px;margin-left:auto}
+        .summary-operational-icons{display:none;align-items:center;gap:4px;margin-left:auto}
         .summary-operational-icon{display:inline-flex;align-items:center;justify-content:center}
         .summary-operational-icon-link{display:inline-flex;align-items:center;justify-content:center}
         .summary-operational-icon-btn{border:0;background:transparent;padding:0;cursor:pointer}
-        .summary-operational-icon img{display:block;width:30px;height:30px;object-fit:contain}
+        .summary-operational-icon img{display:block;width:24px;height:24px;object-fit:contain}
         .summary-title{font-family:sans-serif !important;font-size:clamp(24px,2.2vw,32px);line-height:1.12;letter-spacing:0;text-transform:none !important;margin:0}
         .summary-price-stack{display:grid;gap:10px}
         .summary-prices{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
@@ -314,8 +314,8 @@ customer_layout_start([
         .summary-payment-logos{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
         .summary-payment-logo{display:inline-flex;align-items:center;justify-content:center;width:82px;height:50px;padding:8px 10px;border:1px solid rgba(28,27,27,.12);background:var(--surface);box-shadow:0 6px 16px rgba(28,27,27,.05)}
         .summary-payment-logo img{max-width:100%;max-height:100%;object-fit:contain}
-        .summary-operational-icons-desktop{display:inline-flex;align-items:center;gap:14px;margin-top:12px}
-        .summary-operational-icons-desktop .summary-operational-icon img{width:30px;height:30px}
+        .summary-operational-icons-desktop{display:inline-flex;align-items:center;gap:4px;margin-top:12px}
+        .summary-operational-icons-desktop .summary-operational-icon img{width:24px;height:24px}
         .share-modal-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.5);z-index:3250}
         .share-modal{width:min(92vw,420px);background:var(--surface);border:1px solid rgba(28,27,27,.14);padding:18px}
         .share-modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
