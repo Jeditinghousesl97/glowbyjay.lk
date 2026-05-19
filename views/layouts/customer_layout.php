@@ -699,12 +699,12 @@ if (!function_exists('customer_layout_start')) {
         }
         .site-promo-popup{
             position:fixed;
-            top:92px;
+            bottom:98px;
             right:18px;
             z-index:1300;
-            width:min(34vw, 220px);
-            min-width:130px;
-            max-width:220px;
+            width:min(28vw, 170px);
+            min-width:100px;
+            max-width:170px;
         }
         .site-promo-popup[hidden]{
             display:none !important;
@@ -927,10 +927,10 @@ if (!function_exists('customer_layout_start')) {
         }
         @media (max-width: 760px){
             .site-promo-popup{
-                top:82px;
-                right:10px;
-                width:min(44vw, 180px);
-                min-width:110px;
+                bottom:146px;
+                right:12px;
+                width:min(34vw, 140px);
+                min-width:90px;
             }
             body.is-non-home-page{
                 padding-left:0 !important;

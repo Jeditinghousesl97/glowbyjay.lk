@@ -456,11 +456,11 @@ if (!function_exists('customer_footer_render')) {
             }
             .site-floating-cart{
                 position:fixed;
-                right:20px;
+                left:20px;
                 bottom:92px;
                 z-index:89;
                 display:grid;
-                justify-items:end;
+                justify-items:start;
             }
             .site-floating-cart-button{
                 display:inline-flex;
