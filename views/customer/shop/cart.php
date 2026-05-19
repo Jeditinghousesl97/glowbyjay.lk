@@ -130,6 +130,16 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     .cart-page .payment-pick{display:grid;gap:12px;padding-top:2px}
     .cart-page .payment-pick-label{display:inline-flex;align-items:center;gap:10px;font-size:10px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:#8a8383}
     .cart-page .payment-pick-label:before{content:"";width:34px;height:1px;background:rgba(31,31,31,.18)}
+    .cart-page .payment-method-toggle{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+    .cart-page .payment-method-toggle-btn{width:100%;min-height:40px;padding:0 16px;border-radius:0;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,filter .2s ease,background .2s ease,color .2s ease,border-color .2s ease}
+    .cart-page .payment-method-toggle-btn.pay-now{background:#fff;border:1px solid #b68a2d;color:#b68a2d}
+    .cart-page .payment-method-toggle-btn.pay-later{background:#fff;border:1px solid #111;color:#111}
+    .cart-page .payment-method-toggle-btn:hover{transform:translateY(-1px)}
+    .cart-page .payment-method-toggle-btn:active{transform:translateY(0) scale(.98)}
+    .cart-page .payment-method-toggle-btn.is-active{box-shadow:0 10px 22px rgba(31,31,31,.18);transform:translateY(-1px)}
+    .cart-page .payment-method-toggle-btn.pay-now.is-active{background:linear-gradient(135deg,#b68a2d 0%,#d4af37 52%,#a8791d 100%);border-color:#b68a2d;color:#fff;filter:saturate(1.08) brightness(1.02)}
+    .cart-page .payment-method-toggle-btn.pay-later.is-active{background:#111;border-color:#111;color:#fff}
+    .cart-page .payment-method-toggle-btn:disabled{opacity:.45;cursor:not-allowed}
     .cart-page .payment-choice-grid{display:grid;gap:10px}
     .cart-page .payment-method-card{
         position:relative;
@@ -351,6 +361,10 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
                     </div>
                     <div class="payment-pick">
                         <span class="payment-pick-label">Choose Payment Method</span>
+                        <div class="payment-method-toggle">
+                            <button type="button" id="cartPayNowToggleBtn" class="payment-method-toggle-btn pay-now">Pay Now</button>
+                            <button type="button" id="cartPayLaterToggleBtn" class="payment-method-toggle-btn pay-later">Pay Later</button>
+                        </div>
                         <?php if ($cartHasBlockedItems): ?>
                             <div class="order-flash" style="margin:0;">
                                 <strong>Stock notice</strong>
@@ -358,11 +372,27 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
                             </div>
                         <?php endif; ?>
                         <div class="payment-choice-grid">
-                            <?php foreach ($modes as $mode): ?>
+                            <?php
+                            $displayModes = is_array($modes) ? $modes : [];
+                            $modeOrder = [
+                                'payhere' => 10,
+                                'bank_transfer' => 20,
+                                'whatsapp' => 30,
+                                'cod' => 40,
+                                'koko' => 50,
+                            ];
+                            usort($displayModes, static function (array $a, array $b) use ($modeOrder): int {
+                                $aKey = (string) ($a['key'] ?? '');
+                                $bKey = (string) ($b['key'] ?? '');
+                                return ($modeOrder[$aKey] ?? 999) <=> ($modeOrder[$bKey] ?? 999);
+                            });
+                            ?>
+                            <?php foreach ($displayModes as $mode): ?>
                                 <button
                                     type="button"
                                     class="payment-method-card <?= htmlspecialchars($mode['key']) ?>"
                                     data-select-mode="<?= htmlspecialchars($mode['key']) ?>"
+                                    data-pay-group="<?= in_array($mode['key'], ['payhere', 'bank_transfer'], true) ? 'payNow' : 'payLater' ?>"
                                     <?= $cartHasBlockedItems ? 'disabled aria-disabled="true"' : '' ?>>
                                     <span class="payment-method-icon" aria-hidden="true">
                                         <i class="<?= htmlspecialchars($mode['icon']) ?>"></i>
@@ -556,10 +586,32 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
             button.disabled = blocked;
             button.setAttribute('aria-disabled', blocked ? 'true' : 'false');
         });
+        const payNowToggleBtn = document.getElementById('cartPayNowToggleBtn');
+        const payLaterToggleBtn = document.getElementById('cartPayLaterToggleBtn');
+        if (payNowToggleBtn) payNowToggleBtn.disabled = blocked;
+        if (payLaterToggleBtn) payLaterToggleBtn.disabled = blocked;
         const submit = document.getElementById('checkoutSubmit');
         if (submit) {
             submit.disabled = blocked;
             submit.setAttribute('aria-disabled', blocked ? 'true' : 'false');
+        }
+    }
+    function setCartPaymentCategory(category) {
+        const panel = document.querySelector('.payment-choice-grid');
+        if (!panel) return;
+        const payNowBtn = document.getElementById('cartPayNowToggleBtn');
+        const payLaterBtn = document.getElementById('cartPayLaterToggleBtn');
+        panel.querySelectorAll('.payment-method-card[data-pay-group]').forEach(function (card) {
+            const group = card.getAttribute('data-pay-group');
+            card.style.display = category && group === category ? 'flex' : 'none';
+        });
+        if (payNowBtn) {
+            payNowBtn.classList.toggle('is-active', category === 'payNow');
+            payNowBtn.setAttribute('aria-pressed', category === 'payNow' ? 'true' : 'false');
+        }
+        if (payLaterBtn) {
+            payLaterBtn.classList.toggle('is-active', category === 'payLater');
+            payLaterBtn.setAttribute('aria-pressed', category === 'payLater' ? 'true' : 'false');
         }
     }
     function recalc() {
@@ -705,7 +757,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     }
 
     document.addEventListener('click', function (event) {
-        const btn = event.target.closest('[data-qty-minus],[data-qty-plus],[data-cart-remove],[data-cart-clear],[data-close-checkout-modal],[data-select-mode]');
+        const btn = event.target.closest('[data-qty-minus],[data-qty-plus],[data-cart-remove],[data-cart-clear],[data-close-checkout-modal],[data-select-mode],#cartPayNowToggleBtn,#cartPayLaterToggleBtn');
         if (!btn) return;
         const line = btn.closest('[data-cart-line]');
         const index = line ? parseInt(line.dataset.index || '0', 10) : 0;
@@ -714,6 +766,8 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
         if (btn.matches('[data-cart-remove]')) { removeLine(index, line).catch(e=>toast(e.message, 'error')); }
         if (btn.matches('[data-cart-clear]')) { event.preventDefault(); fetch(baseUrl + 'cart/clear', { method:'POST', headers:{'Content-Type':'application/json','X-CSRF-Token':(typeof csrfToken !== 'undefined' ? csrfToken : '')}, body:JSON.stringify({ _csrf:(typeof csrfToken !== 'undefined' ? csrfToken : '') }) }).then(r=>r.json()).then(function (data) { if (!data || !data.success) throw new Error('Unable to clear cart'); updateGlobalCount(0); window.location.reload(); }).catch(e=>toast(e.message, 'error')); }
         if (btn.matches('[data-close-checkout-modal]')) { openOverlay('checkoutModal', false); }
+        if (btn.matches('#cartPayNowToggleBtn')) { setCartPaymentCategory('payNow'); }
+        if (btn.matches('#cartPayLaterToggleBtn')) { setCartPaymentCategory('payLater'); }
         if (btn.matches('[data-select-mode]')) { choosePaymentMethod(btn.getAttribute('data-select-mode')); }
     });
 
@@ -742,6 +796,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     });
     hydrateCustomerProfile();
     recalc();
+    setCartPaymentCategory('');
     updateCheckoutModeUi(selectedMode);
     if (typeof window.refreshCartUi === 'function') window.refreshCartUi();
 })();

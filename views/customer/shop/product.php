@@ -326,9 +326,11 @@ customer_layout_start([
         .share-modal-btn:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-1px)}
         .payment-method-toggle{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
         .payment-method-toggle-btn{min-height:40px;padding:0 16px;border-radius:0;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
-        .payment-method-toggle-btn.pay-now{background:linear-gradient(135deg,#b68a2d 0%,#d4af37 52%,#a8791d 100%);border:1px solid #b68a2d;color:#fff}
+        .payment-method-toggle-btn.pay-now{background:#fff;border:1px solid #b68a2d;color:#b68a2d}
         .payment-method-toggle-btn.pay-later{background:#fff;border:1px solid #111;color:#111}
         .payment-method-toggle-btn.is-active{box-shadow:0 6px 14px rgba(182,138,45,.2)}
+        .payment-method-toggle-btn.pay-now.is-active{background:linear-gradient(135deg,#b68a2d 0%,#d4af37 52%,#a8791d 100%);border-color:#b68a2d;color:#fff}
+        .payment-method-toggle-btn.pay-later.is-active{background:#111;border-color:#111;color:#fff}
         .share-modal-copy-status{margin-top:10px;font-size:12px;color:#17663b;min-height:18px}
         .summary-long-description{display:grid;gap:12px;padding:18px 0 0;margin-top:4px;border-top:1px solid rgba(28,27,27,.08)}
         .summary-long-description h3{font-size:18px;letter-spacing:-.02em;text-transform:uppercase}
