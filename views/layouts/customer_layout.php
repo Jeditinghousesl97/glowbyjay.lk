@@ -68,6 +68,20 @@ if (!function_exists('customer_layout_start')) {
             ? (string) $options['seo_image']
             : (isset($seo_image) ? $seo_image : ($settings['shop_logo'] ?? ''));
         $metaImage = SeoHelper::normalizeAssetUrl($metaImage);
+        $metaImageMime = '';
+        if ($metaImage !== '') {
+            $pathPart = parse_url($metaImage, PHP_URL_PATH);
+            $extension = strtolower((string) pathinfo((string) $pathPart, PATHINFO_EXTENSION));
+            if (in_array($extension, ['jpg', 'jpeg'], true)) {
+                $metaImageMime = 'image/jpeg';
+            } elseif ($extension === 'png') {
+                $metaImageMime = 'image/png';
+            } elseif ($extension === 'webp') {
+                $metaImageMime = 'image/webp';
+            } elseif ($extension === 'gif') {
+                $metaImageMime = 'image/gif';
+            }
+        }
         $metaUrl = isset($options['seo_canonical']) && $options['seo_canonical'] !== ''
             ? (string) $options['seo_canonical']
             : (isset($seo_canonical) ? $seo_canonical : SeoHelper::currentUrl(false));
@@ -241,6 +255,8 @@ if (!function_exists('customer_layout_start')) {
     <meta property="og:locale" content="en_LK">
     <?php if (!empty($metaDescription)): ?><meta property="og:description" content="<?= htmlspecialchars($metaDescription) ?>"><?php endif; ?>
     <?php if (!empty($metaImage)): ?><meta property="og:image" content="<?= htmlspecialchars($metaImage) ?>"><?php endif; ?>
+    <?php if (!empty($metaImage) && stripos($metaImage, 'https://') === 0): ?><meta property="og:image:secure_url" content="<?= htmlspecialchars($metaImage) ?>"><?php endif; ?>
+    <?php if (!empty($metaImageMime)): ?><meta property="og:image:type" content="<?= htmlspecialchars($metaImageMime) ?>"><?php endif; ?>
     <?php if (!empty($metaTitle) && !empty($metaImage)): ?><meta property="og:image:alt" content="<?= htmlspecialchars($metaTitle) ?>"><?php endif; ?>
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="<?= htmlspecialchars($metaTitle) ?>">
