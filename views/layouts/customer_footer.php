@@ -17,7 +17,7 @@ if (!function_exists('customer_footer_render')) {
         $paymentMethods = FooterHelper::paymentMethods($settings);
         $socialLinks = FooterHelper::socialLinks($settings);
         $whatsappDigits = FooterHelper::whatsappDigits($settings);
-        $whatsappLink = FooterHelper::whatsappMessageLink($settings, 'Hi, I need help with my order.');
+        $whatsappLink = FooterHelper::whatsappMessageLink($settings, 'Hello, I’m currently visiting your web store and would like more information. Is anyone available to assist me?');
         $whatsappLabel = FooterHelper::whatsappLabel($settings);
         $cartCount = 0;
         if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
@@ -231,7 +231,7 @@ if (!function_exists('customer_footer_render')) {
                             <span class="site-floating-contact-icon" aria-hidden="true"><i class="fa-brands fa-whatsapp"></i></span>
                             <span>
                                 <strong>WhatsApp</strong>
-                                <small>Hi, I need help with my order.</small>
+                                <small>Hello, I’m currently visiting your web store and would like more information. Is anyone available to assist me?</small>
                             </span>
                         </a>
                         <?php foreach ($supportLinks as $link): ?>

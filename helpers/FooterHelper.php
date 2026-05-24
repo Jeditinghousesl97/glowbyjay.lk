@@ -124,7 +124,7 @@ class FooterHelper
         return 'https://wa.me/' . $digits;
     }
 
-    public static function whatsappMessageLink(array $settings, string $message = 'Hi, I need help with my order.'): string
+    public static function whatsappMessageLink(array $settings, string $message = 'Hello, I’m currently visiting your web store and would like more information. Is anyone available to assist me?'): string
     {
         $baseLink = self::whatsappLink($settings);
         if ($baseLink === '') {

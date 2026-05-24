@@ -107,7 +107,7 @@ if (!function_exists('customer_layout_start')) {
         if ($mobileNavEmail === '') {
             $mobileNavEmail = trim((string) ($settings['shop_email'] ?? ''));
         }
-        $whatsappLink = FooterHelper::whatsappMessageLink($settings, 'Hi, I need help with my order.');
+        $whatsappLink = FooterHelper::whatsappMessageLink($settings, 'Hello, I’m currently visiting your web store and would like more information. Is anyone available to assist me?');
         $whatsappLabel = FooterHelper::whatsappLabel($settings);
         $shopWhatsappDigits = FooterHelper::whatsappDigits($settings);
         $cartCount = customer_layout_cart_count();
