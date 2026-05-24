@@ -61,7 +61,7 @@ if (!empty($order) && $shopWhatsappNumber !== '') {
             </div>
             <div style="background:#f7e7b3; border:1px solid #d4af37; border-radius:20px; padding:20px;">
                 <div style="font-size:15px; font-weight:800; color:#000; margin-bottom:10px;">Bank Transfer Details</div>
-                <div style="font-size:14px; color:#000; line-height:1.8; white-space:pre-wrap;"><?= nl2br(htmlspecialchars($settings['bank_transfer_details'])) ?></div>
+                <div style="font-size:14px; color:#000; line-height:1.6; white-space:pre-wrap;"><?= htmlspecialchars($settings['bank_transfer_details']) ?></div>
             </div>
         <?php endif; ?>
 
