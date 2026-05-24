@@ -303,7 +303,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
             background:#d4af37 !important;
         }
         .sale-archive-section{
-            background:#f0eded !important;
+            background:#f0eded url('assets/offer-background.jpg') center/cover no-repeat !important;
             color:var(--ink);
         }
         .sale-archive-section .section-title{
