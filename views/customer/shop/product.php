@@ -14,6 +14,9 @@ $productRegularPrice = (float) ($product['price'] ?? 0);
 $productSalePrice = (!empty($product['sale_price']) && (float) $product['sale_price'] < $productRegularPrice)
     ? (float) $product['sale_price']
     : null;
+$productDiscountPercent = ($productSalePrice !== null && $productRegularPrice > 0)
+    ? (int) round((1 - ($productSalePrice / $productRegularPrice)) * 100)
+    : 0;
 $kokoTeaserData = KokoPricingHelper::isEnabled($settings ?? [])
     ? KokoPricingHelper::getInstallmentData($productUnitPrice, $settings ?? [])
     : null;
@@ -228,6 +231,24 @@ customer_layout_start([
         .gallery-thumb-btn picture,.gallery-thumb-btn img{display:block;width:100%;height:100%}
         .gallery-thumb-btn img{object-fit:contain;object-position:center}
         .gallery-main{position:relative;background:var(--surface);border:1px solid rgba(28,27,27,.12);box-shadow:var(--shadow-soft);overflow:hidden;aspect-ratio:1 / 1;border-radius:0 !important;max-width:760px;margin:0 auto}
+        .gallery-discount-badge{
+            position:absolute;
+            top:12px;
+            right:12px;
+            z-index:5;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            min-height:34px;
+            padding:8px 12px;
+            background:#d4af37;
+            color:#fff;
+            font-size:11px;
+            font-weight:800;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            box-shadow:var(--shadow-soft);
+        }
         .gallery-slider{height:100%;border-radius:0 !important;background:var(--surface) !important;min-height:0 !important}
         .gallery-slide{min-width:100%;scroll-snap-align:start;padding:0;background:var(--surface);display:flex;align-items:center;justify-content:center;height:100%}
         .gallery-slide picture,.gallery-slide img{display:block;width:100%;height:100%;max-width:100%;max-height:100%}
@@ -399,6 +420,9 @@ customer_layout_start([
                         <?php endif; ?>
 
                         <div class="gallery-main" style="border-radius:0 !important; overflow:hidden !important;">
+                            <?php if ($productDiscountPercent > 0): ?>
+                                <span class="gallery-discount-badge">-<?= (int) $productDiscountPercent ?>%</span>
+                            <?php endif; ?>
                             <?php if ($hasGalleryCarousel): ?>
                                 <div class="gallery-slider" data-gallery-slider>
                                     <?php foreach ($gallerySlides as $slideIndex => $slide): ?>
