@@ -755,10 +755,9 @@ customer_layout_start([
                 <div class="field"><label for="ordPhone2">Phone Number 02</label><input type="tel" id="ordPhone2" placeholder="Phone Number 02"></div>
             </div>
             <div class="field"><label for="ordNote">Special Note</label><textarea id="ordNote" placeholder="Special Note"></textarea></div>
-            <?php if ($bankTransferEnabled && !empty($settings['bank_transfer_details'])): ?>
-                <div id="bankTransferDetailsBox" class="bank-details-box">
-                    <strong>Bank Transfer Details</strong>
-                    <div class="text"><?= nl2br(htmlspecialchars($settings['bank_transfer_details'])) ?></div>
+            <?php if ($bankTransferEnabled): ?>
+                <div id="bankTransferDetailsImageWrap" style="display:none;margin-top:6px;">
+                    <img src="<?= htmlspecialchars($baseUrl . 'assets/bank-details.jpg') ?>" alt="Bank transfer details" style="display:block;width:100%;height:auto;border:1px solid rgba(28,27,27,.12);">
                 </div>
             <?php endif; ?>
             <div class="totals-box">
@@ -1339,11 +1338,11 @@ customer_layout_start([
     }
     function updateOrderButtonLabel() {
         const submitButton = document.getElementById('orderSubmitButton');
-        const bankDetailsBox = document.getElementById('bankTransferDetailsBox');
+        const bankDetailsImageWrap = document.getElementById('bankTransferDetailsImageWrap');
         if (!submitButton) return;
         submitButton.textContent = orderMode === 'whatsapp' ? 'Send via WhatsApp' : (orderMode === 'payhere' ? 'Proceed to Card Payments' : (orderMode === 'koko' ? 'Proceed to KOKO Payments' : (orderMode === 'bank_transfer' ? 'Submit Bank Transfer Order' : 'Place Order')));
         syncOrderSubmitWhatsAppStyle();
-        if (bankDetailsBox) bankDetailsBox.style.display = orderMode === 'bank_transfer' ? 'block' : 'none';
+        if (bankDetailsImageWrap) bankDetailsImageWrap.style.display = orderMode === 'bank_transfer' ? 'block' : 'none';
         updateOrderTotals();
     }
     function choosePaymentMethod(mode) { orderMode = mode; closePaymentMethodSheet(); openOrderModal(); updateOrderButtonLabel(); }
