@@ -228,6 +228,15 @@
                     placeholder="https://example.com/offer"
                     value="<?= htmlspecialchars($promo['entrance_popup_link'] ?? '') ?>">
 
+                <label class="label">Re-show Delay (Non-Home Pages, Minutes)</label>
+                <input
+                    type="number"
+                    name="entrance_popup_reshow_minutes"
+                    class="input-box"
+                    min="1"
+                    step="1"
+                    value="<?= htmlspecialchars($promo['entrance_popup_reshow_minutes'] ?? '5') ?>">
+
                 <label class="label">Entrance Main Popup Image</label>
                 <div class="upload-box" onclick="document.getElementById('entrancePopupImageInput').click()">
                     <?php if (!empty($promo['entrance_popup_image'])): ?>

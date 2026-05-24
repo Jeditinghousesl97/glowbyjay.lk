@@ -216,6 +216,8 @@ if (!function_exists('customer_layout_start')) {
         $entrancePopupEnabled = !empty($settings['entrance_popup_enabled']);
         $entrancePopupImageUrl = '';
         $entrancePopupLink = trim((string) ($settings['entrance_popup_link'] ?? ''));
+        $entrancePopupReshowMinutes = max(1, (int) ($settings['entrance_popup_reshow_minutes'] ?? 5));
+        $entrancePopupReshowDelayMs = $entrancePopupReshowMinutes * 60 * 1000;
         $entrancePopupOpenNewTab = !isset($settings['entrance_popup_open_new_tab'])
             || $settings['entrance_popup_open_new_tab'] === ''
             || !empty($settings['entrance_popup_open_new_tab']);
@@ -1353,6 +1355,8 @@ if (!function_exists('customer_layout_start')) {
         <div
             class="site-entrance-popup"
             data-site-entrance-popup
+            data-is-home-route="<?= $isHomeRoute ? '1' : '0' ?>"
+            data-reshow-delay-ms="<?= (int) $entrancePopupReshowDelayMs ?>"
             data-entrance-popup-state-key="<?= htmlspecialchars($entrancePopupStateKey, ENT_QUOTES, 'UTF-8') ?>">
             <?php if ($entrancePopupLink !== ''): ?>
                 <a href="<?= htmlspecialchars($entrancePopupLink, ENT_QUOTES, 'UTF-8') ?>" <?= $entrancePopupOpenNewTab ? 'target="_blank" rel="noopener noreferrer"' : '' ?> aria-label="Open entrance popup link">
@@ -1780,20 +1784,31 @@ if (!function_exists('customer_layout_start')) {
 
             const entrancePopupClose = entrancePopup.querySelector('[data-site-entrance-popup-close]');
             const entrancePopupStateKey = entrancePopup.getAttribute('data-entrance-popup-state-key') || '';
-            const storageKey = 'style1_entrance_popup_closed_' + entrancePopupStateKey;
+            const storageKey = 'style1_entrance_popup_closed_until_' + entrancePopupStateKey;
+            const isHomeRoute = entrancePopup.getAttribute('data-is-home-route') === '1';
+            const reshowDelayMs = Math.max(0, parseInt(entrancePopup.getAttribute('data-reshow-delay-ms') || '300000', 10) || 300000);
 
             try {
-                if (entrancePopupStateKey && sessionStorage.getItem(storageKey) === '1') {
-                    entrancePopup.hidden = true;
-                    return;
+                if (isHomeRoute) {
+                    entrancePopup.hidden = false;
+                    if (entrancePopupStateKey) {
+                        localStorage.removeItem(storageKey);
+                    }
+                }
+                if (!isHomeRoute && entrancePopupStateKey) {
+                    const closedUntil = parseInt(localStorage.getItem(storageKey) || '0', 10) || 0;
+                    if (Date.now() < closedUntil) {
+                        entrancePopup.hidden = true;
+                        return;
+                    }
                 }
             } catch (error) {}
 
             const closeEntrancePopup = function () {
                 entrancePopup.hidden = true;
                 try {
-                    if (entrancePopupStateKey) {
-                        sessionStorage.setItem(storageKey, '1');
+                    if (!isHomeRoute && entrancePopupStateKey) {
+                        localStorage.setItem(storageKey, String(Date.now() + reshowDelayMs));
                     }
                 } catch (error) {}
             };
