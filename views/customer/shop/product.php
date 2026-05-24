@@ -117,7 +117,7 @@ $inquiryWhatsappUrl = '';
 if ($shopWhatsappTarget !== '') {
     $inquiryPrice = $productSalePrice !== null ? $productSalePrice : $productRegularPrice;
     $productLink = SeoHelper::absoluteUrl($baseUrl . 'shop/product/' . (int) ($product['id'] ?? 0));
-    $inquiryMessage = "Hi, I'm interested in this product.\n"
+    $inquiryMessage = "Hi, I’m interested in this product and would like to know more details. Could you please assist me?\n"
         . 'Product: ' . (string) ($product['title'] ?? 'Product') . "\n"
         . 'Price: ' . (string) $currency . ' ' . number_format((float) $inquiryPrice, 0) . "\n"
         . 'Link: ' . $productLink;
