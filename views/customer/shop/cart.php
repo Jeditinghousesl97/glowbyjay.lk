@@ -459,9 +459,8 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
             <div class="input-row"><div class="field"><label for="customerPhone">Phone</label><input id="customerPhone" name="phone" required placeholder="Phone Number 01 *"></div><div class="field"><label for="customerAltPhone">Alt Phone</label><input id="customerAltPhone" name="phone_alt" placeholder="Phone Number 02"></div></div>
             <div class="field"><label for="customerNote">Note</label><textarea id="customerNote" name="note" placeholder="Special Note"></textarea></div>
             <?php if (!empty($settings['bank_transfer_enabled']) && trim((string) ($settings['bank_transfer_details'] ?? '')) !== ''): ?>
-                <div id="bankTransferDetailsBox" class="bank-details-box">
-                    <strong>Bank Transfer Details</strong>
-                    <div class="text"><?= nl2br(htmlspecialchars($settings['bank_transfer_details'])) ?></div>
+                <div id="bankTransferDetailsImageWrap" style="display:none;margin-top:6px;">
+                    <img src="<?= htmlspecialchars($baseUrl . 'assets/bank-details.jpg') ?>" alt="Bank transfer details" style="display:block;width:100%;height:auto;border:1px solid rgba(28,27,27,.12);">
                 </div>
             <?php endif; ?>
             <div class="totals-box">
@@ -648,7 +647,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
         selectedMode = mode || selectedMode || 'cod';
         const submit = document.getElementById('checkoutSubmit');
         const title = document.getElementById('checkoutTitle');
-        const bankBox = document.getElementById('bankTransferDetailsBox');
+        const bankDetailsImageWrap = document.getElementById('bankTransferDetailsImageWrap');
         if (submit) {
             const map = {
                 whatsapp: 'Send via WhatsApp',
@@ -670,8 +669,8 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
             };
             title.textContent = labelMap[selectedMode] || 'Checkout Details';
         }
-        if (bankBox) {
-            bankBox.style.display = selectedMode === 'bank_transfer' ? 'block' : 'none';
+        if (bankDetailsImageWrap) {
+            bankDetailsImageWrap.style.display = selectedMode === 'bank_transfer' ? 'block' : 'none';
         }
     }
     function choosePaymentMethod(mode) {
