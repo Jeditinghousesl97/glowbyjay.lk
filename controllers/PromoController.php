@@ -21,7 +21,9 @@ class PromoController extends BaseController
             'promo_link',
             'promo_open_new_tab',
             'entrance_popup_enabled',
-            'entrance_popup_image'
+            'entrance_popup_image',
+            'entrance_popup_link',
+            'entrance_popup_open_new_tab'
         ];
         $promo = $this->settingModel->getMultiple($promoKeys);
 
@@ -69,10 +71,13 @@ class PromoController extends BaseController
             }
 
             $promoLink = trim((string) ($_POST['promo_link'] ?? ''));
+            $entrancePopupLink = trim((string) ($_POST['entrance_popup_link'] ?? ''));
             $this->settingModel->set('promo_link', $promoLink);
             $this->settingModel->set('promo_enabled', !empty($_POST['promo_enabled']) ? '1' : '0');
             $this->settingModel->set('promo_open_new_tab', !empty($_POST['promo_open_new_tab']) ? '1' : '0');
             $this->settingModel->set('entrance_popup_enabled', !empty($_POST['entrance_popup_enabled']) ? '1' : '0');
+            $this->settingModel->set('entrance_popup_link', $entrancePopupLink);
+            $this->settingModel->set('entrance_popup_open_new_tab', !empty($_POST['entrance_popup_open_new_tab']) ? '1' : '0');
         }
 
         $this->redirect('promo/index');

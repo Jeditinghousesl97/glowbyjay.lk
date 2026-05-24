@@ -161,6 +161,19 @@
                 Enable website entrance main popup
             </label>
 
+            <label class="check-row">
+                <input type="checkbox" name="entrance_popup_open_new_tab" value="1" <?= !isset($promo['entrance_popup_open_new_tab']) || $promo['entrance_popup_open_new_tab'] === '' || !empty($promo['entrance_popup_open_new_tab']) ? 'checked' : '' ?>>
+                Open entrance popup link in new tab
+            </label>
+
+            <label class="label">Entrance Popup Link</label>
+            <input
+                type="text"
+                name="entrance_popup_link"
+                class="input-box"
+                placeholder="https://example.com/offer"
+                value="<?= htmlspecialchars($promo['entrance_popup_link'] ?? '') ?>">
+
             <label class="label">Entrance Main Popup Image</label>
             <div class="upload-box" onclick="document.getElementById('entrancePopupImageInput').click()">
                 <?php if (!empty($promo['entrance_popup_image'])): ?>

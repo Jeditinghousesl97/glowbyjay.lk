@@ -215,13 +215,20 @@ if (!function_exists('customer_layout_start')) {
         $promoStateKey = hash('sha256', $promoImageUrl . '|' . $promoLink);
         $entrancePopupEnabled = !empty($settings['entrance_popup_enabled']);
         $entrancePopupImageUrl = '';
+        $entrancePopupLink = trim((string) ($settings['entrance_popup_link'] ?? ''));
+        $entrancePopupOpenNewTab = !isset($settings['entrance_popup_open_new_tab'])
+            || $settings['entrance_popup_open_new_tab'] === ''
+            || !empty($settings['entrance_popup_open_new_tab']);
         if ($entrancePopupEnabled) {
             $entrancePopupImageUrl = ImageHelper::settingsImageUrl((string) ($settings['entrance_popup_image'] ?? ''), '');
             if ($entrancePopupImageUrl === '') {
                 $entrancePopupEnabled = false;
             }
         }
-        $entrancePopupStateKey = hash('sha256', $entrancePopupImageUrl);
+        if ($entrancePopupLink !== '' && !preg_match('#^https?://#i', $entrancePopupLink) && strpos($entrancePopupLink, '/') !== 0) {
+            $entrancePopupLink = 'https://' . $entrancePopupLink;
+        }
+        $entrancePopupStateKey = hash('sha256', $entrancePopupImageUrl . '|' . $entrancePopupLink);
 
         $menuItems = [
             [
@@ -775,20 +782,26 @@ if (!function_exists('customer_layout_start')) {
         }
         .site-entrance-popup-close{
             position:absolute;
-            top:10px;
-            right:10px;
-            width:22px;
-            height:22px;
-            border:0;
-            background:rgba(17,17,17,.78);
+            top:14px;
+            right:14px;
+            width:34px;
+            height:34px;
+            border:1px solid rgba(255,255,255,.92);
+            background:rgba(0,0,0,.86);
             color:#fff;
-            font-size:14px;
+            font-size:22px;
+            font-weight:700;
             line-height:1;
             display:grid;
             place-items:center;
             cursor:pointer;
             padding:0;
             animation:siteEntrancePopupFadeIn .28s ease-out;
+            z-index:2;
+        }
+        .site-entrance-popup-close:hover{
+            background:rgba(0,0,0,.95);
+            transform:scale(1.03);
         }
         @keyframes siteEntrancePopupZoomIn{
             0%{opacity:0;transform:scale(.84)}
@@ -987,6 +1000,14 @@ if (!function_exists('customer_layout_start')) {
                 right:12px;
                 width:min(34vw, 140px);
                 min-width:90px;
+            }
+            .site-entrance-popup-close{
+                top:auto;
+                right:14px;
+                bottom:14px;
+                width:36px;
+                height:36px;
+                font-size:24px;
             }
             body.is-non-home-page{
                 padding-left:0 !important;
@@ -1333,7 +1354,13 @@ if (!function_exists('customer_layout_start')) {
             class="site-entrance-popup"
             data-site-entrance-popup
             data-entrance-popup-state-key="<?= htmlspecialchars($entrancePopupStateKey, ENT_QUOTES, 'UTF-8') ?>">
-            <img class="site-entrance-popup-image" src="<?= htmlspecialchars($entrancePopupImageUrl, ENT_QUOTES, 'UTF-8') ?>" alt="Website entrance popup">
+            <?php if ($entrancePopupLink !== ''): ?>
+                <a href="<?= htmlspecialchars($entrancePopupLink, ENT_QUOTES, 'UTF-8') ?>" <?= $entrancePopupOpenNewTab ? 'target="_blank" rel="noopener noreferrer"' : '' ?> aria-label="Open entrance popup link">
+                    <img class="site-entrance-popup-image" src="<?= htmlspecialchars($entrancePopupImageUrl, ENT_QUOTES, 'UTF-8') ?>" alt="Website entrance popup">
+                </a>
+            <?php else: ?>
+                <img class="site-entrance-popup-image" src="<?= htmlspecialchars($entrancePopupImageUrl, ENT_QUOTES, 'UTF-8') ?>" alt="Website entrance popup">
+            <?php endif; ?>
             <button type="button" class="site-entrance-popup-close" data-site-entrance-popup-close aria-label="Close entrance popup">&times;</button>
         </div>
     <?php endif; ?>
