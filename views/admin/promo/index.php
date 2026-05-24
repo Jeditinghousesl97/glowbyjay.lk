@@ -6,55 +6,67 @@
     <title><?= htmlspecialchars($title ?? 'Promo Popup Settings') ?></title>
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/admin.css">
     <style>
-        body { background:#f4f4f4; }
+        body { background:linear-gradient(180deg,#f5f6f8 0%,#eef1f5 100%); }
+        .container{
+            max-width:1080px;
+            margin:0 auto;
+        }
         .promo-card{
             background:#fff;
-            border:1px solid #ececec;
-            box-shadow:0 10px 28px rgba(0,0,0,.05);
-            padding:20px;
+            border:1px solid #e6e8ed;
+            box-shadow:0 14px 34px rgba(20,27,45,.06);
+            padding:24px;
         }
         .page-header{
             display:flex;
             align-items:center;
-            gap:12px;
-            margin-bottom:16px;
+            justify-content:space-between;
+            gap:16px;
+            margin-bottom:10px;
         }
-        .title{ font-size:20px; font-weight:800; color:#111; }
+        .title{ font-size:28px; font-weight:900; color:#0f172a; letter-spacing:.01em; }
         .note{
             margin:0 0 18px;
-            color:#666;
-            font-size:13px;
-            line-height:1.65;
+            color:#475569;
+            font-size:14px;
+            line-height:1.7;
         }
         .label{
             display:block;
-            font-size:12px;
+            font-size:11px;
             font-weight:800;
-            letter-spacing:.16em;
+            letter-spacing:.2em;
             text-transform:uppercase;
-            color:#555;
+            color:#334155;
             margin-bottom:8px;
         }
         .input-box{
             width:100%;
-            padding:12px 14px;
-            border:1px solid #e3e3e3;
-            background:#fafafa;
+            padding:13px 14px;
+            border:1px solid #d8dee8;
+            background:#f8fafc;
             box-sizing:border-box;
             margin-bottom:16px;
             font-size:14px;
+            transition:border-color .2s ease, box-shadow .2s ease;
+        }
+        .input-box:focus{
+            outline:none;
+            border-color:#0f172a;
+            box-shadow:0 0 0 3px rgba(15,23,42,.08);
         }
         .check-row{
             display:flex;
             align-items:center;
             gap:8px;
             margin-bottom:14px;
-            color:#333;
+            color:#1e293b;
             font-size:14px;
+            font-weight:600;
         }
         .upload-box{
-            border:1px dashed #d6d6d6;
-            background:#fbfbfb;
+            border:1px dashed #cbd5e1;
+            background:#f8fafc;
             min-height:170px;
             display:flex;
             justify-content:center;
@@ -73,30 +85,65 @@
             background:#fff;
         }
         .upload-hint{
-            color:#888;
+            color:#64748b;
             font-size:12px;
             text-align:center;
             line-height:1.5;
             padding:14px;
         }
+        .config-block{
+            border:1px solid #e7ebf2;
+            background:#fff;
+            padding:18px;
+            margin-bottom:18px;
+        }
+        .config-title{
+            margin:0 0 12px;
+            font-size:15px;
+            font-weight:800;
+            letter-spacing:.08em;
+            text-transform:uppercase;
+            color:#0f172a;
+        }
         .save-btn{
             border:none;
-            background:#111;
+            background:#0f172a;
             color:#fff;
-            padding:12px 18px;
+            padding:13px 22px;
             font-size:13px;
             font-weight:800;
-            letter-spacing:.14em;
+            letter-spacing:.16em;
             text-transform:uppercase;
             cursor:pointer;
+            transition:transform .2s ease, background-color .2s ease;
+        }
+        .save-btn:hover{
+            background:#111827;
+            transform:translateY(-1px);
         }
         .back-link{
             display:inline-block;
             margin-top:14px;
-            color:#555;
+            color:#475569;
             text-decoration:none;
             font-size:13px;
             letter-spacing:.06em;
+        }
+        .header-left{
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+        .back-arrow{
+            text-decoration:none;
+            color:#0f172a;
+            font-size:24px;
+            line-height:1;
+        }
+        .divider{
+            border:0;
+            border-top:1px solid #e9edf4;
+            margin:8px 0 18px;
         }
     </style>
 </head>
@@ -104,98 +151,106 @@
 <?php require_once ROOT_PATH . 'helpers/ImageHelper.php'; ?>
 <div class="container" style="padding-bottom:90px;">
     <div class="page-header">
-        <a href="<?= BASE_URL ?>settings/edit" style="text-decoration:none; color:#111; font-size:24px;">&#10094;</a>
-        <div class="title">Promo Popup Settings</div>
+        <div class="header-left">
+            <a href="<?= BASE_URL ?>settings/edit" class="back-arrow">&#10094;</a>
+            <div class="title">Promo Popup Settings</div>
+        </div>
     </div>
 
-    <p class="note">Configure the top-right popup shown on customer pages for both desktop and mobile.</p>
+    <p class="note">Manage both popup types from one place. Update visibility, link behavior, and images for the corner promo popup and entrance popup.</p>
 
     <form action="<?= BASE_URL ?>promo/update" method="POST" enctype="multipart/form-data">
         <?= csrf_input() ?>
         <div class="promo-card">
-            <label class="check-row">
-                <input type="checkbox" name="promo_enabled" value="1" <?= !empty($promo['promo_enabled']) ? 'checked' : '' ?>>
-                Enable promo popup
-            </label>
+            <section class="config-block">
+                <h3 class="config-title">Corner Promo Popup</h3>
+                <label class="check-row">
+                    <input type="checkbox" name="promo_enabled" value="1" <?= !empty($promo['promo_enabled']) ? 'checked' : '' ?>>
+                    Enable promo popup
+                </label>
 
-            <label class="check-row">
-                <input type="checkbox" name="promo_open_new_tab" value="1" <?= !isset($promo['promo_open_new_tab']) || $promo['promo_open_new_tab'] === '' || !empty($promo['promo_open_new_tab']) ? 'checked' : '' ?>>
-                Open promo link in new tab
-            </label>
+                <label class="check-row">
+                    <input type="checkbox" name="promo_open_new_tab" value="1" <?= !isset($promo['promo_open_new_tab']) || $promo['promo_open_new_tab'] === '' || !empty($promo['promo_open_new_tab']) ? 'checked' : '' ?>>
+                    Open promo link in new tab
+                </label>
 
-            <label class="label">Promo Link</label>
-            <input
-                type="text"
-                name="promo_link"
-                class="input-box"
-                placeholder="https://example.com/promo"
-                value="<?= htmlspecialchars($promo['promo_link'] ?? '') ?>">
+                <label class="label">Promo Link</label>
+                <input
+                    type="text"
+                    name="promo_link"
+                    class="input-box"
+                    placeholder="https://example.com/promo"
+                    value="<?= htmlspecialchars($promo['promo_link'] ?? '') ?>">
 
-            <label class="label">Promo Image</label>
-            <div class="upload-box" onclick="document.getElementById('promoImageInput').click()">
-                <?php if (!empty($promo['promo_image'])): ?>
-                    <?php
-                    $promoImageUrl = ImageHelper::settingsImageUrl((string) $promo['promo_image'], '');
-                    $promoImageFile = basename((string) parse_url($promoImageUrl, PHP_URL_PATH));
-                    ?>
-                    <?= ImageHelper::renderResponsivePicture(
-                        $promoImageFile,
-                        $promoImageUrl,
-                        [
-                            'alt' => 'Promo image preview',
-                            'loading' => 'lazy',
-                            'decoding' => 'async',
-                            'fetchpriority' => 'low'
-                        ],
-                        'product_gallery'
-                    ) ?>
-                <?php endif; ?>
-                <div class="upload-hint">Tap or click to upload promo image<br>Recommended: PNG/WebP with transparent background.</div>
-                <input id="promoImageInput" type="file" name="promo_image" accept="image/*" style="display:none;">
-            </div>
+                <label class="label">Promo Image</label>
+                <div class="upload-box" onclick="document.getElementById('promoImageInput').click()">
+                    <?php if (!empty($promo['promo_image'])): ?>
+                        <?php
+                        $promoImageUrl = ImageHelper::settingsImageUrl((string) $promo['promo_image'], '');
+                        $promoImageFile = basename((string) parse_url($promoImageUrl, PHP_URL_PATH));
+                        ?>
+                        <?= ImageHelper::renderResponsivePicture(
+                            $promoImageFile,
+                            $promoImageUrl,
+                            [
+                                'alt' => 'Promo image preview',
+                                'loading' => 'lazy',
+                                'decoding' => 'async',
+                                'fetchpriority' => 'low'
+                            ],
+                            'product_gallery'
+                        ) ?>
+                    <?php endif; ?>
+                    <div class="upload-hint">Tap or click to upload promo image<br>Recommended: PNG/WebP with transparent background.</div>
+                    <input id="promoImageInput" type="file" name="promo_image" accept="image/*" style="display:none;">
+                </div>
+            </section>
 
-            <hr style="border:0;border-top:1px solid #eee;margin:18px 0;">
+            <hr class="divider">
 
-            <label class="check-row">
-                <input type="checkbox" name="entrance_popup_enabled" value="1" <?= !empty($promo['entrance_popup_enabled']) ? 'checked' : '' ?>>
-                Enable website entrance main popup
-            </label>
+            <section class="config-block">
+                <h3 class="config-title">Website Entrance Popup</h3>
+                <label class="check-row">
+                    <input type="checkbox" name="entrance_popup_enabled" value="1" <?= !empty($promo['entrance_popup_enabled']) ? 'checked' : '' ?>>
+                    Enable website entrance main popup
+                </label>
 
-            <label class="check-row">
-                <input type="checkbox" name="entrance_popup_open_new_tab" value="1" <?= !isset($promo['entrance_popup_open_new_tab']) || $promo['entrance_popup_open_new_tab'] === '' || !empty($promo['entrance_popup_open_new_tab']) ? 'checked' : '' ?>>
-                Open entrance popup link in new tab
-            </label>
+                <label class="check-row">
+                    <input type="checkbox" name="entrance_popup_open_new_tab" value="1" <?= !isset($promo['entrance_popup_open_new_tab']) || $promo['entrance_popup_open_new_tab'] === '' || !empty($promo['entrance_popup_open_new_tab']) ? 'checked' : '' ?>>
+                    Open entrance popup link in new tab
+                </label>
 
-            <label class="label">Entrance Popup Link</label>
-            <input
-                type="text"
-                name="entrance_popup_link"
-                class="input-box"
-                placeholder="https://example.com/offer"
-                value="<?= htmlspecialchars($promo['entrance_popup_link'] ?? '') ?>">
+                <label class="label">Entrance Popup Link</label>
+                <input
+                    type="text"
+                    name="entrance_popup_link"
+                    class="input-box"
+                    placeholder="https://example.com/offer"
+                    value="<?= htmlspecialchars($promo['entrance_popup_link'] ?? '') ?>">
 
-            <label class="label">Entrance Main Popup Image</label>
-            <div class="upload-box" onclick="document.getElementById('entrancePopupImageInput').click()">
-                <?php if (!empty($promo['entrance_popup_image'])): ?>
-                    <?php
-                    $entrancePopupImageUrl = ImageHelper::settingsImageUrl((string) $promo['entrance_popup_image'], '');
-                    $entrancePopupImageFile = basename((string) parse_url($entrancePopupImageUrl, PHP_URL_PATH));
-                    ?>
-                    <?= ImageHelper::renderResponsivePicture(
-                        $entrancePopupImageFile,
-                        $entrancePopupImageUrl,
-                        [
-                            'alt' => 'Entrance popup image preview',
-                            'loading' => 'lazy',
-                            'decoding' => 'async',
-                            'fetchpriority' => 'low'
-                        ],
-                        'product_gallery'
-                    ) ?>
-                <?php endif; ?>
-                <div class="upload-hint">Tap or click to upload entrance popup image.</div>
-                <input id="entrancePopupImageInput" type="file" name="entrance_popup_image" accept="image/*" style="display:none;">
-            </div>
+                <label class="label">Entrance Main Popup Image</label>
+                <div class="upload-box" onclick="document.getElementById('entrancePopupImageInput').click()">
+                    <?php if (!empty($promo['entrance_popup_image'])): ?>
+                        <?php
+                        $entrancePopupImageUrl = ImageHelper::settingsImageUrl((string) $promo['entrance_popup_image'], '');
+                        $entrancePopupImageFile = basename((string) parse_url($entrancePopupImageUrl, PHP_URL_PATH));
+                        ?>
+                        <?= ImageHelper::renderResponsivePicture(
+                            $entrancePopupImageFile,
+                            $entrancePopupImageUrl,
+                            [
+                                'alt' => 'Entrance popup image preview',
+                                'loading' => 'lazy',
+                                'decoding' => 'async',
+                                'fetchpriority' => 'low'
+                            ],
+                            'product_gallery'
+                        ) ?>
+                    <?php endif; ?>
+                    <div class="upload-hint">Tap or click to upload entrance popup image.</div>
+                    <input id="entrancePopupImageInput" type="file" name="entrance_popup_image" accept="image/*" style="display:none;">
+                </div>
+            </section>
 
             <button type="submit" class="save-btn">Save Promo</button>
         </div>
