@@ -305,6 +305,12 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
         .sale-archive-section{
             background:#f0eded url('assets/offer-background.jpg') center/cover no-repeat !important;
             color:var(--ink);
+            padding-top:140px;
+            padding-bottom:160px;
+        }
+        .sale-archive-section .container{
+            padding-left:40px;
+            padding-right:40px;
         }
         .sale-archive-section .section-title{
             font-family:"Manrope",sans-serif !important;
@@ -431,6 +437,14 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
             }
             .sale-archive-section .carousel-actions{
                 display:none;
+            }
+            .sale-archive-section{
+                padding-top:120px !important;
+                padding-bottom:130px !important;
+            }
+            .sale-archive-section .container{
+                padding-left:20px !important;
+                padding-right:20px !important;
             }
             .section-dark{padding:58px 0 64px}
             .sale-card{min-width:72vw;max-width:72vw}
