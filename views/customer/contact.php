@@ -3,8 +3,19 @@ require_once 'views/layouts/customer_layout.php';
 
 $shopName = !empty($settings['shop_name']) ? (string) $settings['shop_name'] : 'STYLE1';
 $shopAbout = trim((string) ($settings['shop_about'] ?? ''));
-$shopWhatsapp = trim((string) ($settings['shop_whatsapp'] ?? ($settings['social_whatsapp'] ?? '')));
+$shopWhatsapp = trim((string) ($settings['social_whatsapp'] ?? ($settings['shop_whatsapp'] ?? '')));
 $shopWhatsappDigits = preg_replace('/[^0-9]/', '', $shopWhatsapp);
+$ownerWhatsappRaw = trim((string) ($settings['shop_whatsapp'] ?? ''));
+$ownerWhatsappDigits = preg_replace('/[^0-9]/', '', $ownerWhatsappRaw);
+$ownerWhatsappLabel = $ownerWhatsappRaw !== '' ? $ownerWhatsappRaw : ($ownerWhatsappDigits !== '' ? $ownerWhatsappDigits : '');
+$shopWhatsappLink = '';
+if ($shopWhatsapp !== '') {
+    if (preg_match('#^https?://#i', $shopWhatsapp)) {
+        $shopWhatsappLink = $shopWhatsapp;
+    } elseif ($shopWhatsappDigits !== '') {
+        $shopWhatsappLink = 'https://wa.me/' . $shopWhatsappDigits;
+    }
+}
 $shopWhatsappLabel = $shopWhatsapp !== '' ? $shopWhatsapp : '+94 11 000 0000';
 $supportEmail = trim((string) ($settings['shop_owner_email'] ?? ''));
 if ($supportEmail === '') {
@@ -34,10 +45,10 @@ $normalizeExternalUrl = static function (string $url): string {
 };
 
 $contactSocialLinks = [];
-if ($shopWhatsappDigits !== '') {
+if ($shopWhatsappLink !== '') {
     $contactSocialLinks[] = [
         'label' => 'WhatsApp',
-        'url' => 'https://wa.me/' . $shopWhatsappDigits,
+        'url' => $shopWhatsappLink,
         'icon' => BASE_URL . 'assets/icons/whatsapp.png',
     ];
 }
@@ -548,20 +559,20 @@ customer_layout_start([
                 <div class="contact-care">
                     <span class="contact-section-label" style="margin-bottom:18px;">Customer Care</span>
                     <div class="contact-care-items">
-                        <?php if ($shopWhatsapp !== ''): ?>
+                        <?php if ($ownerWhatsappLabel !== ''): ?>
                             <div class="contact-care-item">
                                 <i class="fa-solid fa-phone"></i>
-                                <a href="tel:<?= htmlspecialchars($shopWhatsappDigits) ?>"><?= htmlspecialchars($shopWhatsappLabel) ?></a>
+                                <a href="tel:<?= htmlspecialchars($ownerWhatsappDigits) ?>"><?= htmlspecialchars($ownerWhatsappLabel) ?></a>
                             </div>
                         <?php endif; ?>
                         <div class="contact-care-item">
                             <i class="fa-solid fa-envelope"></i>
                             <a href="mailto:<?= htmlspecialchars($supportEmail) ?>"><?= htmlspecialchars($supportEmail) ?></a>
                         </div>
-                        <?php if ($shopWhatsappDigits !== ''): ?>
+                        <?php if ($shopWhatsappLink !== ''): ?>
                             <div class="contact-care-item">
                                 <i class="fa-brands fa-whatsapp"></i>
-                                <a class="contact-whatsapp-btn" href="https://wa.me/<?= htmlspecialchars($shopWhatsappDigits) ?>" target="_blank" rel="noopener noreferrer">WhatsApp support</a>
+                                <a class="contact-whatsapp-btn" href="<?= htmlspecialchars($shopWhatsappLink) ?>" target="_blank" rel="noopener noreferrer">WhatsApp support</a>
                             </div>
                         <?php else: ?>
                             <div class="contact-care-item">

@@ -3,6 +3,16 @@ require_once ROOT_PATH . 'helpers/SeoHelper.php';
 
 class FooterHelper
 {
+    private static function whatsappRaw(array $settings): string
+    {
+        $raw = trim((string) ($settings['social_whatsapp'] ?? ''));
+        if ($raw === '') {
+            $raw = trim((string) ($settings['shop_whatsapp'] ?? ''));
+        }
+
+        return $raw;
+    }
+
     public static function brandSummary(array $settings): string
     {
         $about = trim((string) ($settings['shop_about'] ?? ''));
@@ -106,17 +116,23 @@ class FooterHelper
 
     public static function whatsappDigits(array $settings): string
     {
-        $raw = trim((string) ($settings['shop_whatsapp'] ?? ''));
-        if ($raw === '') {
-            $raw = trim((string) ($settings['social_whatsapp'] ?? ''));
-        }
+        $raw = self::whatsappRaw($settings);
 
         return preg_replace('/[^0-9]/', '', $raw);
     }
 
     public static function whatsappLink(array $settings): string
     {
-        $digits = self::whatsappDigits($settings);
+        $raw = self::whatsappRaw($settings);
+        if ($raw === '') {
+            return '';
+        }
+
+        if (preg_match('#^https?://#i', $raw)) {
+            return $raw;
+        }
+
+        $digits = preg_replace('/[^0-9]/', '', $raw);
         if ($digits === '') {
             return '';
         }
@@ -131,7 +147,8 @@ class FooterHelper
             return '';
         }
 
-        return $baseLink . '?text=' . rawurlencode($message);
+        $separator = strpos($baseLink, '?') !== false ? '&' : '?';
+        return $baseLink . $separator . 'text=' . rawurlencode($message);
     }
 
     public static function whatsappLabel(array $settings): string
@@ -153,13 +170,13 @@ class FooterHelper
     {
         $links = [];
 
-        $whatsappDigits = self::whatsappDigits($settings);
-        if ($whatsappDigits !== '') {
+        $whatsappLink = self::whatsappLink($settings);
+        if ($whatsappLink !== '') {
             $relativeIcon = 'assets/icons/whatsapp.png';
             $absoluteIcon = ROOT_PATH . $relativeIcon;
             $links[] = [
                 'label' => 'WhatsApp',
-                'url' => 'https://wa.me/' . $whatsappDigits,
+                'url' => $whatsappLink,
                 'icon' => BASE_URL . $relativeIcon . '?v=' . (@filemtime($absoluteIcon) ?: time()),
             ];
         }
