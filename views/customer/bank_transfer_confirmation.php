@@ -56,6 +56,9 @@ if (!empty($order) && $shopWhatsappNumber !== '') {
         <?php endif; ?>
 
         <?php if (!empty($settings['bank_transfer_details'])): ?>
+            <div style="margin:0 0 14px;">
+                <img src="<?= htmlspecialchars(BASE_URL . 'assets/bank-details.jpg') ?>" alt="Bank details" style="display:block;width:100%;height:auto;border-radius:16px;object-fit:cover;">
+            </div>
             <div style="background:#fee2e2; border:1px solid #fecaca; border-radius:20px; padding:20px;">
                 <div style="font-size:15px; font-weight:800; color:#000; margin-bottom:10px;">Bank Transfer Details</div>
                 <div style="font-size:14px; color:#000; line-height:1.8; white-space:pre-wrap;"><?= nl2br(htmlspecialchars($settings['bank_transfer_details'])) ?></div>
