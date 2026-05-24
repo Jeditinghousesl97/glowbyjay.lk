@@ -222,7 +222,7 @@ customer_layout_start([
         .gallery-rail{display:grid;grid-template-columns:92px minmax(0,1fr);gap:16px;align-items:start;min-width:0}
         .gallery-rail.single-image{grid-template-columns:minmax(0,1fr)}
         .gallery-thumb-rail{display:flex;flex-direction:column;gap:12px;position:sticky;top:108px;max-height:calc(100vh - 136px);overflow:auto;padding-right:4px}
-        .gallery-thumb-btn{width:100%;border:1px solid rgba(28,27,27,.12);background:var(--surface);padding:0;overflow:hidden;cursor:pointer;aspect-ratio:3/4;box-shadow:var(--shadow-soft);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease}
+        .gallery-thumb-btn{width:100%;border:1px solid rgba(28,27,27,.12);background:var(--surface);padding:0;overflow:hidden;cursor:pointer;aspect-ratio:1/1;box-shadow:var(--shadow-soft);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease}
         .gallery-thumb-btn:hover{transform:translateY(-1px)}
         .gallery-thumb-btn.active{border-color:var(--ink);box-shadow:0 0 0 2px rgba(28,27,27,.08)}
         .gallery-thumb-btn picture,.gallery-thumb-btn img{display:block;width:100%;height:100%}
