@@ -213,6 +213,15 @@ if (!function_exists('customer_layout_start')) {
             $promoLink = 'https://' . $promoLink;
         }
         $promoStateKey = hash('sha256', $promoImageUrl . '|' . $promoLink);
+        $entrancePopupEnabled = !empty($settings['entrance_popup_enabled']);
+        $entrancePopupImageUrl = '';
+        if ($entrancePopupEnabled) {
+            $entrancePopupImageUrl = ImageHelper::settingsImageUrl((string) ($settings['entrance_popup_image'] ?? ''), '');
+            if ($entrancePopupImageUrl === '') {
+                $entrancePopupEnabled = false;
+            }
+        }
+        $entrancePopupStateKey = hash('sha256', $entrancePopupImageUrl);
 
         $menuItems = [
             [
@@ -741,6 +750,53 @@ if (!function_exists('customer_layout_start')) {
         }
         .site-promo-popup-close:hover{
             background:rgba(17,17,17,.92);
+        }
+        .site-entrance-popup{
+            position:fixed;
+            inset:0;
+            z-index:1350;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:18px;
+            background:rgba(0,0,0,.48);
+        }
+        .site-entrance-popup[hidden]{
+            display:none !important;
+        }
+        .site-entrance-popup-image{
+            display:block;
+            max-width:min(96vw, 820px);
+            max-height:90vh;
+            width:auto;
+            height:auto;
+            animation:siteEntrancePopupZoomIn .36s cubic-bezier(.22,.61,.36,1);
+            transform-origin:center center;
+        }
+        .site-entrance-popup-close{
+            position:absolute;
+            top:10px;
+            right:10px;
+            width:22px;
+            height:22px;
+            border:0;
+            background:rgba(17,17,17,.78);
+            color:#fff;
+            font-size:14px;
+            line-height:1;
+            display:grid;
+            place-items:center;
+            cursor:pointer;
+            padding:0;
+            animation:siteEntrancePopupFadeIn .28s ease-out;
+        }
+        @keyframes siteEntrancePopupZoomIn{
+            0%{opacity:0;transform:scale(.84)}
+            100%{opacity:1;transform:scale(1)}
+        }
+        @keyframes siteEntrancePopupFadeIn{
+            0%{opacity:0}
+            100%{opacity:1}
         }
         .site-footer{
             background:var(--footer-bg);
@@ -1272,6 +1328,15 @@ if (!function_exists('customer_layout_start')) {
             <button type="button" class="site-promo-popup-close" data-site-promo-close aria-label="Close promo popup">&times;</button>
         </div>
     <?php endif; ?>
+    <?php if ($entrancePopupEnabled && $entrancePopupImageUrl !== ''): ?>
+        <div
+            class="site-entrance-popup"
+            data-site-entrance-popup
+            data-entrance-popup-state-key="<?= htmlspecialchars($entrancePopupStateKey, ENT_QUOTES, 'UTF-8') ?>">
+            <img class="site-entrance-popup-image" src="<?= htmlspecialchars($entrancePopupImageUrl, ENT_QUOTES, 'UTF-8') ?>" alt="Website entrance popup">
+            <button type="button" class="site-entrance-popup-close" data-site-entrance-popup-close aria-label="Close entrance popup">&times;</button>
+        </div>
+    <?php endif; ?>
     <div class="site-content">
 <?php
     }
@@ -1679,6 +1744,46 @@ if (!function_exists('customer_layout_start')) {
                     } catch (error) {}
                 });
             }
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            const entrancePopup = document.querySelector('[data-site-entrance-popup]');
+            if (!entrancePopup) {
+                return;
+            }
+
+            const entrancePopupClose = entrancePopup.querySelector('[data-site-entrance-popup-close]');
+            const entrancePopupStateKey = entrancePopup.getAttribute('data-entrance-popup-state-key') || '';
+            const storageKey = 'style1_entrance_popup_closed_' + entrancePopupStateKey;
+
+            try {
+                if (entrancePopupStateKey && sessionStorage.getItem(storageKey) === '1') {
+                    entrancePopup.hidden = true;
+                    return;
+                }
+            } catch (error) {}
+
+            const closeEntrancePopup = function () {
+                entrancePopup.hidden = true;
+                try {
+                    if (entrancePopupStateKey) {
+                        sessionStorage.setItem(storageKey, '1');
+                    }
+                } catch (error) {}
+            };
+
+            if (entrancePopupClose) {
+                entrancePopupClose.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    closeEntrancePopup();
+                });
+            }
+
+            entrancePopup.addEventListener('click', function (event) {
+                if (event.target === entrancePopup) {
+                    closeEntrancePopup();
+                }
+            });
         });
     </script>
 </div>

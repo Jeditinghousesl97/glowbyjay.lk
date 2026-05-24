@@ -154,6 +154,36 @@
                 <input id="promoImageInput" type="file" name="promo_image" accept="image/*" style="display:none;">
             </div>
 
+            <hr style="border:0;border-top:1px solid #eee;margin:18px 0;">
+
+            <label class="check-row">
+                <input type="checkbox" name="entrance_popup_enabled" value="1" <?= !empty($promo['entrance_popup_enabled']) ? 'checked' : '' ?>>
+                Enable website entrance main popup
+            </label>
+
+            <label class="label">Entrance Main Popup Image</label>
+            <div class="upload-box" onclick="document.getElementById('entrancePopupImageInput').click()">
+                <?php if (!empty($promo['entrance_popup_image'])): ?>
+                    <?php
+                    $entrancePopupImageUrl = ImageHelper::settingsImageUrl((string) $promo['entrance_popup_image'], '');
+                    $entrancePopupImageFile = basename((string) parse_url($entrancePopupImageUrl, PHP_URL_PATH));
+                    ?>
+                    <?= ImageHelper::renderResponsivePicture(
+                        $entrancePopupImageFile,
+                        $entrancePopupImageUrl,
+                        [
+                            'alt' => 'Entrance popup image preview',
+                            'loading' => 'lazy',
+                            'decoding' => 'async',
+                            'fetchpriority' => 'low'
+                        ],
+                        'product_gallery'
+                    ) ?>
+                <?php endif; ?>
+                <div class="upload-hint">Tap or click to upload entrance popup image.</div>
+                <input id="entrancePopupImageInput" type="file" name="entrance_popup_image" accept="image/*" style="display:none;">
+            </div>
+
             <button type="submit" class="save-btn">Save Promo</button>
         </div>
     </form>
