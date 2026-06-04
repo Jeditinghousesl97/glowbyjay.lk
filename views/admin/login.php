@@ -130,8 +130,16 @@
 
     <div class="login-card">
         <!-- Logo -->
-        <?php if (!empty($settings['shop_logo'])): ?>
-            <img src="<?= htmlspecialchars(ImageHelper::settingsImageUrl($settings['shop_logo'], $settings['shop_logo'])) ?>" alt="Shop Logo" class="shop-logo">
+        <?php
+        $loginCardLogo = '';
+        if (!empty($settings['shop_favicon'])) {
+            $loginCardLogo = ImageHelper::settingsImageUrl($settings['shop_favicon'], (string) $settings['shop_favicon']);
+        } elseif (!empty($settings['shop_logo'])) {
+            $loginCardLogo = ImageHelper::settingsImageUrl($settings['shop_logo'], (string) $settings['shop_logo']);
+        }
+        ?>
+        <?php if ($loginCardLogo !== ''): ?>
+            <img src="<?= htmlspecialchars($loginCardLogo) ?>" alt="Shop Logo" class="shop-logo">
         <?php else: ?>
             <div class="shop-logo" style="background:#ccc; display:flex; align-items:center; justify-content:center;">Logo
             </div>
