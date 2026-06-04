@@ -358,8 +358,8 @@ customer_layout_start([
         .summary-long-description h3{font-size:18px;letter-spacing:-.02em;text-transform:uppercase}
         .summary-long-description .text{color:var(--muted);line-height:1.85;font-size:14px}
         .product-details-panel{margin-top:28px;border:1px solid rgba(28,27,27,.12);background:var(--surface);box-shadow:var(--shadow-soft);padding:22px 24px}
-        .product-details-panel h3{margin:0 0 10px;font-size:22px;letter-spacing:-.02em;text-transform:uppercase;font-family:sans-serif !important}
-        .product-details-panel .text{color:var(--muted);line-height:1.85;font-size:14px}
+        .product-details-panel h3{margin:0 0 12px;font-size:22px;letter-spacing:-.02em;text-transform:uppercase;font-family:sans-serif !important}
+        .product-details-panel .text{color:rgba(28,27,27,.78);line-height:1.68;font-size:15px;letter-spacing:.01em}
         .order-flash{margin:0 0 16px;padding:14px 16px;border:1px solid rgba(182,138,45,.22);background:color-mix(in srgb, var(--accent-red, var(--primary)) 8%, #ffffff);color:#7a5a14;font-size:13px;line-height:1.7}
         .order-flash strong{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px}
         .related-section{padding-top:82px}
