@@ -4,6 +4,7 @@ require_once ROOT_PATH . 'helpers/SeoHelper.php';
 require_once ROOT_PATH . 'helpers/KokoPricingHelper.php';
 require_once ROOT_PATH . 'helpers/KokoGateway.php';
 require_once ROOT_PATH . 'helpers/RecaptchaHelper.php';
+require_once ROOT_PATH . 'helpers/TextFormatterHelper.php';
 
 $baseUrl = defined('BASE_URL') ? BASE_URL : '/';
 $currency = $settings['currency_symbol'] ?? 'LKR';
@@ -42,6 +43,7 @@ $sizeGuideImage = ImageHelper::uploadUrl($product['size_guide_image'] ?? '', '')
 $hasSizeGuide = !empty($product['size_guide_id']) || trim((string) $sizeGuideImage) !== '';
 $shortDescription = trim((string) ($product['short_description'] ?? ''));
 $longDescription = trim((string) ($product['description'] ?? ''));
+$formattedLongDescription = TextFormatterHelper::renderSimpleMarkup($longDescription);
 $categoryName = trim((string) ($product['category_name'] ?? ''));
 $parentCategoryName = trim((string) ($product['parent_category_name'] ?? ''));
 $categoryMap = [];
@@ -360,6 +362,13 @@ customer_layout_start([
         .product-details-panel{margin-top:28px;border:1px solid rgba(28,27,27,.12);background:var(--surface);box-shadow:var(--shadow-soft);padding:22px 24px}
         .product-details-panel h3{margin:0 0 12px;font-size:22px;letter-spacing:-.02em;text-transform:uppercase;font-family:sans-serif !important}
         .product-details-panel .text{color:rgba(28,27,27,.78);line-height:1.68;font-size:15px;letter-spacing:.01em}
+        .product-details-panel .text p{margin:0 0 12px}
+        .product-details-panel .text p:last-child{margin-bottom:0}
+        .product-details-panel .text ul{margin:0;padding-left:20px;display:grid;gap:8px}
+        .product-details-panel .text li{margin:0}
+        .product-details-panel .text strong{font-weight:800;color:#1c1b1b}
+        .product-details-panel .text em{font-style:italic}
+        .product-details-panel .text del{opacity:.72}
         .order-flash{margin:0 0 16px;padding:14px 16px;border:1px solid rgba(182,138,45,.22);background:color-mix(in srgb, var(--accent-red, var(--primary)) 8%, #ffffff);color:#7a5a14;font-size:13px;line-height:1.7}
         .order-flash strong{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px}
         .related-section{padding-top:82px}
@@ -611,10 +620,10 @@ customer_layout_start([
                     </aside>
                 </div>
 
-                <?php if ($longDescription !== ''): ?>
+                <?php if ($formattedLongDescription !== ''): ?>
                     <section class="product-details-panel" aria-label="Product Details">
                         <h3>Product Details</h3>
-                        <div class="text"><?= nl2br(htmlspecialchars($longDescription)) ?></div>
+                        <div class="text"><?= $formattedLongDescription ?></div>
                     </section>
                 <?php endif; ?>
             </div>

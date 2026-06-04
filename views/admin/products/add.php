@@ -814,8 +814,17 @@
                     value="<?= htmlspecialchars((string) ($product['weight_grams'] ?? '0')) ?>">
 
                 <span class="section-label">Product Description</span>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin:0 0 8px;">
+                    <button type="button" class="btn-yellow" data-description-format="bold" style="width:auto; padding:8px 12px;">Bold</button>
+                    <button type="button" class="btn-yellow" data-description-format="italic" style="width:auto; padding:8px 12px;">Italic</button>
+                    <button type="button" class="btn-yellow" data-description-format="bullet" style="width:auto; padding:8px 12px;">Bullet</button>
+                </div>
                 <textarea name="description" class="input-box" rows="4"
                     placeholder="You can use external links, emojis... 🌸"><?= htmlspecialchars($product['description'] ?? '') ?></textarea>
+
+                <div style="margin:8px 0 0; font-size:12px; line-height:1.6; color:#6b7280;">
+                    Supports simple formatting on the product page: <code>*bold*</code>, <code>_italic_</code>, <code>~strike~</code>, and list items starting with <code>- </code>.
+                </div>
 
                 <span class="section-label">Product Short Description</span>
                 <textarea name="short_description" class="input-box" rows="3"
@@ -1854,6 +1863,44 @@
                 suppressDraftTracking = false;
             });
         }
+
+        const descriptionField = productForm.querySelector('textarea[name="description"]');
+        document.querySelectorAll('[data-description-format]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                if (!descriptionField) {
+                    return;
+                }
+
+                const mode = button.getAttribute('data-description-format') || '';
+                const start = descriptionField.selectionStart || 0;
+                const end = descriptionField.selectionEnd || 0;
+                const value = descriptionField.value || '';
+                const selected = value.slice(start, end);
+                let replacement = selected;
+
+                if (mode === 'bold') {
+                    replacement = '*' + (selected || 'bold text') + '*';
+                } else if (mode === 'italic') {
+                    replacement = '_' + (selected || 'italic text') + '_';
+                } else if (mode === 'bullet') {
+                    const source = selected || 'List item';
+                    replacement = source
+                        .split(/\r?\n/)
+                        .map(function (line) {
+                            const trimmed = line.trim();
+                            if (trimmed === '') {
+                                return '';
+                            }
+                            return '- ' + trimmed.replace(/^-\s+/, '');
+                        })
+                        .join('\n');
+                }
+
+                descriptionField.focus();
+                descriptionField.setRangeText(replacement, start, end, 'end');
+                descriptionField.dispatchEvent(new Event('input', { bubbles: true }));
+            });
+        });
 
         window.addEventListener('load', function () {
             populateHiddenVars();
