@@ -364,15 +364,16 @@ customer_layout_start([
         .product-details-panel .text{color:rgba(28,27,27,.78);line-height:1.68;font-size:15px;letter-spacing:.01em}
         .product-details-panel .text p{margin:0 0 10px}
         .product-details-panel .text p:last-child{margin-bottom:0}
-        .product-details-panel .text ul{margin:0;padding-left:20px;display:grid;gap:4px}
+        .product-details-panel .text ul{margin:0 0 12px;padding-left:20px;display:grid;gap:4px}
+        .product-details-panel .text ul:last-child{margin-bottom:0}
         .product-details-panel .text li{margin:0}
         .product-details-panel .text strong{font-weight:800;color:#1c1b1b}
         .product-details-panel .text em{font-style:italic}
         .product-details-panel .text del{opacity:.72}
         .product-details-panel .text .text-spacer{width:100%}
-        .product-details-panel .text .text-spacer-2{height:10px}
-        .product-details-panel .text .text-spacer-3{height:18px}
-        .product-details-panel .text .text-spacer-4{height:26px}
+        .product-details-panel .text .text-spacer-2{height:18px}
+        .product-details-panel .text .text-spacer-3{height:28px}
+        .product-details-panel .text .text-spacer-4{height:40px}
         .order-flash{margin:0 0 16px;padding:14px 16px;border:1px solid rgba(182,138,45,.22);background:color-mix(in srgb, var(--accent-red, var(--primary)) 8%, #ffffff);color:#7a5a14;font-size:13px;line-height:1.7}
         .order-flash strong{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px}
         .related-section{padding-top:82px}
