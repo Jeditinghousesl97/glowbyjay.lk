@@ -27,6 +27,36 @@ class ProductController extends BaseController
         $this->stockAlertService = new StockAlertService();
     }
 
+    private function normalizeInternalRedirectTarget($target)
+    {
+        $target = trim((string) $target);
+        if ($target === '') {
+            return '';
+        }
+
+        $basePath = trim((string) parse_url((string) BASE_URL, PHP_URL_PATH), '/');
+        $parts = parse_url($target);
+        if ($parts !== false && isset($parts['host'])) {
+            $currentHost = strtolower((string) ($_SERVER['HTTP_HOST'] ?? ''));
+            $targetHost = strtolower((string) ($parts['host'] ?? ''));
+            if ($currentHost !== '' && $targetHost !== '' && $currentHost !== $targetHost) {
+                return '';
+            }
+            $path = (string) ($parts['path'] ?? '');
+            $query = isset($parts['query']) ? '?' . $parts['query'] : '';
+            $target = $path . $query;
+        }
+
+        $target = ltrim($target, '/');
+        if ($basePath !== '' && strpos($target, $basePath . '/') === 0) {
+            $target = substr($target, strlen($basePath) + 1);
+        } elseif ($target === $basePath) {
+            $target = '';
+        }
+
+        return ltrim($target, '/');
+    }
+
     private function parseVariantStocksFromRequest()
     {
         $raw = trim((string) ($_POST['variant_stocks_json'] ?? ''));
@@ -604,16 +634,22 @@ class ProductController extends BaseController
 
         $this->redirect('product/index');
     }
-        public function toggleActive($id)
+    public function toggleActive($id)
     {
         $this->productModel->toggleActive($id);
-        if (isset($_SERVER['HTTP_REFERER'])) {
-            header('Location: ' . $_SERVER['HTTP_REFERER']);
-        } else {
-            $this->redirect('product/index');
+
+        $returnTarget = $this->normalizeInternalRedirectTarget($_GET['return'] ?? '');
+        if ($returnTarget !== '') {
+            $this->redirect($returnTarget);
         }
+
+        $refererTarget = $this->normalizeInternalRedirectTarget($_SERVER['HTTP_REFERER'] ?? '');
+        if ($refererTarget !== '') {
+            $this->redirect($refererTarget);
+        }
+
+        $this->redirect('product/index');
     }
 
 }
 ?>
-

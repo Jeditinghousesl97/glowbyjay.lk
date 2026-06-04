@@ -355,7 +355,7 @@
                             </div>
                             
                             <!-- Visibility Toggle -->
-                            <a href="<?= BASE_URL ?>product/toggleActive/<?= $prod['id'] ?>" 
+                            <a href="<?= BASE_URL ?>product/toggleActive/<?= $prod['id'] ?>?return=<?= rawurlencode($_SERVER['REQUEST_URI'] ?? 'product/index') ?>" 
                                class="toggle-btn <?= $prod['is_active'] ? 'active' : '' ?>" 
                                title="Toggle Visibility" 
                                onclick="showGlobalLoader();">
@@ -382,6 +382,5 @@
 </body>
 
 </html>
-
 
 
