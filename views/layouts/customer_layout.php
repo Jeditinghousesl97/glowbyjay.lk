@@ -95,6 +95,8 @@ if (!function_exists('customer_layout_start')) {
         $metaJsonLd = isset($options['seo_json_ld']) && is_array($options['seo_json_ld'])
             ? $options['seo_json_ld']
             : (isset($seo_json_ld) && is_array($seo_json_ld) ? $seo_json_ld : []);
+        $googleAnalyticsId = strtoupper(trim((string) ($settings['google_analytics_id'] ?? '')));
+        $metaPixelId = preg_replace('/\D+/', '', (string) ($settings['meta_pixel_id'] ?? ''));
         $siteLogoUrl = ImageHelper::settingsImageUrl(
             (string) ($settings['shop_logo'] ?? ''),
             'assets/uploads/1774110158_logo_logo.jpg'
@@ -294,6 +296,108 @@ if (!function_exists('customer_layout_start')) {
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/customer.css?v=<?= $customerCssVersion ?>">
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/customer-desktop-refresh.css?v=<?= $desktopCssVersion ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <?php if ($googleAnalyticsId !== ''): ?>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=<?= htmlspecialchars($googleAnalyticsId, ENT_QUOTES, 'UTF-8') ?>"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', <?= json_encode($googleAnalyticsId) ?>);
+        </script>
+    <?php endif; ?>
+    <?php if ($metaPixelId !== ''): ?>
+        <script>
+            !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+            n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', <?= json_encode($metaPixelId) ?>);
+            fbq('track', 'PageView');
+        </script>
+    <?php endif; ?>
+    <script>
+        (function () {
+            const analyticsConfig = {
+                gaMeasurementId: <?= json_encode($googleAnalyticsId) ?>,
+                metaPixelId: <?= json_encode($metaPixelId) ?>
+            };
+            const metaStandardEvents = {
+                PageView: true,
+                ViewContent: true,
+                Search: true,
+                AddToCart: true,
+                AddToWishlist: true,
+                InitiateCheckout: true,
+                AddPaymentInfo: true,
+                Purchase: true,
+                Lead: true,
+                CompleteRegistration: true,
+                Contact: true
+            };
+
+            function toObject(value) {
+                return value && typeof value === 'object' ? value : {};
+            }
+
+            function storageAvailable(kind) {
+                try {
+                    const storage = window[kind];
+                    const key = '__style1_' + kind + '_test__';
+                    storage.setItem(key, '1');
+                    storage.removeItem(key);
+                    return storage;
+                } catch (error) {
+                    return null;
+                }
+            }
+
+            function emitMetaEvent(eventName, params) {
+                if (!eventName || typeof window.fbq !== 'function' || !analyticsConfig.metaPixelId) {
+                    return;
+                }
+                const normalizedParams = toObject(params);
+                if (metaStandardEvents[eventName]) {
+                    window.fbq('track', eventName, normalizedParams);
+                    return;
+                }
+                window.fbq('trackCustom', eventName, normalizedParams);
+            }
+
+            window.analyticsConfig = analyticsConfig;
+            window.trackAnalyticsEvent = function (eventName, gaParams, metaEventName, metaParams) {
+                const normalizedGaParams = toObject(gaParams);
+                const resolvedMetaEventName = metaEventName || eventName || '';
+                const normalizedMetaParams = metaParams === undefined ? normalizedGaParams : toObject(metaParams);
+
+                if (eventName && typeof window.gtag === 'function' && analyticsConfig.gaMeasurementId) {
+                    window.gtag('event', eventName, normalizedGaParams);
+                }
+                if (resolvedMetaEventName) {
+                    emitMetaEvent(resolvedMetaEventName, normalizedMetaParams);
+                }
+            };
+
+            window.trackPurchaseOnce = function (purchaseKey, gaParams, metaParams) {
+                const normalizedKey = String(purchaseKey || '').trim();
+                if (normalizedKey === '') {
+                    window.trackAnalyticsEvent('purchase', gaParams, 'Purchase', metaParams);
+                    return;
+                }
+
+                const storage = storageAvailable('localStorage');
+                const flagKey = 'style1_purchase_tracked_' + normalizedKey;
+                if (storage && storage.getItem(flagKey) === '1') {
+                    return;
+                }
+
+                window.trackAnalyticsEvent('purchase', gaParams, 'Purchase', metaParams);
+                if (storage) {
+                    storage.setItem(flagKey, '1');
+                }
+            };
+        })();
+    </script>
         <style>
         :root{
             --surface:<?= htmlspecialchars($siteBg) ?>;
@@ -1212,6 +1316,9 @@ if (!function_exists('customer_layout_start')) {
     </style>
 </head>
 <body class="<?= $isHomeRoute ? 'is-home-page' : 'is-non-home-page' ?>">
+<?php if ($metaPixelId !== ''): ?>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=<?= htmlspecialchars($metaPixelId, ENT_QUOTES, 'UTF-8') ?>&ev=PageView&noscript=1" alt=""></noscript>
+<?php endif; ?>
 <script>
     window.toggleMobileMenu = window.toggleMobileMenu || function (button) {
         const mobileMenuToggle = button || document.querySelector('[data-mobile-menu-toggle]');

@@ -796,6 +796,7 @@ customer_layout_start([
 <script>
     const productId = <?= (int) ($product['id'] ?? 0) ?>;
     const productTitle = <?= json_encode((string) ($product['title'] ?? 'Product')) ?>;
+    const productCategoryName = <?= json_encode((string) $categoryName) ?>;
     const currencyCode = <?= json_encode((string) $currency) ?>;
     const baseProductPrice = <?= json_encode((float) $productUnitPrice) ?>;
     const baseProductRegularPrice = <?= json_encode((float) $productRegularPrice) ?>;
@@ -821,6 +822,41 @@ customer_layout_start([
     let orderMode = 'cod';
     let modalImageIndex = 0;
     let toastTimer = null;
+    let beginCheckoutTracked = false;
+
+    function buildAnalyticsItem(quantity) {
+        const qty = Math.max(1, parseInt(quantity, 10) || 1);
+        const unitPrice = Number(getCurrentUnitPrice() || 0);
+        const variantText = getVariantText();
+        const item = {
+            item_id: String(getCurrentSku() || productId || ''),
+            item_name: String(productTitle || 'Product'),
+            item_category: String(productCategoryName || ''),
+            price: unitPrice,
+            quantity: qty
+        };
+        if (variantText) {
+            item.item_variant = variantText;
+        }
+        return item;
+    }
+
+    function buildMetaContentPayload(quantity) {
+        const qty = Math.max(1, parseInt(quantity, 10) || 1);
+        const unitPrice = Number(getCurrentUnitPrice() || 0);
+        return {
+            content_ids: [String(productId || '')],
+            content_name: String(productTitle || 'Product'),
+            content_type: 'product',
+            contents: [{
+                id: String(productId || ''),
+                quantity: qty,
+                item_price: unitPrice
+            }],
+            value: unitPrice * qty,
+            currency: currencyCode
+        };
+    }
 
     function formatMoney(value) {
         const amount = Math.max(0, Number(value || 0));
@@ -1316,6 +1352,13 @@ customer_layout_start([
                 window.updateCartUi(data.count || 0);
             }
             window.dispatchEvent(new CustomEvent('cart:changed', { detail: { count: data.count || 0 } }));
+            if (typeof window.trackAnalyticsEvent === 'function') {
+                window.trackAnalyticsEvent('add_to_cart', {
+                    currency: currencyCode,
+                    value: Number(getCurrentUnitPrice() || 0) * qty,
+                    items: [buildAnalyticsItem(qty)]
+                }, 'AddToCart', buildMetaContentPayload(qty));
+            }
             showCartConfirm();
         }).catch(function (err) { showProductToast(err.message || 'Failed to add to cart', 'error'); });
     }
@@ -1345,7 +1388,21 @@ customer_layout_start([
         if (bankDetailsImageWrap) bankDetailsImageWrap.style.display = orderMode === 'bank_transfer' ? 'block' : 'none';
         updateOrderTotals();
     }
-    function choosePaymentMethod(mode) { orderMode = mode; closePaymentMethodSheet(); openOrderModal(); updateOrderButtonLabel(); }
+    function choosePaymentMethod(mode) {
+        orderMode = mode;
+        closePaymentMethodSheet();
+        openOrderModal();
+        updateOrderButtonLabel();
+        if (!beginCheckoutTracked && typeof window.trackAnalyticsEvent === 'function') {
+            const qty = parseInt(document.getElementById('qtyInput').value, 10) || 1;
+            beginCheckoutTracked = true;
+            window.trackAnalyticsEvent('begin_checkout', {
+                currency: currencyCode,
+                value: Number(getCurrentUnitPrice() || 0) * qty,
+                items: [buildAnalyticsItem(qty)]
+            }, 'InitiateCheckout', buildMetaContentPayload(qty));
+        }
+    }
     function setPaymentMethodCategory(category) {
         const sheet = document.getElementById('paymentMethodSheet');
         if (!sheet) return;
@@ -1515,6 +1572,13 @@ customer_layout_start([
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        if (typeof window.trackAnalyticsEvent === 'function') {
+            window.trackAnalyticsEvent('view_item', {
+                currency: currencyCode,
+                value: Number(getCurrentUnitPrice() || 0),
+                items: [buildAnalyticsItem(1)]
+            }, 'ViewContent', buildMetaContentPayload(1));
+        }
         const slider = document.querySelector('[data-gallery-slider]');
         const modalSlider = document.getElementById('imgModalSlider');
         const districtInput = document.getElementById('ordDistrict');

@@ -22,6 +22,7 @@ $cartItems = is_array($cart ?? null) ? array_values($cart) : [];
 $cartCount = 0;
 $subtotal = 0.0;
 $jsItems = [];
+$jsAnalyticsItems = [];
 $jsCartWhatsappItems = [];
 foreach ($cartItems as $idx => $item) {
     $qty = max(1, (int)($item['qty'] ?? 1));
@@ -30,6 +31,13 @@ foreach ($cartItems as $idx => $item) {
     $subtotal += $price * $qty;
     $cartCount += $qty;
     $jsItems[] = ['index' => $idx, 'qty' => $qty, 'price' => $price, 'weight' => $weight, 'free' => !empty($item['is_free_shipping'])];
+    $jsAnalyticsItems[] = [
+        'item_id' => trim((string)($item['sku'] ?? $item['id'] ?? '')),
+        'item_name' => trim((string)($item['title'] ?? 'Product')),
+        'item_variant' => trim((string)($item['variants'] ?? '')),
+        'price' => $price,
+        'quantity' => $qty
+    ];
     $jsCartWhatsappItems[] = [
         'title' => trim((string)($item['title'] ?? 'Product')),
         'variants' => trim((string)($item['variants'] ?? '')),
@@ -491,6 +499,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     const recaptchaCheckoutEnabled = <?= json_encode($recaptchaCheckoutEnabled) ?>;
     const recaptchaSiteKey = <?= json_encode($recaptchaSiteKey) ?>;
     const modes = <?= json_encode($modes, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
+    const analyticsItems = <?= json_encode($jsAnalyticsItems, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
     const whatsappCartItems = <?= json_encode($jsCartWhatsappItems, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
     const customerProfileStorageKey = 'style1_customer_order_profile_v1';
     const customerName = document.getElementById('customerName');
@@ -502,6 +511,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     const customerDistrict = document.getElementById('customerDistrict');
     const customerNote = document.getElementById('customerNote');
     let selectedMode = modes[0] ? modes[0].key : 'cod';
+    let beginCheckoutTracked = false;
 
     function getStoredCustomerProfile() {
         try {
@@ -580,6 +590,34 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     function toast(message, type) { const el = document.getElementById('cartToast'); if (!el) return; el.className = 'toast ' + (type || 'success'); el.querySelector('.text').textContent = message; el.classList.add('show'); window.clearTimeout(toast.timer); toast.timer = window.setTimeout(function () { el.classList.remove('show'); }, 2500); }
     function updateGlobalCount(count) { if (typeof window.updateCartUi === 'function') window.updateCartUi(count); }
     function cartHasBlockedItems() { return document.querySelector('[data-cart-line][data-stock-blocked="1"]') !== null; }
+    function getAnalyticsItems() {
+        return (Array.isArray(analyticsItems) ? analyticsItems : []).map(function (item) {
+            const normalized = {
+                item_id: String(item && item.item_id ? item.item_id : ''),
+                item_name: String(item && item.item_name ? item.item_name : 'Product'),
+                price: Number(item && item.price ? item.price : 0),
+                quantity: Math.max(1, parseInt(item && item.quantity ? item.quantity : 1, 10) || 1)
+            };
+            if (item && item.item_variant) {
+                normalized.item_variant = String(item.item_variant);
+            }
+            return normalized;
+        });
+    }
+    function getMetaCheckoutPayload(totalValue) {
+        return {
+            content_type: 'product',
+            contents: getAnalyticsItems().map(function (item) {
+                return {
+                    id: String(item.item_id || item.item_name || ''),
+                    quantity: item.quantity,
+                    item_price: item.price
+                };
+            }),
+            value: Number(totalValue || 0),
+            currency: currency
+        };
+    }
     function updatePurchaseActionsState() {
         const blocked = cartHasBlockedItems();
         document.querySelectorAll('[data-select-mode]').forEach(function (button) {
@@ -679,6 +717,16 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
         hydrateCustomerProfile();
         openOverlay('checkoutModal', true);
         recalc();
+        if (!beginCheckoutTracked && typeof window.trackAnalyticsEvent === 'function') {
+            const totalEl = document.querySelector('[data-summary-total]');
+            const totalValue = totalEl ? parseFloat(String(totalEl.textContent || '').replace(/[^0-9.]+/g, '')) : 0;
+            beginCheckoutTracked = true;
+            window.trackAnalyticsEvent('begin_checkout', {
+                currency: currency,
+                value: Number(totalValue || 0),
+                items: getAnalyticsItems()
+            }, 'InitiateCheckout', getMetaCheckoutPayload(totalValue));
+        }
     }
     async function submitCheckout() {
         const payload = {
