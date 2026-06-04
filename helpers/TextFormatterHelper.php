@@ -10,45 +10,63 @@ class TextFormatterHelper
         }
 
         $normalized = str_replace(["\r\n", "\r"], "\n", $text);
-        $blocks = preg_split("/\n\s*\n/", $normalized) ?: [];
         $html = [];
+        $lines = explode("\n", $normalized);
+        $currentLines = [];
+        $currentType = null;
+        $blankLineCount = 0;
 
-        foreach ($blocks as $block) {
-            $block = trim((string) $block);
-            if ($block === '') {
-                continue;
-            }
+        foreach ($lines as $rawLine) {
+            $line = trim((string) $rawLine);
 
-            $lines = array_values(array_filter(array_map('trim', explode("\n", $block)), static function ($line) {
-                return $line !== '';
-            }));
-
-            if (empty($lines)) {
-                continue;
-            }
-
-            $isList = true;
-            foreach ($lines as $line) {
-                if (!preg_match('/^-\s+/', $line)) {
-                    $isList = false;
-                    break;
+            if ($line === '') {
+                if (!empty($currentLines)) {
+                    $html[] = self::renderBlock($currentLines, $currentType);
+                    $currentLines = [];
+                    $currentType = null;
                 }
-            }
-
-            if ($isList) {
-                $items = [];
-                foreach ($lines as $line) {
-                    $items[] = '<li>' . self::applyInlineMarkup(preg_replace('/^-\s+/', '', $line)) . '</li>';
-                }
-                $html[] = '<ul>' . implode('', $items) . '</ul>';
+                $blankLineCount++;
                 continue;
             }
 
-            $paragraph = array_map([self::class, 'applyInlineMarkup'], $lines);
-            $html[] = '<p>' . implode('<br>', $paragraph) . '</p>';
+            if ($blankLineCount > 1) {
+                $html[] = '<div class="text-spacer text-spacer-' . min(4, $blankLineCount) . '"></div>';
+            }
+            $blankLineCount = 0;
+
+            $lineType = preg_match('/^-\s+/', $line) ? 'list' : 'paragraph';
+            if ($currentType !== null && $lineType !== $currentType) {
+                $html[] = self::renderBlock($currentLines, $currentType);
+                $currentLines = [];
+            }
+
+            $currentType = $lineType;
+            $currentLines[] = $line;
+        }
+
+        if (!empty($currentLines)) {
+            $html[] = self::renderBlock($currentLines, $currentType);
         }
 
         return implode('', $html);
+    }
+
+    private static function renderBlock(array $lines, $type)
+    {
+        if (empty($lines)) {
+            return '';
+        }
+
+        if ($type === 'list') {
+            $items = [];
+            foreach ($lines as $line) {
+                $items[] = '<li>' . self::applyInlineMarkup(preg_replace('/^-\s+/', '', $line)) . '</li>';
+            }
+            return '<ul>' . implode('', $items) . '</ul>';
+        }
+
+        $paragraph = array_map([self::class, 'applyInlineMarkup'], $lines);
+        return '<p>' . implode('<br>', $paragraph) . '</p>';
     }
 
     private static function applyInlineMarkup($text)
