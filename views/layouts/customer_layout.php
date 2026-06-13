@@ -1487,7 +1487,7 @@ if (!function_exists('customer_layout_start')) {
     </div>
     <?php require_once ROOT_PATH . 'views/layouts/customer_footer.php'; customer_footer_render(is_array($settings) ? $settings : [], defined('BASE_URL') ? BASE_URL : '/'); ?>
     <div id="globalLoader" class="global-loader-overlay">
-        <img src="<?= htmlspecialchars((defined('BASE_URL') ? BASE_URL : '/') . 'assets/pre-loader.gif', ENT_QUOTES, 'UTF-8') ?>" alt="Loading" class="global-loader-gif">
+        <img src="<?= htmlspecialchars((defined('BASE_URL') ? BASE_URL : '/') . 'assets/pre-loader-1.gif', ENT_QUOTES, 'UTF-8') ?>" alt="Loading" class="global-loader-gif">
         <div class="global-loader-text">Loading...</div>
     </div>
     <script>

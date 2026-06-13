@@ -40,7 +40,7 @@
 
 <!-- HTML Structure -->
 <div id="adminGlobalLoader" class="admin-global-loader-overlay">
-    <img src="<?= htmlspecialchars((defined('BASE_URL') ? BASE_URL : '/') . 'assets/pre-loader.gif', ENT_QUOTES, 'UTF-8') ?>" alt="Loading" class="admin-loader-gif">
+    <img src="<?= htmlspecialchars((defined('BASE_URL') ? BASE_URL : '/') . 'assets/pre-loader-1.gif', ENT_QUOTES, 'UTF-8') ?>" alt="Loading" class="admin-loader-gif">
     <div class="admin-loader-text">Loading...</div>
 </div>
 
