@@ -1425,7 +1425,9 @@ customer_layout_start([
         const cards = sheet.querySelectorAll('.payment-method-card[data-pay-group]');
         cards.forEach(function (card) {
             const group = card.getAttribute('data-pay-group');
-            card.style.display = category && group === category ? 'flex' : 'none';
+            // Override legacy/cached stylesheet rules that may hide only
+            // gateway-specific cards (PayHere/KOKO).
+            card.style.setProperty('display', category && group === category ? 'flex' : 'none', 'important');
         });
         if (payNowBtn) payNowBtn.classList.toggle('is-active', category === 'payNow');
         if (payLaterBtn) payLaterBtn.classList.toggle('is-active', category === 'payLater');
