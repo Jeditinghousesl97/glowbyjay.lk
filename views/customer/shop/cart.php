@@ -69,12 +69,13 @@ foreach ($cartItems as $cartItem) {
 
 $shopWhatsapp = preg_replace('/[^0-9]/', '', (string)($settings['shop_whatsapp'] ?? '')) ?: preg_replace('/[^0-9]/', '', (string)($settings['social_whatsapp'] ?? ''));
 $whatsappLink = $shopWhatsapp !== '' ? 'https://wa.me/' . $shopWhatsapp : '';
-$payhereReady = !empty($settings['payhere_enabled']) && trim((string) ($settings['payhere_merchant_id'] ?? '')) !== '' && trim((string) ($settings['payhere_merchant_secret'] ?? '')) !== '';
+$payhereEnabled = !empty($settings['payhere_enabled']);
+$payhereReady = $payhereEnabled && trim((string) ($settings['payhere_merchant_id'] ?? '')) !== '' && trim((string) ($settings['payhere_merchant_secret'] ?? '')) !== '';
 $kokoReady = class_exists('KokoGateway') && KokoGateway::isConfigured($settings);
 $recaptchaCheckoutEnabled = RecaptchaHelper::shouldProtectCheckout($settings);
 $recaptchaSiteKey = $recaptchaCheckoutEnabled ? RecaptchaHelper::siteKey($settings) : '';
 $modes = [];
-if ($payhereReady) $modes[] = ['key' => 'payhere', 'label' => 'Card Payments', 'icon' => 'fa-solid fa-credit-card'];
+if ($payhereEnabled) $modes[] = ['key' => 'payhere', 'label' => 'Card Payments', 'icon' => 'fa-solid fa-credit-card', 'configured' => $payhereReady];
 if ($kokoReady) $modes[] = ['key' => 'koko', 'label' => 'KOKO Payments', 'icon' => 'fa-solid fa-wallet'];
 if (!empty($settings['whatsapp_ordering_enabled']) && $whatsappLink !== '') $modes[] = ['key' => 'whatsapp', 'label' => 'WhatsApp', 'icon' => 'fa-brands fa-whatsapp'];
 if (!empty($settings['cod_enabled'])) $modes[] = ['key' => 'cod', 'label' => 'Cash on Delivery', 'icon' => 'fa-solid fa-truck-fast'];
@@ -185,6 +186,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
         box-shadow:0 10px 22px rgba(31,31,31,.05);
         pointer-events:none;
     }
+    .cart-page .payment-method-card.is-unavailable{opacity:.78}
     .cart-page .payment-method-icon{
         width:46px;
         height:46px;
@@ -399,7 +401,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
                             <?php foreach ($displayModes as $mode): ?>
                                 <button
                                     type="button"
-                                    class="payment-method-card <?= htmlspecialchars($mode['key']) ?>"
+                                    class="payment-method-card <?= htmlspecialchars($mode['key']) ?><?= ($mode['key'] === 'payhere' && empty($mode['configured'])) ? ' is-unavailable' : '' ?>"
                                     data-select-mode="<?= htmlspecialchars($mode['key']) ?>"
                                     data-pay-group="<?= in_array($mode['key'], ['payhere', 'bank_transfer'], true) ? 'payNow' : 'payLater' ?>"
                                     <?= $cartHasBlockedItems ? 'disabled aria-disabled="true"' : '' ?>>
@@ -418,7 +420,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
                                                     echo 'Place the order now and pay when it is delivered.';
                                                     break;
                                                 case 'payhere':
-                                                    echo 'Pay online securely before your order is confirmed.';
+                                                    echo !empty($mode['configured']) ? 'Pay online securely before your order is confirmed.' : 'PayHere setup is incomplete. Please contact the shop.';
                                                     break;
                                                 case 'koko':
                                                     echo 'Split your payment into 3 interest-free installments.';
@@ -498,6 +500,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     const whatsappLink = <?= json_encode($whatsappLink) ?>;
     const recaptchaCheckoutEnabled = <?= json_encode($recaptchaCheckoutEnabled) ?>;
     const recaptchaSiteKey = <?= json_encode($recaptchaSiteKey) ?>;
+    const payhereReady = <?= json_encode($payhereReady) ?>;
     const modes = <?= json_encode($modes, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
     const analyticsItems = <?= json_encode($jsAnalyticsItems, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
     const whatsappCartItems = <?= json_encode($jsCartWhatsappItems, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
@@ -715,6 +718,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     }
     function choosePaymentMethod(mode) {
         if (cartHasBlockedItems()) { toast('Remove or update out-of-stock items before checkout.', 'error'); return; }
+        if (mode === 'payhere' && !payhereReady) { toast('Card payments are not fully configured yet. Please contact the shop.', 'error'); return; }
         updateCheckoutModeUi(mode);
         hydrateCustomerProfile();
         openOverlay('checkoutModal', true);
