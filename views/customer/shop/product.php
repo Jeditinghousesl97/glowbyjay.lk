@@ -376,6 +376,25 @@ customer_layout_start([
         .product-details-panel .text .text-spacer-4{height:40px}
         .order-flash{margin:0 0 16px;padding:14px 16px;border:1px solid rgba(182,138,45,.22);background:color-mix(in srgb, var(--accent-red, var(--primary)) 8%, #ffffff);color:#7a5a14;font-size:13px;line-height:1.7}
         .order-flash strong{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px}
+        /* Inline checkout replaces the legacy overlay flow on the product page. */
+        .product-summary .payment-sheet-overlay,
+        .product-summary .modal-overlay{position:static !important;inset:auto !important;z-index:auto !important;display:none !important;align-items:initial !important;justify-content:initial !important;padding:0 !important;background:transparent !important}
+        .product-summary .payment-sheet-overlay.is-inline-open,
+        .product-summary .modal-overlay.is-inline-open{display:block !important}
+        .product-summary .payment-sheet,
+        .product-summary #orderModal .modal{width:100% !important;max-width:none !important;max-height:none !important;overflow:visible !important;background:var(--surface) !important;border:1px solid rgba(28,27,27,.12) !important;border-radius:0 !important;padding:20px !important;box-shadow:0 14px 30px rgba(28,27,27,.06) !important}
+        .product-summary .payment-sheet{margin-top:18px}
+        .product-summary #orderModal .modal{margin-top:18px}
+        .product-summary .payment-sheet > div:first-child{display:none}
+        .product-summary .payment-sheet > div:nth-child(2){margin-bottom:18px !important;align-items:flex-start !important}
+        .product-summary .payment-sheet > div:nth-child(2) > div:first-child{width:100%}
+        .product-summary .payment-sheet > div:nth-child(2) > button{display:none}
+        .product-summary .payment-sheet .payment-method-toggle{margin-top:14px}
+        .product-summary .payment-sheet .payment-method-card{border-radius:0 !important}
+        .product-summary #orderModal .modal-head{justify-items:initial;text-align:left;padding-right:0}
+        .product-summary #orderModal .modal-head h3{font-size:22px}
+        .inline-checkout-change{margin-top:10px;border:0;background:transparent;color:var(--primary);padding:0;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+        .inline-checkout-change:hover{text-decoration:underline}
         .related-section{padding-top:82px}
         .related-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:26px}
         .related-heading h2{font-family:sans-serif;font-size:clamp(20px,2vw,28px);letter-spacing:-.02em;text-transform:uppercase}
@@ -744,6 +763,7 @@ customer_layout_start([
             <div>
                 <h3 id="orderModalTitle">Complete Your Order</h3>
                 <p>Fill the customer information and place the product order.</p>
+                <button type="button" class="inline-checkout-change" onclick="changePaymentMethod()">Change payment method</button>
             </div>
             <button type="button" class="modal-close" onclick="closeOrderModal()" aria-label="Close"><i class="fas fa-times"></i></button>
         </div>
@@ -1377,16 +1397,50 @@ customer_layout_start([
         }).catch(function (err) { showProductToast(err.message || 'Failed to add to cart', 'error'); });
     }
 
+    function prepareInlineCheckout() {
+        const target = document.querySelector('.product-summary .summary-panel');
+        const sheet = document.getElementById('paymentMethodSheet');
+        const orderModal = document.getElementById('orderModal');
+        if (!target || !sheet || !orderModal) return false;
+        if (!target.contains(sheet)) target.appendChild(sheet);
+        if (!target.contains(orderModal)) target.appendChild(orderModal);
+        sheet.classList.add('is-inline-ready');
+        orderModal.classList.add('is-inline-ready');
+        return true;
+    }
     function openPaymentMethodSheet() {
         if (isPurchaseBlocked()) { showProductToast('This item is not available right now.', 'error'); return; }
+        if (!prepareInlineCheckout()) return;
         const sheet = document.getElementById('paymentMethodSheet');
+        const orderModal = document.getElementById('orderModal');
         if (!sheet) return;
-        sheet.style.display = 'flex';
+        if (orderModal) orderModal.classList.remove('is-inline-open');
+        sheet.classList.add('is-inline-open');
         setPaymentMethodCategory('');
+        sheet.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
-    function closePaymentMethodSheet() { document.getElementById('paymentMethodSheet').style.display = 'none'; }
-    function openOrderModal() { hydrateCustomerProfile(); document.getElementById('orderModal').style.display = 'flex'; updateOrderTotals(); }
-    function closeOrderModal() { document.getElementById('orderModal').style.display = 'none'; }
+    function closePaymentMethodSheet() {
+        const sheet = document.getElementById('paymentMethodSheet');
+        if (sheet) sheet.classList.remove('is-inline-open');
+    }
+    function openOrderModal() {
+        prepareInlineCheckout();
+        hydrateCustomerProfile();
+        const orderModal = document.getElementById('orderModal');
+        if (!orderModal) return;
+        orderModal.classList.add('is-inline-open');
+        updateOrderTotals();
+        orderModal.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    function closeOrderModal() {
+        const orderModal = document.getElementById('orderModal');
+        if (orderModal) orderModal.classList.remove('is-inline-open');
+    }
+    function changePaymentMethod() {
+        closeOrderModal();
+        openPaymentMethodSheet();
+        setPaymentMethodCategory(['payhere', 'bank_transfer'].indexOf(orderMode) !== -1 ? 'payNow' : 'payLater');
+    }
     function syncOrderSubmitWhatsAppStyle() {
         const submitButton = document.getElementById('orderSubmitButton');
         if (!submitButton) return;
