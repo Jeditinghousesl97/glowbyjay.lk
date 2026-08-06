@@ -5,6 +5,10 @@
 RewriteEngine On
 Options -Indexes
 
+# Canonical host: redirect the bare domain to www while preserving the path and query string.
+RewriteCond %{HTTP_HOST} ^glowbyjay\.lk(?::\d+)?$ [NC]
+RewriteRule ^ https://www.glowbyjay.lk%{REQUEST_URI} [R=301,L,NE]
+
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/plain text/html text/xml text/css application/javascript application/x-javascript application/json application/xml image/svg+xml
 </IfModule>
