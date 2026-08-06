@@ -29,7 +29,8 @@ if ($shopWhatsappTarget === '') {
 $whatsappEnabled = !empty($settings['whatsapp_ordering_enabled']) && $shopWhatsappTarget !== '';
 $codEnabled = !empty($settings['cod_enabled']);
 $bankTransferEnabled = !empty($settings['bank_transfer_enabled']) && trim((string) ($settings['bank_transfer_details'] ?? '')) !== '';
-$payhereReady = !empty($settings['payhere_enabled']) && trim((string) ($settings['payhere_merchant_id'] ?? '')) !== '' && trim((string) ($settings['payhere_merchant_secret'] ?? '')) !== '';
+$payhereEnabled = !empty($settings['payhere_enabled']);
+$payhereReady = $payhereEnabled && trim((string) ($settings['payhere_merchant_id'] ?? '')) !== '' && trim((string) ($settings['payhere_merchant_secret'] ?? '')) !== '';
 $kokoReady = class_exists('KokoGateway') && KokoGateway::isConfigured($settings);
 $recaptchaCheckoutEnabled = RecaptchaHelper::shouldProtectCheckout($settings);
 $recaptchaSiteKey = $recaptchaCheckoutEnabled ? RecaptchaHelper::siteKey($settings) : '';
@@ -735,7 +736,7 @@ customer_layout_start([
             <button type="button" onclick="closePaymentMethodSheet()" style="border:0;background:transparent;font-size:20px;cursor:pointer;"><i class="fas fa-times"></i></button>
         </div>
         <div style="display:grid;gap:12px;">
-            <?php if ($payhereReady): ?><button type="button" class="payment-method-card" data-pay-group="payNow" onclick="choosePaymentMethod('payhere')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #d4af37;border-radius:18px;background:linear-gradient(135deg,#b68a2d 0%,#d4af37 52%,#a8791d 100%);color:#111111;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.34);color:inherit;font-size:18px;"><i class="fas fa-credit-card"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">Card Payments</strong><small style="color:rgba(17,17,17,.78);line-height:1.5;">Pay online securely before your order is confirmed.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
+            <?php if ($payhereEnabled): ?><button type="button" class="payment-method-card<?= $payhereReady ? '' : ' is-unavailable' ?>" data-pay-group="payNow" onclick="choosePaymentMethod('payhere')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #d4af37;border-radius:18px;background:linear-gradient(135deg,#b68a2d 0%,#d4af37 52%,#a8791d 100%);color:#111111;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.34);color:inherit;font-size:18px;"><i class="fas fa-credit-card"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">Card Payments</strong><small style="color:rgba(17,17,17,.78);line-height:1.5;"><?= $payhereReady ? 'Pay online securely before your order is confirmed.' : 'PayHere setup is incomplete. Please contact the shop.' ?></small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
             <?php if ($whatsappEnabled): ?><button type="button" class="payment-method-card" data-pay-group="payLater" onclick="choosePaymentMethod('whatsapp')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #289b26;border-radius:18px;background:#289b26;color:#ffffff;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.24);color:inherit;font-size:18px;"><i class="fab fa-whatsapp"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">WhatsApp Order</strong><small style="color:rgba(255,255,255,.9);line-height:1.5;">Send your order details directly to the shop on WhatsApp.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
             <?php if ($codEnabled): ?><button type="button" class="payment-method-card" data-pay-group="payLater" onclick="choosePaymentMethod('cod')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #d8d8d8;border-radius:18px;background:linear-gradient(135deg,#f3f3f3 0%,#ebebeb 50%,#dfdfdf 100%);color:#2d2d2d;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.7);color:inherit;font-size:18px;"><i class="fas fa-hand-holding-dollar"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">Cash on Delivery</strong><small style="color:rgba(45,45,45,.78);line-height:1.5;">Place the order now and pay when it is delivered.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
             <?php if ($kokoReady): ?><button type="button" class="payment-method-card" data-pay-group="payLater" onclick="choosePaymentMethod('koko')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #e8b9d5;border-radius:18px;background:linear-gradient(135deg,#f4d0e5 0%,#f8e0ee 52%,#e9b7d4 100%);color:#111111;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.45);color:inherit;font-size:18px;"><i class="fas fa-layer-group"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">KOKO Payments</strong><small style="color:rgba(17,17,17,.78);line-height:1.5;">Split your payment into 3 interest-free installments.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
@@ -845,6 +846,7 @@ customer_layout_start([
     const defaultProductImageUrl = <?= json_encode($mainImageUrl) ?>;
     const productSku = <?= json_encode(trim((string) ($product['sku'] ?? ''))) ?>;
     const shopWhatsappTarget = <?= json_encode($shopWhatsappTarget) ?>;
+    const payhereReady = <?= json_encode($payhereReady) ?>;
     const recaptchaCheckoutEnabled = <?= json_encode($recaptchaCheckoutEnabled) ?>;
     const recaptchaSiteKey = <?= json_encode($recaptchaSiteKey) ?>;
     const isFreeShipping = <?= json_encode(!empty($product['free_shipping'])) ?>;
@@ -1457,6 +1459,10 @@ customer_layout_start([
         updateOrderTotals();
     }
     function choosePaymentMethod(mode) {
+        if (mode === 'payhere' && !payhereReady) {
+            showProductToast('Card payments are not fully configured yet. Please contact the shop.', 'error');
+            return;
+        }
         orderMode = mode;
         closePaymentMethodSheet();
         openOrderModal();
