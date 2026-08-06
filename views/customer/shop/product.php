@@ -77,10 +77,10 @@ if ($whatsappEnabled) {
 if ($codEnabled) {
     $paymentModeLogos[] = ['label' => 'COD', 'src' => $baseUrl . 'assets/icons/payment-gateways/cod.png', 'alt' => 'Cash on delivery'];
 }
-if (!empty($settings['payhere_enabled'])) {
+if ($payhereReady) {
     $paymentModeLogos[] = ['label' => 'Card Payments', 'src' => $baseUrl . 'assets/icons/payment-gateways/payhere.png', 'alt' => 'Card Payments'];
 }
-if (!empty($settings['koko_enabled'])) {
+if ($kokoReady) {
     $paymentModeLogos[] = ['label' => 'KOKO Payments', 'src' => $baseUrl . 'assets/icons/payment-gateways/koko.png', 'alt' => 'KOKO Payments'];
 }
 if ($bankTransferEnabled) {

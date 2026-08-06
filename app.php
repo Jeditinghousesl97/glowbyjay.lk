@@ -76,6 +76,15 @@ if (!function_exists('app_send_security_headers')) {
         header("Permissions-Policy: accelerometer=(), autoplay=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()");
         header("Content-Security-Policy: frame-ancestors 'self'; base-uri 'self'; object-src 'none'");
 
+        // Routed pages contain session state, inventory, and admin-controlled
+        // payment options. They must never be served from a browser, proxy, or
+        // CDN cache after those values change.
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+        header('Surrogate-Control: no-store');
+        header('CDN-Cache-Control: no-store');
+
         if (app_is_https()) {
             header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
         }
