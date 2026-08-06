@@ -607,7 +607,7 @@ customer_layout_start([
                             </div>
 
                             <?php if (!empty($paymentModeLogos)): ?>
-                                <div class="summary-section">
+                                <div class="summary-section allowed-payment-modes-section">
                                     <div class="summary-label">Allowed Payment Modes</div>
                                     <div class="summary-payment-logos">
                                         <?php foreach ($paymentModeLogos as $modeLogo): ?>
@@ -1404,8 +1404,14 @@ customer_layout_start([
         const sheet = document.getElementById('paymentMethodSheet');
         const orderModal = document.getElementById('orderModal');
         if (!target || !sheet || !orderModal) return false;
-        if (!target.contains(sheet)) target.appendChild(sheet);
-        if (!target.contains(orderModal)) target.appendChild(orderModal);
+        const insertionPoint = target.querySelector('.allowed-payment-modes-section');
+        if (insertionPoint) {
+            if (!target.contains(sheet)) target.insertBefore(sheet, insertionPoint);
+            if (!target.contains(orderModal)) target.insertBefore(orderModal, insertionPoint);
+        } else {
+            if (!target.contains(sheet)) target.appendChild(sheet);
+            if (!target.contains(orderModal)) target.appendChild(orderModal);
+        }
         sheet.classList.add('is-inline-ready');
         orderModal.classList.add('is-inline-ready');
         return true;
