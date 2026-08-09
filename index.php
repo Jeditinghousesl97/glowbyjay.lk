@@ -124,6 +124,23 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
         . '</div>';
 }
 
+function renderHomeMintpayTeaser(array $product, array $settings, string $context = 'default'): string
+{
+    static $mintpayLogoUrl = null;
+    if ($mintpayLogoUrl === null) {
+        $mintpayLogoUrl = BASE_URL . 'assets/icons/payment-gateways/mintpay.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/mintpay.png') ?: time());
+    }
+    if (!MintpayPricingHelper::isEnabled($settings)) return '';
+    $basePrice = MintpayPricingHelper::getEffectiveProductPrice($product);
+    if ($basePrice <= 0) return '';
+    $teaser = MintpayPricingHelper::getInstallmentData($basePrice, $settings);
+    $currency = htmlspecialchars($settings['currency_symbol'] ?? 'LKR');
+    return '<div class="mintpay-installment-teaser" aria-label="Mintpay installment plan">'
+        . '<span class="mintpay-installment-text">3 x ' . $currency . ' ' . number_format((float) $teaser['installment_amount'], 0) . ' or 6% Cashback with</span>'
+        . '<img src="' . htmlspecialchars($mintpayLogoUrl) . '" alt="Mintpay" class="mintpay-installment-logo" style="height:16px;width:auto;flex-shrink:0;display:block;">'
+        . '</div>';
+}
+
 ?>
 <?php require_once 'views/layouts/customer_layout.php'; customer_layout_start(); ?>
 <style>
@@ -236,6 +253,9 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
         .product-card .koko-installment-teaser{display:flex;align-items:center;flex-direction:row;margin-top:8px;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0}
         .product-card .koko-installment-text{min-width:0;overflow:hidden;text-overflow:ellipsis}
         .product-card .koko-installment-logo{height:16px;width:auto;flex-shrink:0;display:block}
+        .product-card .mintpay-installment-teaser{display:flex;align-items:center;flex-direction:row;margin-top:8px;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0}
+        .product-card .mintpay-installment-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .product-card .mintpay-installment-logo{height:16px;width:auto;flex-shrink:0;display:block}
         .product-card .koko-installment-teaser{display:flex;align-items:center;flex-direction:row;margin-top:8px;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0}
         .product-card .koko-installment-text{min-width:0;overflow:hidden;text-overflow:ellipsis}
         .product-card .koko-installment-logo{height:16px;width:auto;flex-shrink:0;display:block}
@@ -601,6 +621,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                                             <?php endif; ?>
                                         </div>
                                         <?= renderHomeKokoTeaser($product, $settings, 'featured') ?>
+                                        <?= renderHomeMintpayTeaser($product, $settings, 'featured') ?>
                                         <p class="product-desc"><?= htmlspecialchars(SeoHelper::trimText($productSummary, 90)) ?></p>
                                     </div>
                                 </a>
@@ -668,6 +689,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                                     <?php endif; ?>
                                 </div>
                                 <?= renderHomeKokoTeaser($product, $settings, 'arrivals') ?>
+                                <?= renderHomeMintpayTeaser($product, $settings, 'arrivals') ?>
                             </article>
                         <?php endforeach; ?>
                         <?php else: ?>
@@ -769,6 +791,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                                     <?php endif; ?>
                                 </div>
                                 <?= renderHomeKokoTeaser($product, $settings, 'sale') ?>
+                                <?= renderHomeMintpayTeaser($product, $settings, 'sale') ?>
                             </article>
                         <?php endforeach; ?>
                     <?php else: ?>

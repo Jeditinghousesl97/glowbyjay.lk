@@ -3,6 +3,7 @@ require_once 'models/Product.php';
 require_once 'models/Setting.php';
 require_once 'helpers/ImageHelper.php';
 require_once 'helpers/KokoPricingHelper.php';
+require_once 'helpers/MintpayPricingHelper.php';
 require_once 'helpers/SeoHelper.php';
 
 class DiscountsController extends BaseController
@@ -87,6 +88,8 @@ class DiscountsController extends BaseController
         $currency = (string) ($settings['currency_symbol'] ?? 'LKR');
         $kokoEnabled = KokoPricingHelper::isEnabled($settings ?? []);
         $kokoLogoUrl = BASE_URL . 'assets/icons/payment-gateways/koko-home.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/koko-home.png') ?: time());
+        $mintpayEnabled = MintpayPricingHelper::isEnabled($settings ?? []);
+        $mintpayLogoUrl = BASE_URL . 'assets/icons/payment-gateways/mintpay.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/mintpay.png') ?: time());
 
         ob_start();
         foreach ($products as $product) {
@@ -135,8 +138,17 @@ class DiscountsController extends BaseController
                                 <img src="<?= htmlspecialchars($kokoLogoUrl) ?>" alt="KOKO" class="discount-koko-logo">
                             </div>
                         <?php endif; ?>
+                <?php endif; ?>
+                <?php if ($mintpayEnabled): ?>
+                    <?php $mintpayBasePrice = MintpayPricingHelper::getEffectiveProductPrice($product); $mintpayTeaser = $mintpayBasePrice > 0 ? MintpayPricingHelper::getInstallmentData($mintpayBasePrice, $settings ?? []) : null; ?>
+                    <?php if (!empty($mintpayTeaser)): ?>
+                        <div class="discount-mintpay-teaser" aria-label="Mintpay installment plan">
+                            <span class="discount-mintpay-text">3 x <?= htmlspecialchars($currency) ?> <?= number_format((float) $mintpayTeaser['installment_amount'], 0) ?> or 6% Cashback with</span>
+                            <img src="<?= htmlspecialchars($mintpayLogoUrl) ?>" alt="Mintpay" class="discount-mintpay-logo">
+                        </div>
                     <?php endif; ?>
-                    <?php if ($description !== ''): ?>
+                <?php endif; ?>
+                <?php if ($description !== ''): ?>
                         <p class="discount-desc"><?= htmlspecialchars($description) ?></p>
                     <?php endif; ?>
                 </div>

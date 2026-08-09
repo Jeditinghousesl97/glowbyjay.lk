@@ -454,6 +454,67 @@
         display: block;
     }
 
+    .shop-product-grid .mintpay-installment-teaser {
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        gap: 6px;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+        min-width: 0;
+        margin-top: 0;
+        padding: 0 16px;
+    }
+
+    .shop-product-grid .mintpay-installment-text {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .shop-product-grid .mintpay-installment-logo {
+        height: 16px;
+        width: auto;
+        flex-shrink: 0;
+        display: block;
+    }
+
+    .shop-mintpay-teaser,
+    .mintpay-installment-teaser,
+    .category-mintpay-teaser,
+    .discount-mintpay-teaser {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+        min-width: 0;
+        margin-top: 2px;
+    }
+
+    .shop-mintpay-text,
+    .mintpay-installment-text,
+    .category-mintpay-text,
+    .discount-mintpay-text {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .shop-mintpay-logo,
+    .mintpay-installment-logo,
+    .category-mintpay-logo,
+    .discount-mintpay-logo {
+        height: 16px;
+        width: auto;
+        flex-shrink: 0;
+        display: block;
+        object-fit: contain;
+    }
+
     .shop-empty {
         grid-column: 1 / -1;
         padding: 48px 32px;

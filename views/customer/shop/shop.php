@@ -8,6 +8,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : '/';
 $shopName = !empty($settings['shop_name']) ? (string) $settings['shop_name'] : 'STYLE1';
 $currency = (string) ($settings['currency_symbol'] ?? 'LKR');
 $kokoLogoUrl = BASE_URL . 'assets/icons/payment-gateways/koko-home.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/koko-home.png') ?: time());
+$mintpayLogoUrl = BASE_URL . 'assets/icons/payment-gateways/mintpay.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/mintpay.png') ?: time());
 $shopProducts = array_values(array_filter($products ?? [], static function ($product) {
     return !empty($product['id']);
 }));
@@ -279,6 +280,10 @@ customer_layout_start([
         display:block;
     }
 
+    .shop-mintpay-teaser{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0;margin-top:2px}
+    .shop-mintpay-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .shop-mintpay-logo{height:16px;width:auto;flex-shrink:0;display:block}
+
     .shop-desc{
         margin:0;
         color:#6d6665;
@@ -448,6 +453,7 @@ customer_layout_start([
                             <?php if ($hasDiscount && $discount > 0): ?>
                                 <span class="shop-badge">-<?= $discount ?>%</span>
                             <?php endif; ?>
+
                             <?php if (!empty($product['free_shipping'])): ?>
                                 <span class="shop-badge alt">Free Shipping</span>
                             <?php endif; ?>
@@ -480,6 +486,19 @@ customer_layout_start([
                                     <div class="shop-koko-teaser" aria-label="KOKO installment plan">
                                         <span class="shop-koko-text">3 x <?= htmlspecialchars($currency) ?> <?= number_format((float) $kokoTeaser['installment_amount'], 0) ?></span>
                                         <img src="<?= htmlspecialchars($kokoLogoUrl) ?>" alt="KOKO" class="shop-koko-logo">
+                                    </div>
+                                <?php endif; ?>
+                            <?php endif; ?>
+
+                            <?php if (MintpayPricingHelper::isEnabled($settings ?? [])): ?>
+                                <?php
+                                $mintpayBasePrice = MintpayPricingHelper::getEffectiveProductPrice($product);
+                                $mintpayTeaser = $mintpayBasePrice > 0 ? MintpayPricingHelper::getInstallmentData($mintpayBasePrice, $settings ?? []) : null;
+                                ?>
+                                <?php if (!empty($mintpayTeaser)): ?>
+                                    <div class="shop-mintpay-teaser" aria-label="Mintpay installment plan">
+                                        <span class="shop-mintpay-text">3 x <?= htmlspecialchars($currency) ?> <?= number_format((float) $mintpayTeaser['installment_amount'], 0) ?> or 6% Cashback with</span>
+                                        <img src="<?= htmlspecialchars($mintpayLogoUrl) ?>" alt="Mintpay" class="shop-mintpay-logo">
                                     </div>
                                 <?php endif; ?>
                             <?php endif; ?>

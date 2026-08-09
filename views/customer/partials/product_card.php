@@ -4,6 +4,7 @@
 // We need to ensure $settings is available here. In Home view it is.
 require_once ROOT_PATH . 'helpers/ImageHelper.php';
 require_once ROOT_PATH . 'helpers/KokoPricingHelper.php';
+require_once ROOT_PATH . 'helpers/MintpayPricingHelper.php';
 
 $currency = isset($settings['currency_symbol']) ? $settings['currency_symbol'] : 'LKR';
 // Fallback to LKR if not set, but database usually has it.
@@ -13,6 +14,7 @@ $imagePath = ImageHelper::uploadUrl(
     'https://via.placeholder.com/300?text=' . urlencode($prod['title'])
 );
 $kokoLogoUrl = BASE_URL . 'assets/icons/payment-gateways/koko-home.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/koko-home.png') ?: time());
+$mintpayLogoUrl = BASE_URL . 'assets/icons/payment-gateways/mintpay.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/mintpay.png') ?: time());
 
 $isOnSale = !empty($prod['sale_price']) && $prod['sale_price'] < $prod['price'];
 $kokoTeaser = null;
@@ -20,6 +22,13 @@ if (KokoPricingHelper::isEnabled($settings ?? [])) {
     $kokoBasePrice = KokoPricingHelper::getEffectiveProductPrice($prod);
     if ($kokoBasePrice > 0) {
         $kokoTeaser = KokoPricingHelper::getInstallmentData($kokoBasePrice, $settings ?? []);
+    }
+}
+$mintpayTeaser = null;
+if (MintpayPricingHelper::isEnabled($settings ?? [])) {
+    $mintpayBasePrice = MintpayPricingHelper::getEffectiveProductPrice($prod);
+    if ($mintpayBasePrice > 0) {
+        $mintpayTeaser = MintpayPricingHelper::getInstallmentData($mintpayBasePrice, $settings ?? []);
     }
 }
 ?>
@@ -80,6 +89,15 @@ if (KokoPricingHelper::isEnabled($settings ?? [])) {
                     or 3 x <?= $currency ?> <?= number_format((float) $kokoTeaser['installment_amount'], 0) ?>
                 </span>
                 <img src="<?= htmlspecialchars($kokoLogoUrl) ?>" alt="KOKO" class="koko-installment-logo" style="height:16px;width:auto;flex-shrink:0;display:block;">
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($mintpayTeaser)): ?>
+            <div class="mintpay-installment-teaser" aria-label="Mintpay installment plan">
+                <span class="mintpay-installment-text">
+                    3 x <?= htmlspecialchars($currency) ?> <?= number_format((float) $mintpayTeaser['installment_amount'], 0) ?> or 6% Cashback with
+                </span>
+                <img src="<?= htmlspecialchars($mintpayLogoUrl) ?>" alt="Mintpay" class="mintpay-installment-logo" style="height:16px;width:auto;flex-shrink:0;display:block;">
             </div>
         <?php endif; ?>
 
