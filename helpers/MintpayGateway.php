@@ -26,7 +26,7 @@ class MintpayGateway
 
     public static function statusUrl(array $settings, $purchaseId)
     {
-        return rtrim(self::baseUrl($settings), '/') . '/api/v2/purchase/merchant-gateway/status-purchase?' . http_build_query([
+        return rtrim(self::baseUrl($settings), '/') . '/api/v2/purchase/merchant-gateway/status-purchase/?' . http_build_query([
             'merchant_id' => trim((string) ($settings['mintpay_merchant_id'] ?? '')),
             'purchase_id' => trim((string) $purchaseId)
         ]);
@@ -79,7 +79,9 @@ class MintpayGateway
         }
 
         $data = isset($decoded['data']) && is_array($decoded['data']) ? $decoded['data'] : [];
-        $purchaseId = trim((string) ($data['id'] ?? ''));
+        // The current Mintpay staging API returns this as `uid`, although the
+        // integration guide documents the field as `id`. Accept both formats.
+        $purchaseId = trim((string) ($data['uid'] ?? $data['id'] ?? ''));
         $checkoutLink = trim((string) ($data['checkout_link'] ?? ''));
         if ($purchaseId === '' || $checkoutLink === '') {
             $error = $decoded['data'] ?? $decoded['message'] ?? 'Mintpay did not return a checkout link.';
