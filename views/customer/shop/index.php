@@ -86,19 +86,6 @@ function shopKokoTeaser(array $prod, array $settings, string $currency): string
         . '</div>';
 }
 
-function shopMintpayTeaser(array $prod, array $settings, string $currency): string
-{
-    if (!MintpayPricingHelper::isEnabled($settings)) return '';
-    $basePrice = MintpayPricingHelper::getEffectiveProductPrice($prod);
-    if ($basePrice <= 0) return '';
-    $teaser = MintpayPricingHelper::getInstallmentData($basePrice, $settings);
-    $logoUrl = BASE_URL . 'assets/icons/payment-gateways/mintpay.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/mintpay.png') ?: time());
-    return '<div class="mintpay-installment-teaser" aria-label="Mintpay installment plan">'
-        . '<span class="mintpay-installment-text">3 x ' . htmlspecialchars($currency) . ' ' . number_format((float) $teaser['installment_amount'], 0) . '</span>'
-        . '<span class="mintpay-cashback-group"><span class="mintpay-cashback-text">or <strong>6%</strong> Cashback with</span><img src="' . htmlspecialchars($logoUrl) . '" alt="Mintpay" class="mintpay-installment-logo"></span>'
-        . '</div>';
-}
-
 function shopExcerpt(string $text, int $length = 120): string
 {
     $text = trim(preg_replace('/\s+/', ' ', $text));
@@ -215,10 +202,6 @@ customer_layout_start([
         .product-card .koko-installment-teaser{display:flex;align-items:center;flex-direction:row;margin-top:0;padding:0 16px;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0}
         .product-card .koko-installment-text{min-width:0;overflow:hidden;text-overflow:ellipsis}
         .product-card .koko-installment-logo{height:16px;width:auto;flex-shrink:0;display:block}
-        .product-card .mintpay-installment-teaser{display:flex;align-items:center;flex-direction:row;margin-top:0;padding:0 16px;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0}
-        .product-card .mintpay-installment-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-        .mintpay-installment-logo{height:16px;width:auto;flex-shrink:0;display:block;object-fit:contain}
-        .mintpay-cashback-group{display:inline-flex;align-items:center;gap:4px;flex-basis:auto;min-width:0;white-space:nowrap;flex-shrink:0}.mintpay-cashback-text{font-size:inherit;font-weight:inherit;white-space:nowrap;color:#173b78;flex-shrink:0}.mintpay-cashback-text strong{font-weight:900}
         .pagination-wrap{padding:28px 0 0;display:grid;justify-items:center;gap:18px}
         .pagination-topline{width:100%;height:1px;background:rgba(28,27,27,.08)}
         .pagination-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:center}
@@ -398,7 +381,6 @@ customer_layout_start([
                                                 <?php endif; ?>
                                             </div>
                                         </div>
-                                        <?= shopMintpayTeaser($prod, $settings ?? [], $currency) ?>
                                         <?= shopKokoTeaser($prod, $settings ?? [], $currency) ?>
                                         <p class="product-desc"><?= htmlspecialchars(shopExcerpt((string) ($prod['short_description'] ?? $prod['description'] ?? 'Fresh product from the new shop page.'), 120)) ?></p>
                                     </article>

@@ -7,7 +7,6 @@ require_once 'views/layouts/customer_layout.php';
 $baseUrl = defined('BASE_URL') ? BASE_URL : '/';
 $shopName = !empty($settings['shop_name']) ? (string) $settings['shop_name'] : 'STYLE1';
 $currency = (string) ($settings['currency_symbol'] ?? 'LKR');
-$mintpayLogoUrl = BASE_URL . 'assets/icons/payment-gateways/mintpay.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/mintpay.png') ?: time());
 $kokoLogoUrl = BASE_URL . 'assets/icons/payment-gateways/koko-home.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/koko-home.png') ?: time());
 $shopProducts = array_values(array_filter($products ?? [], static function ($product) {
     return !empty($product['id']);
@@ -280,11 +279,6 @@ customer_layout_start([
         display:block;
     }
 
-    .shop-mintpay-teaser{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0;margin-top:2px}
-    .shop-mintpay-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6d6665}
-    .mintpay-installment-logo{height:16px;width:auto;flex-shrink:0;display:block;object-fit:contain}
-    .mintpay-cashback-group{display:inline-flex;align-items:center;gap:4px;flex-basis:auto;min-width:0;white-space:nowrap;flex-shrink:0}.mintpay-cashback-text{font-size:inherit;font-weight:inherit;white-space:nowrap;color:#173b78;flex-shrink:0}.mintpay-cashback-text strong{font-weight:900}
-
     .shop-desc{
         margin:0;
         color:#6d6665;
@@ -472,15 +466,6 @@ customer_layout_start([
                                 <?php endif; ?>
                             </div>
 
-                            <?php if (MintpayPricingHelper::isEnabled($settings ?? [])): ?>
-                                <?php $mintpayBasePrice = MintpayPricingHelper::getEffectiveProductPrice($product); $mintpayTeaser = $mintpayBasePrice > 0 ? MintpayPricingHelper::getInstallmentData($mintpayBasePrice, $settings ?? []) : null; ?>
-                                <?php if (!empty($mintpayTeaser)): ?>
-                                    <div class="shop-mintpay-teaser" aria-label="Mintpay installment plan">
-                                        <span class="shop-mintpay-text">3 x <?= htmlspecialchars($currency) ?> <?= number_format((float) $mintpayTeaser['installment_amount'], 0) ?></span>
-                                        <span class="mintpay-cashback-group"><span class="mintpay-cashback-text">or <strong>6%</strong> Cashback with</span><img src="<?= htmlspecialchars($mintpayLogoUrl) ?>" alt="Mintpay" class="mintpay-installment-logo"></span>
-                                    </div>
-                                <?php endif; ?>
-                            <?php endif; ?>
 
                             <?php if (KokoPricingHelper::isEnabled($settings ?? [])): ?>
                                 <?php

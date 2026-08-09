@@ -23,9 +23,6 @@ $productDiscountPercent = ($productSalePrice !== null && $productRegularPrice > 
 $kokoTeaserData = KokoPricingHelper::isEnabled($settings ?? [])
     ? KokoPricingHelper::getInstallmentData($productUnitPrice, $settings ?? [])
     : null;
-$mintpayTeaserData = MintpayPricingHelper::isEnabled($settings ?? [])
-    ? MintpayPricingHelper::getInstallmentData($productUnitPrice, $settings ?? [])
-    : null;
 
 $shopWhatsappTarget = preg_replace('/[^0-9]/', '', (string) ($settings['shop_whatsapp'] ?? ''));
 if ($shopWhatsappTarget === '') {
@@ -44,7 +41,6 @@ $recaptchaCheckoutEnabled = RecaptchaHelper::shouldProtectCheckout($settings);
 $recaptchaSiteKey = $recaptchaCheckoutEnabled ? RecaptchaHelper::siteKey($settings) : '';
 
 $kokoLogoUrl = $baseUrl . 'assets/icons/payment-gateways/koko-home.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/koko-home.png') ?: time());
-$mintpayLogoUrl = $baseUrl . 'assets/icons/payment-gateways/mintpay.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/mintpay.png') ?: time());
 $mainImageUrl = ImageHelper::uploadUrl(
     $product['main_image'] ?? '',
     'https://via.placeholder.com/960x1200?text=' . urlencode($product['title'] ?? 'Product')
@@ -283,12 +279,6 @@ customer_layout_start([
         .summary-operational-icon img{display:block;width:24px;height:24px;object-fit:contain}
         .summary-title{font-family:sans-serif !important;font-size:clamp(24px,2.2vw,32px);line-height:1.12;letter-spacing:0;text-transform:none !important;margin:0}
         .summary-price-stack{display:grid;gap:10px}
-        .mintpay-installment-teaser{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;background:#eef4ff;border:1px solid #c8d9ff;color:#173b78;font-size:13px;font-weight:800;line-height:1.2;width:fit-content;flex-wrap:nowrap;white-space:nowrap;overflow:hidden}
-        .mintpay-installment-teaser .mintpay-installment-text{color:#173b78 !important}
-        .mintpay-installment-teaser-single{font-size:15px !important;gap:12px !important;padding:12px 16px !important}
-        .mintpay-installment-logo{height:20px;width:auto;flex-shrink:0;display:block;object-fit:contain}
-        .mintpay-installment-teaser .mintpay-installment-text{white-space:nowrap;flex-shrink:0}
-        .mintpay-cashback-group{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;flex-basis:auto;flex-shrink:0}.mintpay-cashback-text{font-size:inherit;font-weight:inherit;white-space:nowrap;color:#173b78;flex-shrink:0}.mintpay-cashback-text strong{font-weight:900}
         .summary-prices{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
         .summary-sale-price{font-size:28px;font-weight:800;color:var(--accent-red, var(--primary))}
         .summary-old-price{font-size:14px;color:rgba(28,27,27,.42);text-decoration:line-through;font-weight:600}
@@ -425,7 +415,7 @@ customer_layout_start([
         .related-card .product-btn{display:none}
         .gallery-dots{display:none}
         @media (max-width:1180px){.product-showcase{grid-template-columns:1fr}.gallery-rail{grid-template-columns:82px minmax(0,1fr)}.product-summary{position:relative;top:0;padding:0}.related-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-        @media (max-width:760px){.product-ui{padding:18px 0 64px}.gallery-rail{grid-template-columns:1fr;gap:10px}.gallery-thumb-rail{position:relative;top:0;flex-direction:row;gap:8px;max-height:none;overflow-x:auto;overflow-y:hidden;padding-right:0;padding-bottom:4px}.gallery-thumb-btn{min-width:72px;max-width:72px}.gallery-main{aspect-ratio:auto !important;overflow:visible;border:1px solid rgba(28,27,27,.12);box-shadow:var(--shadow-soft);background:var(--surface);border-radius:0 !important}.gallery-slider{height:auto !important;border-radius:0 !important;background:var(--surface) !important}.gallery-slide{padding:0;align-items:flex-start;justify-content:flex-start;min-height:0;background:var(--surface);height:auto}.gallery-open-btn{justify-content:flex-start;align-items:flex-start;height:auto}.gallery-slide picture,.gallery-slide img,.gallery-open-btn picture,.gallery-open-btn img{width:100% !important;max-width:100%;height:auto !important;max-height:none !important;object-fit:contain !important;aspect-ratio:auto !important;border-radius:0 !important}.gallery-slide picture,.gallery-open-btn picture{overflow:visible !important}.gallery-nav{width:36px;height:36px}.summary-operational-icons{display:inline-flex}.summary-operational-icons-desktop{display:none}.summary-actions{display:grid;grid-template-columns:1fr}.summary-actions .btn-action{font-size:16px;letter-spacing:0}.summary-payment-logo{width:72px;height:44px;padding:7px 8px}.summary-title{font-size:24px}.summary-sale-price{font-size:24px}.related-heading{align-items:flex-start;flex-direction:column}.related-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 14px}.related-title{font-size:12px}#orderModal .modal{padding:18px}.mintpay-installment-teaser-single,.koko-installment-teaser-single{font-size:13px !important;gap:6px !important;padding:10px 12px !important}.mintpay-installment-teaser-single .mintpay-installment-logo,.koko-installment-teaser-single .koko-installment-logo{height:16px !important;width:auto !important}#orderModal .input-row{grid-template-columns:1fr}}
+        @media (max-width:760px){.product-ui{padding:18px 0 64px}.gallery-rail{grid-template-columns:1fr;gap:10px}.gallery-thumb-rail{position:relative;top:0;flex-direction:row;gap:8px;max-height:none;overflow-x:auto;overflow-y:hidden;padding-right:0;padding-bottom:4px}.gallery-thumb-btn{min-width:72px;max-width:72px}.gallery-main{aspect-ratio:auto !important;overflow:visible;border:1px solid rgba(28,27,27,.12);box-shadow:var(--shadow-soft);background:var(--surface);border-radius:0 !important}.gallery-slider{height:auto !important;border-radius:0 !important;background:var(--surface) !important}.gallery-slide{padding:0;align-items:flex-start;justify-content:flex-start;min-height:0;background:var(--surface);height:auto}.gallery-open-btn{justify-content:flex-start;align-items:flex-start;height:auto}.gallery-slide picture,.gallery-slide img,.gallery-open-btn picture,.gallery-open-btn img{width:100% !important;max-width:100%;height:auto !important;max-height:none !important;object-fit:contain !important;aspect-ratio:auto !important;border-radius:0 !important}.gallery-slide picture,.gallery-open-btn picture{overflow:visible !important}.gallery-nav{width:36px;height:36px}.summary-operational-icons{display:inline-flex}.summary-operational-icons-desktop{display:none}.summary-actions{display:grid;grid-template-columns:1fr}.summary-actions .btn-action{font-size:16px;letter-spacing:0}.summary-payment-logo{width:72px;height:44px;padding:7px 8px}.summary-title{font-size:24px}.summary-sale-price{font-size:24px}.related-heading{align-items:flex-start;flex-direction:column}.related-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 14px}.related-title{font-size:12px}#orderModal .modal{padding:18px}#orderModal .input-row{grid-template-columns:1fr}}
 </style>
 
     <main class="main product-ui">
@@ -557,13 +547,6 @@ customer_layout_start([
                                 <span class="summary-sale-price" id="productCurrentPrice"><?= htmlspecialchars($currency) ?> <?= number_format($productSalePrice !== null ? $productSalePrice : $productRegularPrice, 0) ?></span>
                                 <span class="summary-old-price" id="productOldPrice" style="<?= $productSalePrice !== null ? '' : 'display:none;' ?>"><?= htmlspecialchars($currency) ?> <?= number_format($productRegularPrice, 0) ?></span>
                             </div>
-
-                            <?php if (!empty($mintpayTeaserData)): ?>
-                                <div class="summary-installment mintpay-installment-teaser mintpay-installment-teaser-single" id="productMintpayPlan" aria-label="Mintpay installment plan">
-                                    <span class="mintpay-installment-text" id="productMintpayPlanText">3 x <?= htmlspecialchars($currency) ?> <?= number_format((float) $mintpayTeaserData['installment_amount'], 2) ?></span>
-                                    <span class="mintpay-cashback-group"><span class="mintpay-cashback-text">or <strong>6%</strong> Cashback with</span><img src="<?= htmlspecialchars($mintpayLogoUrl) ?>" alt="Mintpay" class="mintpay-installment-logo"></span>
-                                </div>
-                            <?php endif; ?>
 
                             <?php if (!empty($kokoTeaserData)): ?>
                                 <div class="summary-installment koko-installment-teaser koko-installment-teaser-single" id="productKokoPlan" aria-label="KOKO installment plan">
@@ -930,11 +913,6 @@ customer_layout_start([
         return currencyCode + ' ' + amount.toFixed(2);
     }
 
-    function formatMintpayInstallment(value) {
-        const amount = Math.max(0, Number(value || 0));
-        return currencyCode + ' ' + amount.toFixed(2);
-    }
-
     function showProductToast(message, type) {
         let toast = document.getElementById('productToast');
         if (!toast) {
@@ -1292,17 +1270,6 @@ customer_layout_start([
         kokoPlan.style.display = 'inline-flex';
     }
 
-    function updateDisplayedMintpayPlan(basePrice) {
-        const mintpayPlan = document.getElementById('productMintpayPlan');
-        const mintpayPlanText = document.getElementById('productMintpayPlanText');
-        if (!mintpayPlan || !mintpayPlanText) return;
-        const normalizedBasePrice = Number(basePrice || 0);
-        if (normalizedBasePrice <= 0) { mintpayPlan.style.display = 'none'; return; }
-        const handlingFee = mintpayHandlingFeePercentage > 0 ? normalizedBasePrice * (mintpayHandlingFeePercentage / 100) : 0;
-        mintpayPlanText.textContent = '3 x ' + formatMintpayInstallment((normalizedBasePrice + handlingFee) / 3);
-        mintpayPlan.style.display = 'inline-flex';
-    }
-
     function updateDisplayedPrice() {
         const currentPriceEl = document.getElementById('productCurrentPrice');
         const oldPriceEl = document.getElementById('productOldPrice');
@@ -1314,7 +1281,6 @@ customer_layout_start([
         if (oldPriceEl) {
             if (salePrice !== null && salePrice < regularPrice) { oldPriceEl.style.display = ''; oldPriceEl.textContent = formatMoney(regularPrice); } else { oldPriceEl.style.display = 'none'; }
         }
-        updateDisplayedMintpayPlan(currentPrice);
         updateDisplayedKokoPlan(currentPrice);
     }
 
