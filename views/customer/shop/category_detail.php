@@ -7,7 +7,7 @@ require_once 'views/layouts/customer_layout.php';
 $baseUrl = defined('BASE_URL') ? BASE_URL : '/';
 $shopName = !empty($settings['shop_name']) ? (string) $settings['shop_name'] : 'STYLE1';
 $currency = (string) ($settings['currency_symbol'] ?? 'LKR');
-$mintpayLogoUrl = BASE_URL . 'assets/icons/payment-gateways/mintpay.webp?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/mintpay.webp') ?: time());
+$mintpayLogoUrl = BASE_URL . 'assets/icons/payment-gateways/mintpay.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/mintpay.png') ?: time());
 $kokoLogoUrl = BASE_URL . 'assets/icons/payment-gateways/koko-home.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/koko-home.png') ?: time());
 $categoryName = (string) ($category['name'] ?? 'Category');
 $categoryCount = (int) ($category_count ?? (is_array($products ?? null) ? count($products) : 0));
@@ -334,6 +334,7 @@ customer_layout_start([
     .category-mintpay-teaser{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0;margin-top:2px}
     .category-mintpay-text{min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6d6665}
     .mintpay-installment-logo{height:18px;width:auto;flex-shrink:0;display:block;object-fit:contain}
+    .mintpay-cashback-text{font-size:10px;font-weight:700;white-space:nowrap;color:#173b78;flex-shrink:0}.mintpay-cashback-text strong{font-weight:900}
 
     .category-desc{
         margin:0;
@@ -567,7 +568,8 @@ customer_layout_start([
                                 <?php $mintpayBasePrice = MintpayPricingHelper::getEffectiveProductPrice($product); $mintpayTeaser = $mintpayBasePrice > 0 ? MintpayPricingHelper::getInstallmentData($mintpayBasePrice, $settings ?? []) : null; ?>
                                 <?php if (!empty($mintpayTeaser)): ?>
                                     <div class="category-mintpay-teaser" aria-label="Mintpay installment plan">
-                                        <span class="category-mintpay-text">or 3 x <?= htmlspecialchars($currency) ?> <?= number_format((float) $mintpayTeaser['installment_amount'], 0) ?></span>
+                                        <span class="category-mintpay-text">3 x <?= htmlspecialchars($currency) ?> <?= number_format((float) $mintpayTeaser['installment_amount'], 0) ?></span>
+                                        <span class="mintpay-cashback-text">or <strong>6%</strong> Cashback with</span>
                                         <img src="<?= htmlspecialchars($mintpayLogoUrl) ?>" alt="Mintpay" class="mintpay-installment-logo">
                                     </div>
                                 <?php endif; ?>
@@ -584,7 +586,7 @@ customer_layout_start([
                                 ?>
                                 <?php if (!empty($kokoTeaser)): ?>
                                     <div class="category-koko-teaser" aria-label="KOKO installment plan">
-                                        <span class="category-koko-text">or 3 x <?= htmlspecialchars($currency) ?> <?= number_format((float) $kokoTeaser['installment_amount'], 0) ?></span>
+                                        <span class="category-koko-text">3 x <?= htmlspecialchars($currency) ?> <?= number_format((float) $kokoTeaser['installment_amount'], 0) ?></span>
                                         <img src="<?= htmlspecialchars($kokoLogoUrl) ?>" alt="KOKO" class="category-koko-logo">
                                     </div>
                                 <?php endif; ?>
