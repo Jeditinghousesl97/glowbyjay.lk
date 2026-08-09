@@ -487,6 +487,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
             <div class="totals-box">
                 <div class="totals-row"><span>Subtotal</span><strong data-modal-subtotal><?= htmlspecialchars($currency . ' ' . number_format($subtotal, 2)) ?></strong></div>
                 <div class="totals-row"><span>Shipping Fee</span><strong data-modal-shipping><?= htmlspecialchars($shippingLabel) ?></strong></div>
+                <div class="totals-row" data-modal-handling-row style="display:none;"><span>Handling Fee</span><strong data-modal-handling-fee></strong></div>
                 <div class="totals-row"><span>Order Total</span><strong data-modal-total><?= htmlspecialchars($currency . ' ' . number_format($total, 2)) ?></strong></div>
             </div>
             <div class="modal-actions"><button type="button" data-close-checkout-modal>Cancel</button><button type="submit" class="primary" id="checkoutSubmit" <?= $cartHasBlockedItems ? 'disabled aria-disabled="true"' : '' ?>>Place Order</button></div>
@@ -514,6 +515,8 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     const payhereReady = <?= json_encode($payhereReady) ?>;
     const kokoReady = <?= json_encode($kokoReady) ?>;
     const mintpayReady = <?= json_encode($mintpayReady) ?>;
+    const kokoHandlingFeePercentage = <?= json_encode((float) ($settings['koko_handling_fee_percentage'] ?? 0)) ?>;
+    const mintpayHandlingFeePercentage = <?= json_encode((float) ($settings['mintpay_handling_fee_percentage'] ?? 0)) ?>;
     const modes = <?= json_encode($modes, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
     const analyticsItems = <?= json_encode($jsAnalyticsItems, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
     const whatsappCartItems = <?= json_encode($jsCartWhatsappItems, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
@@ -692,7 +695,14 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
         const label = weight <= 0 ? 'Free' : (hasRate ? money(shipping) : 'Select district');
         document.querySelectorAll('[data-summary-subtotal], [data-modal-subtotal]').forEach(function (el) { el.textContent = money(subtotal); });
         document.querySelectorAll('[data-summary-shipping], [data-modal-shipping]').forEach(function (el) { el.textContent = label; });
-        document.querySelectorAll('[data-summary-total], [data-modal-total]').forEach(function (el) { el.textContent = money(subtotal + shipping); });
+        const baseTotal = subtotal + shipping;
+        const handlingFee = selectedMode === 'koko'
+            ? baseTotal * (kokoHandlingFeePercentage / 100)
+            : (selectedMode === 'mintpay' ? baseTotal * (mintpayHandlingFeePercentage / 100) : 0);
+        document.querySelectorAll('[data-summary-total]').forEach(function (el) { el.textContent = money(baseTotal); });
+        document.querySelectorAll('[data-modal-total]').forEach(function (el) { el.textContent = money(baseTotal + handlingFee); });
+        document.querySelectorAll('[data-modal-handling-row]').forEach(function (el) { el.style.display = handlingFee > 0 ? 'flex' : 'none'; });
+        document.querySelectorAll('[data-modal-handling-fee]').forEach(function (el) { el.textContent = money(handlingFee); });
         updatePurchaseActionsState();
     }
     function syncLine(line) { const q = Math.max(1, parseInt(line.dataset.qty || '1', 10)); const p = Number(line.dataset.price || 0); line.querySelector('[data-line-qty]').textContent = String(q); line.querySelector('[data-line-total]').textContent = money(q * p); }

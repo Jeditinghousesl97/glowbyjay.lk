@@ -1,6 +1,7 @@
 <?php
 require_once ROOT_PATH . 'helpers/ImageHelper.php';
 require_once ROOT_PATH . 'helpers/KokoPricingHelper.php';
+require_once ROOT_PATH . 'helpers/MintpayPricingHelper.php';
 require_once 'views/layouts/customer_layout.php';
 
 $baseUrl = defined('BASE_URL') ? BASE_URL : '/';
@@ -329,6 +330,10 @@ customer_layout_start([
         display:block;
     }
 
+    .category-mintpay-teaser{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0;margin-top:2px}
+    .category-mintpay-text{min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6d6665}
+    .mintpay-installment-badge{display:inline-flex;align-items:center;padding:2px 5px;border-radius:4px;background:#173b78;color:#fff;font-size:8px;font-weight:900;letter-spacing:.04em;line-height:1;flex-shrink:0}
+
     .category-desc{
         margin:0;
         color:#6d6665;
@@ -556,6 +561,16 @@ customer_layout_start([
                                     <span class="category-old-price"><?= htmlspecialchars($currency) ?> <?= number_format($regularPrice, 0) ?></span>
                                 <?php endif; ?>
                             </div>
+
+                            <?php if (MintpayPricingHelper::isEnabled($settings ?? [])): ?>
+                                <?php $mintpayBasePrice = MintpayPricingHelper::getEffectiveProductPrice($product); $mintpayTeaser = $mintpayBasePrice > 0 ? MintpayPricingHelper::getInstallmentData($mintpayBasePrice, $settings ?? []) : null; ?>
+                                <?php if (!empty($mintpayTeaser)): ?>
+                                    <div class="category-mintpay-teaser" aria-label="Mintpay installment plan">
+                                        <span class="category-mintpay-text">or 3 x <?= htmlspecialchars($currency) ?> <?= number_format((float) $mintpayTeaser['installment_amount'], 0) ?></span>
+                                        <span class="mintpay-installment-badge">MINTPAY</span>
+                                    </div>
+                                <?php endif; ?>
+                            <?php endif; ?>
 
                             <?php if (KokoPricingHelper::isEnabled($settings ?? [])): ?>
                                 <?php

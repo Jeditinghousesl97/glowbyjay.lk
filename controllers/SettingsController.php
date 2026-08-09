@@ -105,6 +105,7 @@ class SettingsController extends BaseController
             'mintpay_title',
             'mintpay_description',
             'mintpay_merchant_id',
+            'mintpay_handling_fee_percentage',
             'mintpay_api_token',
             'sms_enabled',
             'sms_base_url',
@@ -255,6 +256,7 @@ class SettingsController extends BaseController
                 'mintpay_title',
                 'mintpay_description',
                 'mintpay_merchant_id',
+                'mintpay_handling_fee_percentage',
                 'sms_base_url',
                 'sms_user_id',
                 'sms_sender_id',
@@ -343,6 +345,10 @@ class SettingsController extends BaseController
             $this->settingModel->set('koko_sandbox', !empty($_POST['koko_sandbox']) ? '1' : '0');
             $this->settingModel->set('mintpay_enabled', !empty($_POST['mintpay_enabled']) ? '1' : '0');
             $this->settingModel->set('mintpay_sandbox', !empty($_POST['mintpay_sandbox']) ? '1' : '0');
+            $this->settingModel->set(
+                'mintpay_handling_fee_percentage',
+                number_format(max(0, (float) ($_POST['mintpay_handling_fee_percentage'] ?? 0)), 2, '.', '')
+            );
             $this->settingModel->set('recaptcha_v3_enabled', !empty($_POST['recaptcha_v3_enabled']) ? '1' : '0');
             $this->settingModel->set('recaptcha_v3_admin_login', !empty($_POST['recaptcha_v3_admin_login']) ? '1' : '0');
             $this->settingModel->set('recaptcha_v3_checkout', !empty($_POST['recaptcha_v3_checkout']) ? '1' : '0');

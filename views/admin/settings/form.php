@@ -654,6 +654,12 @@
                 <label class="label">Gateway Description</label>
                 <textarea name="mintpay_description" class="input-box" rows="3" placeholder="Pay in 3 interest-free instalments with Mintpay."><?= htmlspecialchars($settings['mintpay_description'] ?? 'Pay in 3 interest-free instalments with Mintpay.') ?></textarea>
 
+                <label class="label">Mintpay Handling Fee (%)</label>
+                <input type="number" name="mintpay_handling_fee_percentage" class="input-box" min="0" step="0.01"
+                    placeholder="0.00"
+                    value="<?= htmlspecialchars($settings['mintpay_handling_fee_percentage'] ?? '0.00') ?>">
+                <p style="margin:-6px 0 14px; font-size:11px; color:#777; line-height:1.7;">Applied only when the customer chooses Mintpay. The percentage is calculated on the product and delivery total before the handling fee is added.</p>
+
                 <label class="label">Mintpay Merchant ID</label>
                 <input type="text" name="mintpay_merchant_id" class="input-box" placeholder="Merchant ID"
                     value="<?= htmlspecialchars($settings['mintpay_merchant_id'] ?? '') ?>">

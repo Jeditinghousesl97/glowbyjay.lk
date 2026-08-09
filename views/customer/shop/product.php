@@ -4,6 +4,7 @@ require_once ROOT_PATH . 'helpers/SeoHelper.php';
 require_once ROOT_PATH . 'helpers/KokoPricingHelper.php';
 require_once ROOT_PATH . 'helpers/KokoGateway.php';
 require_once ROOT_PATH . 'helpers/MintpayGateway.php';
+require_once ROOT_PATH . 'helpers/MintpayPricingHelper.php';
 require_once ROOT_PATH . 'helpers/RecaptchaHelper.php';
 require_once ROOT_PATH . 'helpers/TextFormatterHelper.php';
 
@@ -21,6 +22,9 @@ $productDiscountPercent = ($productSalePrice !== null && $productRegularPrice > 
     : 0;
 $kokoTeaserData = KokoPricingHelper::isEnabled($settings ?? [])
     ? KokoPricingHelper::getInstallmentData($productUnitPrice, $settings ?? [])
+    : null;
+$mintpayTeaserData = MintpayPricingHelper::isEnabled($settings ?? [])
+    ? MintpayPricingHelper::getInstallmentData($productUnitPrice, $settings ?? [])
     : null;
 
 $shopWhatsappTarget = preg_replace('/[^0-9]/', '', (string) ($settings['shop_whatsapp'] ?? ''));
@@ -278,6 +282,9 @@ customer_layout_start([
         .summary-operational-icon img{display:block;width:24px;height:24px;object-fit:contain}
         .summary-title{font-family:sans-serif !important;font-size:clamp(24px,2.2vw,32px);line-height:1.12;letter-spacing:0;text-transform:none !important;margin:0}
         .summary-price-stack{display:grid;gap:10px}
+        .mintpay-installment-teaser{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;background:#eef4ff;border:1px solid #c8d9ff;color:#173b78;font-size:13px;font-weight:800;line-height:1.2;width:fit-content}
+        .mintpay-installment-teaser-single{font-size:15px !important;gap:12px !important;padding:12px 16px !important}
+        .mintpay-installment-badge{display:inline-flex;align-items:center;padding:3px 6px;border-radius:4px;background:#173b78;color:#fff;font-size:9px;font-weight:900;letter-spacing:.05em;line-height:1;flex-shrink:0}
         .summary-prices{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
         .summary-sale-price{font-size:28px;font-weight:800;color:var(--accent-red, var(--primary))}
         .summary-old-price{font-size:14px;color:rgba(28,27,27,.42);text-decoration:line-through;font-weight:600}
@@ -546,6 +553,13 @@ customer_layout_start([
                                 <span class="summary-sale-price" id="productCurrentPrice"><?= htmlspecialchars($currency) ?> <?= number_format($productSalePrice !== null ? $productSalePrice : $productRegularPrice, 0) ?></span>
                                 <span class="summary-old-price" id="productOldPrice" style="<?= $productSalePrice !== null ? '' : 'display:none;' ?>"><?= htmlspecialchars($currency) ?> <?= number_format($productRegularPrice, 0) ?></span>
                             </div>
+
+                            <?php if (!empty($mintpayTeaserData)): ?>
+                                <div class="summary-installment mintpay-installment-teaser mintpay-installment-teaser-single" id="productMintpayPlan" aria-label="Mintpay installment plan">
+                                    <span class="mintpay-installment-text" id="productMintpayPlanText">or 3 x <?= htmlspecialchars($currency) ?> <?= number_format((float) $mintpayTeaserData['installment_amount'], 2) ?></span>
+                                    <span class="mintpay-installment-badge">MINTPAY</span>
+                                </div>
+                            <?php endif; ?>
 
                             <?php if (!empty($kokoTeaserData)): ?>
                                 <div class="summary-installment koko-installment-teaser koko-installment-teaser-single" id="productKokoPlan" aria-label="KOKO installment plan">
@@ -843,6 +857,7 @@ customer_layout_start([
     const baseProductSalePrice = <?= json_encode($productSalePrice !== null ? (float) $productSalePrice : null) ?>;
     const baseProductWeightGrams = <?= json_encode(max(0, (int) ($product['weight_grams'] ?? 0))) ?>;
     const kokoHandlingFeePercentage = <?= json_encode((float) ($settings['koko_handling_fee_percentage'] ?? 0)) ?>;
+    const mintpayHandlingFeePercentage = <?= json_encode((float) ($settings['mintpay_handling_fee_percentage'] ?? 0)) ?>;
     const deliveryApplyAllDistricts = <?= json_encode($deliveryApplyAllDistricts) ?>;
     const deliveryAllFirstKg = <?= json_encode($deliveryAllFirstKg) ?>;
     const deliveryAllAdditionalKg = <?= json_encode($deliveryAllAdditionalKg) ?>;
@@ -907,6 +922,11 @@ customer_layout_start([
     }
 
     function formatKokoInstallment(value) {
+        const amount = Math.max(0, Number(value || 0));
+        return currencyCode + ' ' + amount.toFixed(2);
+    }
+
+    function formatMintpayInstallment(value) {
         const amount = Math.max(0, Number(value || 0));
         return currencyCode + ' ' + amount.toFixed(2);
     }
@@ -1268,6 +1288,17 @@ customer_layout_start([
         kokoPlan.style.display = 'inline-flex';
     }
 
+    function updateDisplayedMintpayPlan(basePrice) {
+        const mintpayPlan = document.getElementById('productMintpayPlan');
+        const mintpayPlanText = document.getElementById('productMintpayPlanText');
+        if (!mintpayPlan || !mintpayPlanText) return;
+        const normalizedBasePrice = Number(basePrice || 0);
+        if (normalizedBasePrice <= 0) { mintpayPlan.style.display = 'none'; return; }
+        const handlingFee = mintpayHandlingFeePercentage > 0 ? normalizedBasePrice * (mintpayHandlingFeePercentage / 100) : 0;
+        mintpayPlanText.textContent = 'or 3 x ' + formatMintpayInstallment((normalizedBasePrice + handlingFee) / 3);
+        mintpayPlan.style.display = 'inline-flex';
+    }
+
     function updateDisplayedPrice() {
         const currentPriceEl = document.getElementById('productCurrentPrice');
         const oldPriceEl = document.getElementById('productOldPrice');
@@ -1279,6 +1310,7 @@ customer_layout_start([
         if (oldPriceEl) {
             if (salePrice !== null && salePrice < regularPrice) { oldPriceEl.style.display = ''; oldPriceEl.textContent = formatMoney(regularPrice); } else { oldPriceEl.style.display = 'none'; }
         }
+        updateDisplayedMintpayPlan(currentPrice);
         updateDisplayedKokoPlan(currentPrice);
     }
 
@@ -1307,6 +1339,10 @@ customer_layout_start([
         return orderMode === 'koko' && kokoHandlingFeePercentage > 0 ? Number(basePrice || 0) * (kokoHandlingFeePercentage / 100) : 0;
     }
 
+    function calculateMintpayHandlingFee(basePrice) {
+        return orderMode === 'mintpay' && mintpayHandlingFeePercentage > 0 ? Number(basePrice || 0) * (mintpayHandlingFeePercentage / 100) : 0;
+    }
+
     function updateOrderTotals() {
         const subtotalEl = document.getElementById('modalSubTotalDisplay');
         const shippingEl = document.getElementById('modalShippingDisplay');
@@ -1319,7 +1355,7 @@ customer_layout_start([
         subtotalEl.textContent = formatMoney(quote.subtotal);
         shippingEl.textContent = quote.chargeableWeight === 0 ? 'Free' : (quote.hasRate ? formatMoney(quote.shipping) : 'Select district');
         const baseTotal = quote.hasRate || quote.chargeableWeight === 0 ? quote.total : quote.subtotal;
-        const handlingFee = calculateKokoHandlingFee(baseTotal);
+        const handlingFee = calculateKokoHandlingFee(baseTotal) + calculateMintpayHandlingFee(baseTotal);
         if (handlingFeeRowEl && handlingFeeEl) { handlingFeeRowEl.style.display = handlingFee > 0 ? 'flex' : 'none'; handlingFeeEl.textContent = formatMoney(handlingFee); }
         totalEl.textContent = formatMoney(baseTotal + handlingFee);
         return quote;

@@ -20,6 +20,7 @@ require_once $appRoot . 'models/Setting.php';
 require_once $appRoot . 'helpers/ImageHelper.php';
 require_once $appRoot . 'helpers/SeoHelper.php';
 require_once $appRoot . 'helpers/KokoPricingHelper.php';
+require_once $appRoot . 'helpers/MintpayPricingHelper.php';
 
 $baseUrl = defined('BASE_URL') ? BASE_URL : '/';
 $productModel = new Product();
@@ -120,6 +121,19 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
     return '<div class="koko-installment-teaser" aria-label="KOKO installment plan">'
         . '<span class="koko-installment-text">or 3 x ' . $currency . ' ' . number_format((float) $teaser['installment_amount'], 0) . '</span>'
         . '<img src="' . htmlspecialchars($kokoLogoUrl) . '" alt="KOKO" class="koko-installment-logo" style="height:16px;width:auto;flex-shrink:0;display:block;">'
+        . '</div>';
+}
+
+function renderHomeMintpayTeaser(array $product, array $settings, string $context = 'default'): string
+{
+    if (!MintpayPricingHelper::isEnabled($settings)) return '';
+    $basePrice = MintpayPricingHelper::getEffectiveProductPrice($product);
+    if ($basePrice <= 0) return '';
+    $teaser = MintpayPricingHelper::getInstallmentData($basePrice, $settings);
+    $currency = htmlspecialchars($settings['currency_symbol'] ?? 'LKR');
+    return '<div class="mintpay-installment-teaser" aria-label="Mintpay installment plan">'
+        . '<span class="mintpay-installment-text">or 3 x ' . $currency . ' ' . number_format((float) $teaser['installment_amount'], 0) . '</span>'
+        . '<span class="mintpay-installment-badge">MINTPAY</span>'
         . '</div>';
 }
 ?>
@@ -234,6 +248,9 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
         .product-card .koko-installment-teaser{display:flex;align-items:center;flex-direction:row;margin-top:8px;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0}
         .product-card .koko-installment-text{min-width:0;overflow:hidden;text-overflow:ellipsis}
         .product-card .koko-installment-logo{height:16px;width:auto;flex-shrink:0;display:block}
+        .product-card .mintpay-installment-teaser,.product-card .koko-installment-teaser{display:flex;align-items:center;flex-direction:row;margin-top:8px;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0}
+        .product-card .mintpay-installment-text,.product-card .koko-installment-text{min-width:0;overflow:hidden;text-overflow:ellipsis}
+        .mintpay-installment-badge{display:inline-flex;align-items:center;padding:2px 5px;border-radius:4px;background:#173b78;color:#fff;font-size:8px;font-weight:900;letter-spacing:.04em;line-height:1;flex-shrink:0}
 </style>
 <style>
         .grid-arrivals{display:grid;grid-template-columns:repeat(4,1fr);gap:28px 26px}
@@ -595,6 +612,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                                                 <div class="product-old-price"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format($regularPrice, 0) ?></div>
                                             <?php endif; ?>
                                         </div>
+                                        <?= renderHomeMintpayTeaser($product, $settings, 'featured') ?>
                                         <?= renderHomeKokoTeaser($product, $settings, 'featured') ?>
                                         <p class="product-desc"><?= htmlspecialchars(SeoHelper::trimText($productSummary, 90)) ?></p>
                                     </div>
@@ -662,6 +680,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                                         <div class="arrival-old-price"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format($regularPrice, 0) ?></div>
                                     <?php endif; ?>
                                 </div>
+                                <?= renderHomeMintpayTeaser($product, $settings, 'arrivals') ?>
                                 <?= renderHomeKokoTeaser($product, $settings, 'arrivals') ?>
                             </article>
                         <?php endforeach; ?>
@@ -763,6 +782,7 @@ function renderHomeKokoTeaser(array $product, array $settings, string $context =
                                         <span class="old-price"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format($regularPrice, 0) ?></span>
                                     <?php endif; ?>
                                 </div>
+                                <?= renderHomeMintpayTeaser($product, $settings, 'sale') ?>
                                 <?= renderHomeKokoTeaser($product, $settings, 'sale') ?>
                             </article>
                         <?php endforeach; ?>

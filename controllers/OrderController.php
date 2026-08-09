@@ -10,6 +10,7 @@ require_once 'helpers/OrderSmsService.php';
 require_once 'helpers/StockAlertService.php';
 require_once 'helpers/KokoGateway.php';
 require_once 'helpers/MintpayGateway.php';
+require_once 'helpers/MintpayPricingHelper.php';
 require_once 'helpers/ImageHelper.php';
 require_once 'helpers/RecaptchaHelper.php';
 require_once 'helpers/RateLimitHelper.php';
@@ -646,6 +647,22 @@ class OrderController extends BaseController
         return $quote;
     }
 
+    private function calculateMintpayHandlingFee($baseTotal, array $settings)
+    {
+        $rate = MintpayPricingHelper::getHandlingFeePercentage($settings);
+        if ($rate <= 0 || $baseTotal <= 0) return 0.0;
+        return round(((float) $baseTotal * $rate) / 100, 2);
+    }
+
+    private function enrichQuoteWithMintpayHandlingFee(array $quote, array $settings)
+    {
+        $baseTotal = (float) ($quote['subtotal'] ?? 0) + (float) ($quote['shipping_fee'] ?? 0);
+        $handlingFee = $this->calculateMintpayHandlingFee($baseTotal, $settings);
+        $quote['handling_fee'] = $handlingFee;
+        $quote['total'] = $baseTotal + $handlingFee;
+        return $quote;
+    }
+
     private function requireAdminSession()
     {
         if (!isset($_SESSION['user_id'])) {
@@ -724,11 +741,12 @@ class OrderController extends BaseController
             $this->redirect($redirectTarget);
         }
 
+        $pricingQuote = $this->enrichQuoteWithMintpayHandlingFee($shippingQuote, $settings);
         $order = $this->orderModel->createFromItems($customer, $items, $settings, [
-            'subtotal_amount' => $shippingQuote['subtotal'],
-            'shipping_fee' => $shippingQuote['shipping_fee'],
-            'handling_fee' => 0,
-            'chargeable_weight_grams' => $shippingQuote['chargeable_weight_grams'],
+            'subtotal_amount' => $pricingQuote['subtotal'],
+            'shipping_fee' => $pricingQuote['shipping_fee'],
+            'handling_fee' => $pricingQuote['handling_fee'],
+            'chargeable_weight_grams' => $pricingQuote['chargeable_weight_grams'],
             'payment_method' => 'mintpay',
             'payment_gateway' => 'mintpay',
             'payment_status' => 'pending',
