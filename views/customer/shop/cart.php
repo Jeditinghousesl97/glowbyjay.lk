@@ -411,7 +411,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
                                     type="button"
                                     class="payment-method-card <?= htmlspecialchars($mode['key']) ?><?= (in_array($mode['key'], ['payhere', 'koko', 'mintpay'], true) && empty($mode['configured'])) ? ' is-unavailable' : '' ?>"
                                     data-select-mode="<?= htmlspecialchars($mode['key']) ?>"
-                                    data-pay-group="<?= in_array($mode['key'], ['payhere', 'bank_transfer'], true) ? 'payNow' : 'payLater' ?>"
+                                    data-pay-group="<?= in_array($mode['key'], ['koko', 'mintpay'], true) ? 'payNow payLater' : (in_array($mode['key'], ['payhere', 'bank_transfer'], true) ? 'payNow' : 'payLater') ?>"
                                     <?= $cartHasBlockedItems ? 'disabled aria-disabled="true"' : '' ?>>
                                     <span class="payment-method-icon" aria-hidden="true">
                                         <i class="<?= htmlspecialchars($mode['icon']) ?>"></i>
@@ -662,7 +662,8 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
             const group = card.getAttribute('data-pay-group');
             // Override legacy/cached stylesheet rules that may hide only
             // gateway-specific cards (PayHere/KOKO).
-            card.style.setProperty('display', category && group === category ? 'flex' : 'none', 'important');
+            const groups = String(group || '').split(/\s+/);
+            card.style.setProperty('display', category && groups.indexOf(category) !== -1 ? 'flex' : 'none', 'important');
         });
         if (payNowBtn) {
             payNowBtn.classList.toggle('is-active', category === 'payNow');
