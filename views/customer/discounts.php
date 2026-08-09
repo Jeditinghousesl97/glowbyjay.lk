@@ -262,8 +262,9 @@ customer_layout_start([
     }
 
     @media (max-width:760px){
-        .discount-mintpay-teaser{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;white-space:normal;overflow:visible}
-        .discount-mintpay-text{overflow:visible;text-overflow:clip;white-space:normal;line-height:1.35}
+        .discount-mintpay-teaser{display:block;white-space:normal;overflow:visible}
+        .discount-mintpay-text{display:inline;overflow:visible;text-overflow:clip;white-space:normal;line-height:1.35}
+        .discount-mintpay-logo{display:inline-block;vertical-align:middle;margin-left:4px}
     }
 
     .discount-desc{

@@ -564,7 +564,8 @@
         flex-wrap: wrap;
     }
 
-    .koko-installment-teaser {
+    .koko-installment-teaser,
+    .mintpay-installment-teaser {
         display: inline-flex;
         align-items: center;
         gap: 6px;
@@ -576,17 +577,20 @@
         min-width: 0;
     }
 
-    .koko-installment-teaser .koko-installment-text {
+    .koko-installment-teaser .koko-installment-text,
+    .mintpay-installment-teaser .mintpay-installment-text {
         min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
-    .koko-installment-logo {
+    .koko-installment-logo,
+    .mintpay-installment-logo {
         width: 28px;
     }
 
-    .product-card .koko-installment-logo {
+    .product-card .koko-installment-logo,
+    .product-card .mintpay-installment-logo {
         height: 16px;
         width: auto;
         flex-shrink: 0;
@@ -818,12 +822,14 @@
         white-space: nowrap;
     }
 
-    .koko-installment-teaser-single {
+    .koko-installment-teaser-single,
+    .mintpay-installment-teaser-single {
         font-size: 15px !important;
         gap: 12px !important;
     }
 
-    .koko-installment-teaser-single .koko-installment-logo {
+    .koko-installment-teaser-single .koko-installment-logo,
+    .mintpay-installment-teaser-single .mintpay-installment-logo {
         height: 20px !important;
         width: auto !important;
     }

@@ -520,9 +520,7 @@
         .mintpay-installment-teaser,
         .category-mintpay-teaser,
         .discount-mintpay-teaser {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
-            align-items: center;
+            display: block;
             white-space: normal;
             overflow: visible;
         }
@@ -531,10 +529,20 @@
         .mintpay-installment-text,
         .category-mintpay-text,
         .discount-mintpay-text {
+            display: inline;
             overflow: visible;
             text-overflow: clip;
             white-space: normal;
             line-height: 1.35;
+        }
+
+        .shop-mintpay-logo,
+        .mintpay-installment-logo,
+        .category-mintpay-logo,
+        .discount-mintpay-logo {
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 4px;
         }
     }
 

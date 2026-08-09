@@ -336,8 +336,9 @@ customer_layout_start([
     .category-mintpay-logo{height:16px;width:auto;flex-shrink:0;display:block}
 
     @media (max-width:760px){
-        .category-mintpay-teaser{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;white-space:normal;overflow:visible}
-        .category-mintpay-text{overflow:visible;text-overflow:clip;white-space:normal;line-height:1.35}
+        .category-mintpay-teaser{display:block;white-space:normal;overflow:visible}
+        .category-mintpay-text{display:inline;overflow:visible;text-overflow:clip;white-space:normal;line-height:1.35}
+        .category-mintpay-logo{display:inline-block;vertical-align:middle;margin-left:4px}
     }
 
     .category-desc{

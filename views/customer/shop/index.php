@@ -223,7 +223,7 @@ customer_layout_start([
         .product-card .mintpay-installment-teaser{display:flex;align-items:center;flex-direction:row;margin-top:0;padding:0 16px;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0}
         .product-card .mintpay-installment-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
         .product-card .mintpay-installment-logo{height:16px;width:auto;flex-shrink:0;display:block}
-        @media (max-width:760px){.product-card .mintpay-installment-teaser{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;white-space:normal;overflow:visible}.product-card .mintpay-installment-text{overflow:visible;text-overflow:clip;white-space:normal;line-height:1.35}}
+        @media (max-width:760px){.product-card .mintpay-installment-teaser{display:block;white-space:normal;overflow:visible}.product-card .mintpay-installment-text{display:inline;overflow:visible;text-overflow:clip;white-space:normal;line-height:1.35}.product-card .mintpay-installment-logo{display:inline-block;vertical-align:middle;margin-left:4px}}
         .pagination-wrap{padding:28px 0 0;display:grid;justify-items:center;gap:18px}
         .pagination-topline{width:100%;height:1px;background:rgba(28,27,27,.08)}
         .pagination-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:center}
