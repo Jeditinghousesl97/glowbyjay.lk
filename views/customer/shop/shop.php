@@ -7,6 +7,7 @@ require_once 'views/layouts/customer_layout.php';
 $baseUrl = defined('BASE_URL') ? BASE_URL : '/';
 $shopName = !empty($settings['shop_name']) ? (string) $settings['shop_name'] : 'STYLE1';
 $currency = (string) ($settings['currency_symbol'] ?? 'LKR');
+$mintpayLogoUrl = BASE_URL . 'assets/icons/payment-gateways/mintpay.webp?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/mintpay.webp') ?: time());
 $kokoLogoUrl = BASE_URL . 'assets/icons/payment-gateways/koko-home.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/koko-home.png') ?: time());
 $shopProducts = array_values(array_filter($products ?? [], static function ($product) {
     return !empty($product['id']);
@@ -281,7 +282,7 @@ customer_layout_start([
 
     .shop-mintpay-teaser{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0;margin-top:2px}
     .shop-mintpay-text{min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6d6665}
-    .mintpay-installment-badge{display:inline-flex;align-items:center;padding:2px 5px;border-radius:4px;background:#173b78;color:#fff;font-size:8px;font-weight:900;letter-spacing:.04em;line-height:1;flex-shrink:0}
+    .mintpay-installment-logo{height:18px;width:auto;flex-shrink:0;display:block;object-fit:contain}
 
     .shop-desc{
         margin:0;
@@ -475,7 +476,7 @@ customer_layout_start([
                                 <?php if (!empty($mintpayTeaser)): ?>
                                     <div class="shop-mintpay-teaser" aria-label="Mintpay installment plan">
                                         <span class="shop-mintpay-text">or 3 x <?= htmlspecialchars($currency) ?> <?= number_format((float) $mintpayTeaser['installment_amount'], 0) ?></span>
-                                        <span class="mintpay-installment-badge">MINTPAY</span>
+                                        <img src="<?= htmlspecialchars($mintpayLogoUrl) ?>" alt="Mintpay" class="mintpay-installment-logo">
                                     </div>
                                 <?php endif; ?>
                             <?php endif; ?>

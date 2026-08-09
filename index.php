@@ -131,9 +131,10 @@ function renderHomeMintpayTeaser(array $product, array $settings, string $contex
     if ($basePrice <= 0) return '';
     $teaser = MintpayPricingHelper::getInstallmentData($basePrice, $settings);
     $currency = htmlspecialchars($settings['currency_symbol'] ?? 'LKR');
+    $logoUrl = BASE_URL . 'assets/icons/payment-gateways/mintpay.webp?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/mintpay.webp') ?: time());
     return '<div class="mintpay-installment-teaser" aria-label="Mintpay installment plan">'
         . '<span class="mintpay-installment-text">or 3 x ' . $currency . ' ' . number_format((float) $teaser['installment_amount'], 0) . '</span>'
-        . '<span class="mintpay-installment-badge">MINTPAY</span>'
+        . '<img src="' . htmlspecialchars($logoUrl) . '" alt="Mintpay" class="mintpay-installment-logo">'
         . '</div>';
 }
 ?>
@@ -250,7 +251,7 @@ function renderHomeMintpayTeaser(array $product, array $settings, string $contex
         .product-card .koko-installment-logo{height:16px;width:auto;flex-shrink:0;display:block}
         .product-card .mintpay-installment-teaser,.product-card .koko-installment-teaser{display:flex;align-items:center;flex-direction:row;margin-top:8px;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0}
         .product-card .mintpay-installment-text,.product-card .koko-installment-text{min-width:0;overflow:hidden;text-overflow:ellipsis}
-        .mintpay-installment-badge{display:inline-flex;align-items:center;padding:2px 5px;border-radius:4px;background:#173b78;color:#fff;font-size:8px;font-weight:900;letter-spacing:.04em;line-height:1;flex-shrink:0}
+        .mintpay-installment-logo{height:18px;width:auto;flex-shrink:0;display:block;object-fit:contain}
 </style>
 <style>
         .grid-arrivals{display:grid;grid-template-columns:repeat(4,1fr);gap:28px 26px}

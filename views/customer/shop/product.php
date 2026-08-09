@@ -44,6 +44,7 @@ $recaptchaCheckoutEnabled = RecaptchaHelper::shouldProtectCheckout($settings);
 $recaptchaSiteKey = $recaptchaCheckoutEnabled ? RecaptchaHelper::siteKey($settings) : '';
 
 $kokoLogoUrl = $baseUrl . 'assets/icons/payment-gateways/koko-home.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/koko-home.png') ?: time());
+$mintpayLogoUrl = $baseUrl . 'assets/icons/payment-gateways/mintpay.webp?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/mintpay.webp') ?: time());
 $mainImageUrl = ImageHelper::uploadUrl(
     $product['main_image'] ?? '',
     'https://via.placeholder.com/960x1200?text=' . urlencode($product['title'] ?? 'Product')
@@ -284,7 +285,7 @@ customer_layout_start([
         .summary-price-stack{display:grid;gap:10px}
         .mintpay-installment-teaser{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;background:#eef4ff;border:1px solid #c8d9ff;color:#173b78;font-size:13px;font-weight:800;line-height:1.2;width:fit-content}
         .mintpay-installment-teaser-single{font-size:15px !important;gap:12px !important;padding:12px 16px !important}
-        .mintpay-installment-badge{display:inline-flex;align-items:center;padding:3px 6px;border-radius:4px;background:#173b78;color:#fff;font-size:9px;font-weight:900;letter-spacing:.05em;line-height:1;flex-shrink:0}
+        .mintpay-installment-logo{height:20px;width:auto;flex-shrink:0;display:block;object-fit:contain}
         .summary-prices{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
         .summary-sale-price{font-size:28px;font-weight:800;color:var(--accent-red, var(--primary))}
         .summary-old-price{font-size:14px;color:rgba(28,27,27,.42);text-decoration:line-through;font-weight:600}
@@ -557,7 +558,7 @@ customer_layout_start([
                             <?php if (!empty($mintpayTeaserData)): ?>
                                 <div class="summary-installment mintpay-installment-teaser mintpay-installment-teaser-single" id="productMintpayPlan" aria-label="Mintpay installment plan">
                                     <span class="mintpay-installment-text" id="productMintpayPlanText">or 3 x <?= htmlspecialchars($currency) ?> <?= number_format((float) $mintpayTeaserData['installment_amount'], 2) ?></span>
-                                    <span class="mintpay-installment-badge">MINTPAY</span>
+                                    <img src="<?= htmlspecialchars($mintpayLogoUrl) ?>" alt="Mintpay" class="mintpay-installment-logo">
                                 </div>
                             <?php endif; ?>
 
