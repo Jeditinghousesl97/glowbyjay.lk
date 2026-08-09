@@ -281,8 +281,13 @@ customer_layout_start([
     }
 
     .shop-mintpay-teaser{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0;margin-top:2px}
-    .shop-mintpay-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .shop-mintpay-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6d6665}
     .shop-mintpay-logo{height:16px;width:auto;flex-shrink:0;display:block}
+
+    @media (max-width:760px){
+        .shop-mintpay-teaser{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;white-space:normal;overflow:visible}
+        .shop-mintpay-text{overflow:visible;text-overflow:clip;white-space:normal;line-height:1.35}
+    }
 
     .shop-desc{
         margin:0;

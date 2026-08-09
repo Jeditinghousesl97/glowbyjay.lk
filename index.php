@@ -256,6 +256,7 @@ function renderHomeMintpayTeaser(array $product, array $settings, string $contex
         .product-card .mintpay-installment-teaser{display:flex;align-items:center;flex-direction:row;margin-top:8px;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0}
         .product-card .mintpay-installment-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
         .product-card .mintpay-installment-logo{height:16px;width:auto;flex-shrink:0;display:block}
+        @media (max-width:760px){.product-card .mintpay-installment-teaser{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;white-space:normal;overflow:visible}.product-card .mintpay-installment-text{overflow:visible;text-overflow:clip;white-space:normal;line-height:1.35}}
         .product-card .koko-installment-teaser{display:flex;align-items:center;flex-direction:row;margin-top:8px;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0}
         .product-card .koko-installment-text{min-width:0;overflow:hidden;text-overflow:ellipsis}
         .product-card .koko-installment-logo{height:16px;width:auto;flex-shrink:0;display:block}

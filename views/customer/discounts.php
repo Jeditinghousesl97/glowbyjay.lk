@@ -261,6 +261,11 @@ customer_layout_start([
         display:block;
     }
 
+    @media (max-width:760px){
+        .discount-mintpay-teaser{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;white-space:normal;overflow:visible}
+        .discount-mintpay-text{overflow:visible;text-overflow:clip;white-space:normal;line-height:1.35}
+    }
+
     .discount-desc{
         margin:0;
         color:#6d6665;

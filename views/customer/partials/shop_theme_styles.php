@@ -515,6 +515,29 @@
         object-fit: contain;
     }
 
+    @media (max-width:760px) {
+        .shop-mintpay-teaser,
+        .mintpay-installment-teaser,
+        .category-mintpay-teaser,
+        .discount-mintpay-teaser {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            white-space: normal;
+            overflow: visible;
+        }
+
+        .shop-mintpay-text,
+        .mintpay-installment-text,
+        .category-mintpay-text,
+        .discount-mintpay-text {
+            overflow: visible;
+            text-overflow: clip;
+            white-space: normal;
+            line-height: 1.35;
+        }
+    }
+
     .shop-empty {
         grid-column: 1 / -1;
         padding: 48px 32px;
