@@ -283,11 +283,12 @@ customer_layout_start([
         .summary-operational-icon img{display:block;width:24px;height:24px;object-fit:contain}
         .summary-title{font-family:sans-serif !important;font-size:clamp(24px,2.2vw,32px);line-height:1.12;letter-spacing:0;text-transform:none !important;margin:0}
         .summary-price-stack{display:grid;gap:10px}
-        .mintpay-installment-teaser{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;background:#eef4ff;border:1px solid #c8d9ff;color:#173b78;font-size:13px;font-weight:800;line-height:1.2;width:fit-content}
+        .mintpay-installment-teaser{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;background:#eef4ff;border:1px solid #c8d9ff;color:#173b78;font-size:13px;font-weight:800;line-height:1.2;width:fit-content;flex-wrap:nowrap;white-space:nowrap;overflow:hidden}
         .mintpay-installment-teaser .mintpay-installment-text{color:#173b78 !important}
         .mintpay-installment-teaser-single{font-size:15px !important;gap:12px !important;padding:12px 16px !important}
         .mintpay-installment-logo{height:20px;width:auto;flex-shrink:0;display:block;object-fit:contain}
-        .mintpay-cashback-group{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}.mintpay-cashback-text{font-size:inherit;font-weight:inherit;white-space:nowrap;color:#173b78;flex-shrink:0}.mintpay-cashback-text strong{font-weight:900}
+        .mintpay-installment-teaser .mintpay-installment-text{white-space:nowrap;flex-shrink:0}
+        .mintpay-cashback-group{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;flex-basis:auto;flex-shrink:0}.mintpay-cashback-text{font-size:inherit;font-weight:inherit;white-space:nowrap;color:#173b78;flex-shrink:0}.mintpay-cashback-text strong{font-weight:900}
         .summary-prices{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
         .summary-sale-price{font-size:28px;font-weight:800;color:var(--accent-red, var(--primary))}
         .summary-old-price{font-size:14px;color:rgba(28,27,27,.42);text-decoration:line-through;font-weight:600}
