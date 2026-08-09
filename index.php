@@ -272,11 +272,12 @@ function renderHomeMintpayTeaser(array $product, array $settings, string $contex
         .arrival-price-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
         .arrival-price{font-weight:800;font-size:16px;color:var(--primary)}
         .arrival-old-price{font-size:13px;white-space:nowrap;color:rgba(28,27,27,.45);text-decoration:line-through}
+        .arrival-item .koko-installment-teaser,.arrival-item .mintpay-installment-teaser{margin-top:-6px}
         .arrival-item.is-hidden{display:none !important}
         .load-more-wrap{padding-top:26px;display:flex;justify-content:center}
         .load-more-btn{min-height:50px;padding:0 28px;border:0;background:var(--ink);color:#fff;font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;cursor:pointer}
         .load-more-btn[hidden]{display:none !important}
-        .sale-card{min-width:320px;max-width:320px;display:grid;gap:14px}
+        .sale-card{min-width:320px;max-width:320px;display:grid;gap:14px;row-gap:6px}
         .sale-media{position:relative;aspect-ratio:4/5;overflow:hidden;background:#2a2a2a;margin-bottom:0}
         .sale-media img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease,opacity .3s ease}
         .sale-card:hover .sale-media img{transform:scale(1.05);opacity:.88}
@@ -285,6 +286,7 @@ function renderHomeMintpayTeaser(array $product, array $settings, string $contex
         .price-row{display:flex;gap:12px;align-items:center}
         .price-row .sale-price{color:var(--primary);font-weight:800}
         .price-row .old-price{color:rgba(255,255,255,.34);text-decoration:line-through;font-size:13px}
+        .sale-card .koko-installment-teaser,.sale-card .mintpay-installment-teaser{margin-top:0}
         .arrival-badge{
             position:absolute;
             top:14px;
