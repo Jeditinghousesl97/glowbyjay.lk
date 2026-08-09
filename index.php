@@ -134,8 +134,7 @@ function renderHomeMintpayTeaser(array $product, array $settings, string $contex
     $logoUrl = BASE_URL . 'assets/icons/payment-gateways/mintpay.png?v=' . (@filemtime(ROOT_PATH . 'assets/icons/payment-gateways/mintpay.png') ?: time());
     return '<div class="mintpay-installment-teaser" aria-label="Mintpay installment plan">'
         . '<span class="mintpay-installment-text">3 x ' . $currency . ' ' . number_format((float) $teaser['installment_amount'], 0) . '</span>'
-        . '<span class="mintpay-cashback-text">or <strong>6%</strong> Cashback with</span>'
-        . '<img src="' . htmlspecialchars($logoUrl) . '" alt="Mintpay" class="mintpay-installment-logo">'
+        . '<span class="mintpay-cashback-group"><span class="mintpay-cashback-text">or <strong>6%</strong> Cashback with</span><img src="' . htmlspecialchars($logoUrl) . '" alt="Mintpay" class="mintpay-installment-logo"></span>'
         . '</div>';
 }
 ?>
@@ -250,10 +249,10 @@ function renderHomeMintpayTeaser(array $product, array $settings, string $contex
         .product-card .koko-installment-teaser{display:flex;align-items:center;flex-direction:row;margin-top:8px;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0}
         .product-card .koko-installment-text{min-width:0;overflow:hidden;text-overflow:ellipsis}
         .product-card .koko-installment-logo{height:16px;width:auto;flex-shrink:0;display:block}
-        .product-card .mintpay-installment-teaser,.product-card .koko-installment-teaser{display:flex;align-items:center;flex-direction:row;margin-top:8px;gap:6px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;min-width:0}
-        .product-card .mintpay-installment-text,.product-card .koko-installment-text{min-width:0;overflow:hidden;text-overflow:ellipsis}
-        .mintpay-installment-logo{height:18px;width:auto;flex-shrink:0;display:block;object-fit:contain}
-        .mintpay-cashback-text{font-size:10px;font-weight:700;white-space:nowrap;color:#173b78;flex-shrink:0}.mintpay-cashback-text strong{font-weight:900}
+        .product-card .mintpay-installment-teaser,.product-card .koko-installment-teaser{display:flex;align-items:center;flex-direction:row;margin-top:8px;gap:6px;flex-wrap:wrap;white-space:normal;overflow:visible;min-width:0}
+        .product-card .mintpay-installment-text,.product-card .koko-installment-text{min-width:0;overflow:visible;text-overflow:clip}
+        .mintpay-installment-logo{height:16px;width:auto;flex-shrink:0;display:block;object-fit:contain}
+        .mintpay-cashback-group{display:inline-flex;align-items:center;gap:4px;flex-basis:100%;min-width:0;white-space:nowrap}.mintpay-cashback-text{font-size:inherit;font-weight:inherit;white-space:nowrap;color:#173b78;flex-shrink:0}.mintpay-cashback-text strong{font-weight:900}
 </style>
 <style>
         .grid-arrivals{display:grid;grid-template-columns:repeat(4,1fr);gap:28px 26px}

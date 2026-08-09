@@ -287,7 +287,7 @@ customer_layout_start([
         .mintpay-installment-teaser .mintpay-installment-text{color:#173b78 !important}
         .mintpay-installment-teaser-single{font-size:15px !important;gap:12px !important;padding:12px 16px !important}
         .mintpay-installment-logo{height:20px;width:auto;flex-shrink:0;display:block;object-fit:contain}
-        .mintpay-cashback-text{font-size:12px;font-weight:700;white-space:nowrap;color:#173b78;flex-shrink:0}.mintpay-cashback-text strong{font-weight:900}
+        .mintpay-cashback-group{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}.mintpay-cashback-text{font-size:inherit;font-weight:inherit;white-space:nowrap;color:#173b78;flex-shrink:0}.mintpay-cashback-text strong{font-weight:900}
         .summary-prices{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
         .summary-sale-price{font-size:28px;font-weight:800;color:var(--accent-red, var(--primary))}
         .summary-old-price{font-size:14px;color:rgba(28,27,27,.42);text-decoration:line-through;font-weight:600}
@@ -560,8 +560,7 @@ customer_layout_start([
                             <?php if (!empty($mintpayTeaserData)): ?>
                                 <div class="summary-installment mintpay-installment-teaser mintpay-installment-teaser-single" id="productMintpayPlan" aria-label="Mintpay installment plan">
                                     <span class="mintpay-installment-text" id="productMintpayPlanText">3 x <?= htmlspecialchars($currency) ?> <?= number_format((float) $mintpayTeaserData['installment_amount'], 2) ?></span>
-                                    <span class="mintpay-cashback-text">or <strong>6%</strong> Cashback with</span>
-                                    <img src="<?= htmlspecialchars($mintpayLogoUrl) ?>" alt="Mintpay" class="mintpay-installment-logo">
+                                    <span class="mintpay-cashback-group"><span class="mintpay-cashback-text">or <strong>6%</strong> Cashback with</span><img src="<?= htmlspecialchars($mintpayLogoUrl) ?>" alt="Mintpay" class="mintpay-installment-logo"></span>
                                 </div>
                             <?php endif; ?>
 
