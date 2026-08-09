@@ -50,7 +50,7 @@
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:12px;">
                     <select name="payment_method" style="width:100%; padding:12px 14px; border:1px solid #ddd; border-radius:10px; box-sizing:border-box;">
                         <option value="">All Order Types</option>
-                        <?php foreach (['cod' => 'Cash on Delivery', 'payhere' => 'PayHere', 'koko' => 'KOKO', 'bank_transfer' => 'Bank Transfer'] as $methodKey => $methodLabel): ?>
+                        <?php foreach (['cod' => 'Cash on Delivery', 'payhere' => 'PayHere', 'koko' => 'KOKO', 'mintpay' => 'Mintpay', 'bank_transfer' => 'Bank Transfer'] as $methodKey => $methodLabel): ?>
                             <option value="<?= $methodKey ?>" <?= (($filters['payment_method'] ?? '') === $methodKey) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($methodLabel) ?>
                             </option>

@@ -100,6 +100,12 @@ class SettingsController extends BaseController
             'koko_public_key',
             'koko_private_key',
             'koko_callback_secret',
+            'mintpay_enabled',
+            'mintpay_sandbox',
+            'mintpay_title',
+            'mintpay_description',
+            'mintpay_merchant_id',
+            'mintpay_api_token',
             'sms_enabled',
             'sms_base_url',
             'sms_user_id',
@@ -246,6 +252,9 @@ class SettingsController extends BaseController
                 'koko_merchant_id',
                 'koko_handling_fee_percentage',
                 'koko_public_key',
+                'mintpay_title',
+                'mintpay_description',
+                'mintpay_merchant_id',
                 'sms_base_url',
                 'sms_user_id',
                 'sms_sender_id',
@@ -298,6 +307,10 @@ class SettingsController extends BaseController
                 $this->settingModel->set('koko_callback_secret', trim((string) $_POST['koko_callback_secret']));
             }
 
+            if (isset($_POST['mintpay_api_token']) && trim((string) $_POST['mintpay_api_token']) !== '') {
+                $this->settingModel->set('mintpay_api_token', trim((string) $_POST['mintpay_api_token']));
+            }
+
             $this->settingModel->set(
                 'koko_handling_fee_percentage',
                 number_format(max(0, (float) ($_POST['koko_handling_fee_percentage'] ?? 0)), 2, '.', '')
@@ -328,6 +341,8 @@ class SettingsController extends BaseController
             $this->settingModel->set('payhere_sandbox', !empty($_POST['payhere_sandbox']) ? '1' : '0');
             $this->settingModel->set('koko_enabled', !empty($_POST['koko_enabled']) ? '1' : '0');
             $this->settingModel->set('koko_sandbox', !empty($_POST['koko_sandbox']) ? '1' : '0');
+            $this->settingModel->set('mintpay_enabled', !empty($_POST['mintpay_enabled']) ? '1' : '0');
+            $this->settingModel->set('mintpay_sandbox', !empty($_POST['mintpay_sandbox']) ? '1' : '0');
             $this->settingModel->set('recaptcha_v3_enabled', !empty($_POST['recaptcha_v3_enabled']) ? '1' : '0');
             $this->settingModel->set('recaptcha_v3_admin_login', !empty($_POST['recaptcha_v3_admin_login']) ? '1' : '0');
             $this->settingModel->set('recaptcha_v3_checkout', !empty($_POST['recaptcha_v3_checkout']) ? '1' : '0');

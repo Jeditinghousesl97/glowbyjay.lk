@@ -3,6 +3,7 @@ require_once ROOT_PATH . 'helpers/ImageHelper.php';
 require_once ROOT_PATH . 'helpers/SeoHelper.php';
 require_once ROOT_PATH . 'helpers/KokoPricingHelper.php';
 require_once ROOT_PATH . 'helpers/KokoGateway.php';
+require_once ROOT_PATH . 'helpers/MintpayGateway.php';
 require_once ROOT_PATH . 'helpers/RecaptchaHelper.php';
 require_once ROOT_PATH . 'helpers/TextFormatterHelper.php';
 
@@ -33,6 +34,8 @@ $payhereEnabled = !empty($settings['payhere_enabled']);
 $payhereReady = $payhereEnabled && trim((string) ($settings['payhere_merchant_id'] ?? '')) !== '' && trim((string) ($settings['payhere_merchant_secret'] ?? '')) !== '';
 $kokoEnabled = !empty($settings['koko_enabled']);
 $kokoReady = class_exists('KokoGateway') && KokoGateway::isConfigured($settings);
+$mintpayEnabled = !empty($settings['mintpay_enabled']);
+$mintpayReady = $mintpayEnabled && trim((string) ($settings['mintpay_merchant_id'] ?? '')) !== '' && trim((string) ($settings['mintpay_api_token'] ?? '')) !== '';
 $recaptchaCheckoutEnabled = RecaptchaHelper::shouldProtectCheckout($settings);
 $recaptchaSiteKey = $recaptchaCheckoutEnabled ? RecaptchaHelper::siteKey($settings) : '';
 
@@ -741,6 +744,7 @@ customer_layout_start([
             <?php if ($whatsappEnabled): ?><button type="button" class="payment-method-card" data-pay-group="payLater" onclick="choosePaymentMethod('whatsapp')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #289b26;border-radius:18px;background:#289b26;color:#ffffff;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.24);color:inherit;font-size:18px;"><i class="fab fa-whatsapp"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">WhatsApp Order</strong><small style="color:rgba(255,255,255,.9);line-height:1.5;">Send your order details directly to the shop on WhatsApp.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
             <?php if ($codEnabled): ?><button type="button" class="payment-method-card" data-pay-group="payLater" onclick="choosePaymentMethod('cod')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #d8d8d8;border-radius:18px;background:linear-gradient(135deg,#f3f3f3 0%,#ebebeb 50%,#dfdfdf 100%);color:#2d2d2d;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.7);color:inherit;font-size:18px;"><i class="fas fa-hand-holding-dollar"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">Cash on Delivery</strong><small style="color:rgba(45,45,45,.78);line-height:1.5;">Place the order now and pay when it is delivered.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
             <?php if ($kokoEnabled): ?><button type="button" class="payment-method-card<?= $kokoReady ? '' : ' is-unavailable' ?>" data-pay-group="payLater" onclick="choosePaymentMethod('koko')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #e8b9d5;border-radius:18px;background:linear-gradient(135deg,#f4d0e5 0%,#f8e0ee 52%,#e9b7d4 100%);color:#111111;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.45);color:inherit;font-size:18px;"><i class="fas fa-layer-group"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">KOKO Payments</strong><small style="color:rgba(17,17,17,.78);line-height:1.5;"><?= $kokoReady ? 'Split your payment into 3 interest-free installments.' : 'KOKO setup is incomplete. Please contact the shop.' ?></small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
+            <?php if ($mintpayEnabled): ?><button type="button" class="payment-method-card<?= $mintpayReady ? '' : ' is-unavailable' ?>" data-pay-group="payLater" onclick="choosePaymentMethod('mintpay')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #c8d9ff;border-radius:18px;background:linear-gradient(135deg,#dbe8ff 0%,#eef4ff 52%,#c5d8ff 100%);color:#102a56;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.6);color:inherit;font-size:18px;"><i class="fas fa-credit-card"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">Mintpay</strong><small style="color:rgba(16,42,86,.78);line-height:1.5;"><?= $mintpayReady ? 'Pay in 3 interest-free instalments with Mintpay.' : 'Mintpay setup is incomplete. Please contact the shop.' ?></small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
             <?php if ($bankTransferEnabled): ?><button type="button" class="payment-method-card" data-pay-group="payNow" onclick="choosePaymentMethod('bank_transfer')" style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #4a4a4a;border-radius:18px;background:linear-gradient(135deg,#4f4f4f 0%,#3f3f3f 50%,#2f2f2f 100%);color:#ffffff;cursor:pointer;text-align:left;"><span style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.16);color:inherit;font-size:18px;"><i class="fas fa-building-columns"></i></span><span style="flex:1;"><strong style="display:block;font-size:16px;margin-bottom:4px;color:inherit;">Bank Transfer</strong><small style="color:rgba(255,255,255,.88);line-height:1.5;">Place the order now and send the payment using the bank details provided.</small></span><i class="fas fa-chevron-right" style="color:currentColor;"></i></button><?php endif; ?>
         </div>
     </div>
@@ -849,6 +853,7 @@ customer_layout_start([
     const shopWhatsappTarget = <?= json_encode($shopWhatsappTarget) ?>;
     const payhereReady = <?= json_encode($payhereReady) ?>;
     const kokoReady = <?= json_encode($kokoReady) ?>;
+    const mintpayReady = <?= json_encode($mintpayReady) ?>;
     const recaptchaCheckoutEnabled = <?= json_encode($recaptchaCheckoutEnabled) ?>;
     const recaptchaSiteKey = <?= json_encode($recaptchaSiteKey) ?>;
     const isFreeShipping = <?= json_encode(!empty($product['free_shipping'])) ?>;
@@ -1461,7 +1466,7 @@ customer_layout_start([
         const submitButton = document.getElementById('orderSubmitButton');
         const bankDetailsImageWrap = document.getElementById('bankTransferDetailsImageWrap');
         if (!submitButton) return;
-        submitButton.textContent = orderMode === 'whatsapp' ? 'Send via WhatsApp' : (orderMode === 'payhere' ? 'Proceed to Card Payments' : (orderMode === 'koko' ? 'Proceed to KOKO Payments' : (orderMode === 'bank_transfer' ? 'Submit Bank Transfer Order' : 'Place Order')));
+        submitButton.textContent = orderMode === 'whatsapp' ? 'Send via WhatsApp' : (orderMode === 'payhere' ? 'Proceed to Card Payments' : (orderMode === 'koko' ? 'Proceed to KOKO Payments' : (orderMode === 'mintpay' ? 'Proceed to Mintpay' : (orderMode === 'bank_transfer' ? 'Submit Bank Transfer Order' : 'Place Order'))));
         syncOrderSubmitWhatsAppStyle();
         if (bankDetailsImageWrap) bankDetailsImageWrap.style.display = orderMode === 'bank_transfer' ? 'block' : 'none';
         updateOrderTotals();
@@ -1473,6 +1478,10 @@ customer_layout_start([
         }
         if (mode === 'koko' && !kokoReady) {
             showProductToast('KOKO payments are not fully configured yet. Please contact the shop.', 'error');
+            return;
+        }
+        if (mode === 'mintpay' && !mintpayReady) {
+            showProductToast('Mintpay payments are not fully configured yet. Please contact the shop.', 'error');
             return;
         }
         orderMode = mode;
@@ -1652,7 +1661,7 @@ customer_layout_start([
             alert(error && error.message ? error.message : 'Unable to verify checkout right now.');
             return;
         }
-        const routeMap = { cod: 'order/startCodSingle', payhere: 'order/startPayhereSingle', koko: 'order/startKokoSingle', bank_transfer: 'order/startBankTransferSingle' };
+        const routeMap = { cod: 'order/startCodSingle', payhere: 'order/startPayhereSingle', koko: 'order/startKokoSingle', mintpay: 'order/startMintpaySingle', bank_transfer: 'order/startBankTransferSingle' };
         const endpoint = <?= json_encode($baseUrl) ?> + (routeMap[orderMode] || routeMap.cod);
         const form = document.createElement('form'); form.method = 'POST'; form.action = endpoint;
         Object.keys(payload).forEach(function (key) { const input = document.createElement('input'); input.type = 'hidden'; input.name = key; input.value = String(payload[key] ?? ''); form.appendChild(input); });

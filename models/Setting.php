@@ -14,6 +14,7 @@ class Setting extends BaseModel
         'koko_api_key',
         'koko_private_key',
         'koko_callback_secret',
+        'mintpay_api_token',
         'cloudflare_r2_access_key_id',
         'cloudflare_r2_secret_access_key',
         'recaptcha_v3_secret_key'

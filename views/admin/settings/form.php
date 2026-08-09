@@ -634,6 +634,37 @@
             </div>
 
             <div style="margin-top:20px; padding:20px; border-radius:16px; background:#ffffff; border:1px solid #e9e9e9;">
+                <h3 style="margin:0 0 14px;">Mintpay Settings</h3>
+                <p style="font-size:12px; color:#777; margin:0 0 16px;">Configure Mintpay web checkout. Sandbox uses <code>stage.mintpay.lk</code>. Leave the API token blank to keep the current saved value.</p>
+
+                <label style="display:flex; align-items:center; gap:8px; margin-bottom:14px; font-size:14px; color:#333;">
+                    <input type="checkbox" name="mintpay_enabled" value="1" <?= !empty($settings['mintpay_enabled']) ? 'checked' : '' ?>>
+                    Enable Mintpay checkout
+                </label>
+
+                <label style="display:flex; align-items:center; gap:8px; margin-bottom:18px; font-size:14px; color:#333;">
+                    <input type="checkbox" name="mintpay_sandbox" value="1" <?= !empty($settings['mintpay_sandbox']) ? 'checked' : '' ?>>
+                    Use Mintpay sandbox mode
+                </label>
+
+                <label class="label">Gateway Title</label>
+                <input type="text" name="mintpay_title" class="input-box" placeholder="Mintpay: Buy Now Pay Later"
+                    value="<?= htmlspecialchars($settings['mintpay_title'] ?? 'Mintpay: Buy Now Pay Later') ?>">
+
+                <label class="label">Gateway Description</label>
+                <textarea name="mintpay_description" class="input-box" rows="3" placeholder="Pay in 3 interest-free instalments with Mintpay."><?= htmlspecialchars($settings['mintpay_description'] ?? 'Pay in 3 interest-free instalments with Mintpay.') ?></textarea>
+
+                <label class="label">Mintpay Merchant ID</label>
+                <input type="text" name="mintpay_merchant_id" class="input-box" placeholder="Merchant ID"
+                    value="<?= htmlspecialchars($settings['mintpay_merchant_id'] ?? '') ?>">
+
+                <label class="label">Mintpay API Token / Merchant Secret</label>
+                <input type="password" name="mintpay_api_token" class="input-box" autocomplete="new-password"
+                    placeholder="Leave blank to keep current Mintpay API token" value="">
+                <p style="margin:-6px 0 0; font-size:11px; color:#777; line-height:1.7;">Mintpay requires the literal <code>Authorization: Token ...</code> header. Confirm with Mintpay whether your issued merchant secret is the API token.</p>
+            </div>
+
+            <div style="margin-top:20px; padding:20px; border-radius:16px; background:#ffffff; border:1px solid #e9e9e9;">
                 <h3 style="margin:0 0 14px;">PayHere Settings</h3>
                 <p style="font-size:12px; color:#777; margin:0 0 16px;">Manage PayHere checkout here. Leave the secret blank if you want to keep the current saved value.</p>
 

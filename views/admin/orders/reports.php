@@ -46,7 +46,7 @@
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:12px;">
                     <select name="payment_method" style="width:100%; padding:12px 14px; border:1px solid #ddd; border-radius:10px; box-sizing:border-box;">
                         <option value="">All Order Types</option>
-                        <?php foreach (['cod' => 'Cash on Delivery', 'payhere' => 'PayHere', 'koko' => 'KOKO', 'bank_transfer' => 'Bank Transfer'] as $methodKey => $methodLabel): ?>
+                        <?php foreach (['cod' => 'Cash on Delivery', 'payhere' => 'PayHere', 'koko' => 'KOKO', 'mintpay' => 'Mintpay', 'bank_transfer' => 'Bank Transfer'] as $methodKey => $methodLabel): ?>
                             <option value="<?= $methodKey ?>" <?= (($filters['payment_method'] ?? '') === $methodKey) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($methodLabel) ?>
                             </option>
@@ -124,6 +124,10 @@
                 <div style="font-size:11px; color:#9b5d00; margin-bottom:6px;">KOKO Orders</div>
                 <div style="font-size:24px; font-weight:800; color:#111;"><?= (int) ($summary['koko_orders'] ?? 0) ?></div>
             </div>
+            <div style="background:#eef4ff; border-radius:16px; padding:16px; box-shadow:0 4px 18px rgba(0,0,0,0.04);">
+                <div style="font-size:11px; color:#2463d0; margin-bottom:6px;">Mintpay Orders</div>
+                <div style="font-size:24px; font-weight:800; color:#111;"><?= (int) ($summary['mintpay_orders'] ?? 0) ?></div>
+            </div>
             <div style="background:#eef7f4; border-radius:16px; padding:16px; box-shadow:0 4px 18px rgba(0,0,0,0.04);">
                 <div style="font-size:11px; color:#26795a; margin-bottom:6px;">Bank Transfer Orders</div>
                 <div style="font-size:24px; font-weight:800; color:#111;"><?= (int) ($summary['bank_transfer_orders'] ?? 0) ?></div>
@@ -156,6 +160,7 @@
                                 <th style="padding:10px 8px; font-size:12px; color:#777;">COD</th>
                                 <th style="padding:10px 8px; font-size:12px; color:#777;">PayHere</th>
                                 <th style="padding:10px 8px; font-size:12px; color:#777;">KOKO</th>
+                                <th style="padding:10px 8px; font-size:12px; color:#777;">Mintpay</th>
                                 <th style="padding:10px 8px; font-size:12px; color:#777;">Bank Transfer</th>
                             </tr>
                         </thead>
@@ -169,6 +174,7 @@
                                     <td style="padding:12px 8px; font-size:13px; color:#9b5d00; font-weight:700;"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format((float) ($row['cod_total'] ?? 0), 2) ?></td>
                                     <td style="padding:12px 8px; font-size:13px; color:#5b33d6; font-weight:700;"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format((float) ($row['payhere_total'] ?? 0), 2) ?></td>
                                     <td style="padding:12px 8px; font-size:13px; color:#9b5d00; font-weight:700;"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format((float) ($row['koko_total'] ?? 0), 2) ?></td>
+                                    <td style="padding:12px 8px; font-size:13px; color:#2463d0; font-weight:700;"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format((float) ($row['mintpay_total'] ?? 0), 2) ?></td>
                                     <td style="padding:12px 8px; font-size:13px; color:#26795a; font-weight:700;"><?= htmlspecialchars($settings['currency_symbol'] ?? 'LKR') ?> <?= number_format((float) ($row['bank_transfer_total'] ?? 0), 2) ?></td>
                                 </tr>
                             <?php endforeach; ?>

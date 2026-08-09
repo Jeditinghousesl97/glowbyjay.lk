@@ -404,6 +404,7 @@ class Order extends BaseModel
                 SUM(CASE WHEN payment_method = 'cod' THEN 1 ELSE 0 END) AS cod_orders,
                 SUM(CASE WHEN payment_method = 'payhere' THEN 1 ELSE 0 END) AS payhere_orders,
                 SUM(CASE WHEN payment_method = 'koko' THEN 1 ELSE 0 END) AS koko_orders,
+                SUM(CASE WHEN payment_method = 'mintpay' THEN 1 ELSE 0 END) AS mintpay_orders,
                 SUM(CASE WHEN payment_method = 'bank_transfer' THEN 1 ELSE 0 END) AS bank_transfer_orders,
                 SUM(CASE WHEN order_status = 'processing' THEN 1 ELSE 0 END) AS processing_orders,
                 SUM(CASE WHEN order_status = 'completed' THEN 1 ELSE 0 END) AS completed_orders
@@ -427,6 +428,7 @@ class Order extends BaseModel
             'cod_orders' => (int) ($row['cod_orders'] ?? 0),
             'payhere_orders' => (int) ($row['payhere_orders'] ?? 0),
             'koko_orders' => (int) ($row['koko_orders'] ?? 0),
+            'mintpay_orders' => (int) ($row['mintpay_orders'] ?? 0),
             'bank_transfer_orders' => (int) ($row['bank_transfer_orders'] ?? 0),
             'processing_orders' => (int) ($row['processing_orders'] ?? 0),
             'completed_orders' => (int) ($row['completed_orders'] ?? 0),
@@ -480,6 +482,7 @@ class Order extends BaseModel
                 COALESCE(SUM(CASE WHEN payment_method = 'cod' THEN total_amount ELSE 0 END), 0) AS cod_total,
                 COALESCE(SUM(CASE WHEN payment_method = 'payhere' THEN total_amount ELSE 0 END), 0) AS payhere_total,
                 COALESCE(SUM(CASE WHEN payment_method = 'koko' THEN total_amount ELSE 0 END), 0) AS koko_total,
+                COALESCE(SUM(CASE WHEN payment_method = 'mintpay' THEN total_amount ELSE 0 END), 0) AS mintpay_total,
                 COALESCE(SUM(CASE WHEN payment_method = 'bank_transfer' THEN total_amount ELSE 0 END), 0) AS bank_transfer_total
             FROM orders
             {$sqlWhere}

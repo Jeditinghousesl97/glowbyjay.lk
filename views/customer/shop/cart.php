@@ -70,6 +70,8 @@ foreach ($cartItems as $cartItem) {
 $shopWhatsapp = preg_replace('/[^0-9]/', '', (string)($settings['shop_whatsapp'] ?? '')) ?: preg_replace('/[^0-9]/', '', (string)($settings['social_whatsapp'] ?? ''));
 $whatsappLink = $shopWhatsapp !== '' ? 'https://wa.me/' . $shopWhatsapp : '';
 $payhereEnabled = !empty($settings['payhere_enabled']);
+$mintpayEnabled = !empty($settings['mintpay_enabled']);
+$mintpayReady = $mintpayEnabled && trim((string) ($settings['mintpay_merchant_id'] ?? '')) !== '' && trim((string) ($settings['mintpay_api_token'] ?? '')) !== '';
 $payhereReady = $payhereEnabled && trim((string) ($settings['payhere_merchant_id'] ?? '')) !== '' && trim((string) ($settings['payhere_merchant_secret'] ?? '')) !== '';
 $kokoEnabled = !empty($settings['koko_enabled']);
 $kokoReady = class_exists('KokoGateway') && KokoGateway::isConfigured($settings);
@@ -78,6 +80,7 @@ $recaptchaSiteKey = $recaptchaCheckoutEnabled ? RecaptchaHelper::siteKey($settin
 $modes = [];
 if ($payhereEnabled) $modes[] = ['key' => 'payhere', 'label' => 'Card Payments', 'icon' => 'fa-solid fa-credit-card', 'configured' => $payhereReady];
 if ($kokoEnabled) $modes[] = ['key' => 'koko', 'label' => 'KOKO Payments', 'icon' => 'fa-solid fa-wallet', 'configured' => $kokoReady];
+if ($mintpayEnabled) $modes[] = ['key' => 'mintpay', 'label' => 'Mintpay', 'icon' => 'fa-solid fa-credit-card', 'configured' => $mintpayReady];
 if (!empty($settings['whatsapp_ordering_enabled']) && $whatsappLink !== '') $modes[] = ['key' => 'whatsapp', 'label' => 'WhatsApp', 'icon' => 'fa-brands fa-whatsapp'];
 if (!empty($settings['cod_enabled'])) $modes[] = ['key' => 'cod', 'label' => 'Cash on Delivery', 'icon' => 'fa-solid fa-truck-fast'];
 if (!empty($settings['bank_transfer_enabled']) && trim((string)($settings['bank_transfer_details'] ?? '')) !== '') $modes[] = ['key' => 'bank_transfer', 'label' => 'Bank Transfer', 'icon' => 'fa-solid fa-building-columns'];
@@ -207,6 +210,9 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     .cart-page .payment-method-card.koko{border-color:#e8b9d5;background:linear-gradient(135deg,#f4d0e5 0%,#f8e0ee 52%,#e9b7d4 100%);color:#111111}
     .cart-page .payment-method-card.koko::before{background:#e8b9d5}
     .cart-page .payment-method-card.koko .payment-method-icon{background:rgba(255,255,255,.45);color:#111111}
+    .cart-page .payment-method-card.mintpay{border-color:#c8d9ff;background:linear-gradient(135deg,#dbe8ff 0%,#eef4ff 52%,#c5d8ff 100%);color:#102a56}
+    .cart-page .payment-method-card.mintpay::before{background:#7da7ff}
+    .cart-page .payment-method-card.mintpay .payment-method-icon{background:rgba(255,255,255,.6);color:#102a56}
     .cart-page .payment-method-card.whatsapp{border-color:#289b26;background:#289b26;color:#ffffff}
     .cart-page .payment-method-card.whatsapp::before{background:#289b26}
     .cart-page .payment-method-card.whatsapp .payment-method-icon{background:rgba(255,255,255,.24);color:#ffffff}
@@ -392,6 +398,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
                                 'whatsapp' => 30,
                                 'cod' => 40,
                                 'koko' => 50,
+                                'mintpay' => 55,
                             ];
                             usort($displayModes, static function (array $a, array $b) use ($modeOrder): int {
                                 $aKey = (string) ($a['key'] ?? '');
@@ -402,7 +409,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
                             <?php foreach ($displayModes as $mode): ?>
                                 <button
                                     type="button"
-                                    class="payment-method-card <?= htmlspecialchars($mode['key']) ?><?= (in_array($mode['key'], ['payhere', 'koko'], true) && empty($mode['configured'])) ? ' is-unavailable' : '' ?>"
+                                    class="payment-method-card <?= htmlspecialchars($mode['key']) ?><?= (in_array($mode['key'], ['payhere', 'koko', 'mintpay'], true) && empty($mode['configured'])) ? ' is-unavailable' : '' ?>"
                                     data-select-mode="<?= htmlspecialchars($mode['key']) ?>"
                                     data-pay-group="<?= in_array($mode['key'], ['payhere', 'bank_transfer'], true) ? 'payNow' : 'payLater' ?>"
                                     <?= $cartHasBlockedItems ? 'disabled aria-disabled="true"' : '' ?>>
@@ -425,6 +432,9 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
                                                     break;
                                                 case 'koko':
                                                     echo !empty($mode['configured']) ? 'Split your payment into 3 interest-free installments.' : 'KOKO setup is incomplete. Please contact the shop.';
+                                                    break;
+                                                case 'mintpay':
+                                                    echo !empty($mode['configured']) ? 'Pay in 3 interest-free instalments with Mintpay.' : 'Mintpay setup is incomplete. Please contact the shop.';
                                                     break;
                                                 case 'bank_transfer':
                                                     echo 'Place the order now and send the payment using the bank details provided.';
@@ -503,6 +513,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
     const recaptchaSiteKey = <?= json_encode($recaptchaSiteKey) ?>;
     const payhereReady = <?= json_encode($payhereReady) ?>;
     const kokoReady = <?= json_encode($kokoReady) ?>;
+    const mintpayReady = <?= json_encode($mintpayReady) ?>;
     const modes = <?= json_encode($modes, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
     const analyticsItems = <?= json_encode($jsAnalyticsItems, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
     const whatsappCartItems = <?= json_encode($jsCartWhatsappItems, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
@@ -698,6 +709,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
                 whatsapp: 'Send via WhatsApp',
                 payhere: 'Proceed to Card Payments',
                 koko: 'Proceed to KOKO Payments',
+                mintpay: 'Proceed to Mintpay',
                 bank_transfer: 'Submit Bank Transfer Order',
                 cod: 'Place Order'
             };
@@ -709,6 +721,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
                 whatsapp: 'WhatsApp Order Details',
                 payhere: 'Card Payments Details',
                 koko: 'KOKO Payments Details',
+                mintpay: 'Mintpay Payment Details',
                 bank_transfer: 'Bank Transfer Details',
                 cod: 'Checkout Details'
             };
@@ -722,6 +735,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
         if (cartHasBlockedItems()) { toast('Remove or update out-of-stock items before checkout.', 'error'); return; }
         if (mode === 'payhere' && !payhereReady) { toast('Card payments are not fully configured yet. Please contact the shop.', 'error'); return; }
         if (mode === 'koko' && !kokoReady) { toast('KOKO payments are not fully configured yet. Please contact the shop.', 'error'); return; }
+        if (mode === 'mintpay' && !mintpayReady) { toast('Mintpay payments are not fully configured yet. Please contact the shop.', 'error'); return; }
         updateCheckoutModeUi(mode);
         hydrateCustomerProfile();
         openOverlay('checkoutModal', true);
@@ -807,7 +821,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
         } catch (error) {
             return toast(error && error.message ? error.message : 'Unable to verify checkout.', 'error');
         }
-        const routeMap = { cod:'order/startCod', payhere:'order/startPayhere', koko:'order/startKoko', bank_transfer:'order/startBankTransfer' };
+        const routeMap = { cod:'order/startCod', payhere:'order/startPayhere', koko:'order/startKoko', mintpay:'order/startMintpay', bank_transfer:'order/startBankTransfer' };
         const form = document.createElement('form');
         form.method = 'POST'; form.action = baseUrl + (routeMap[selectedMode] || routeMap.cod);
         Object.keys(payload).forEach(function (key) { const input = document.createElement('input'); input.type = 'hidden'; input.name = key; input.value = payload[key]; form.appendChild(input); });

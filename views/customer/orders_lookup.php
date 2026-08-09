@@ -62,7 +62,7 @@ customer_layout_start([
         $paymentMethod = strtolower(trim((string) ($order['payment_method'] ?? '')));
         $paymentStatus = strtolower(trim((string) ($order['payment_status'] ?? 'pending')));
         $orderStatus = strtolower(trim((string) ($order['order_status'] ?? 'pending')));
-        $canRetryPayment = in_array($paymentMethod, ['payhere', 'koko'], true)
+        $canRetryPayment = in_array($paymentMethod, ['payhere', 'koko', 'mintpay'], true)
             && in_array($paymentStatus, ['failed', 'verification_failed', 'cancelled'], true)
             && $orderStatus !== 'cancelled';
         ?>
@@ -151,7 +151,7 @@ customer_layout_start([
 
             <?php if ($canRetryPayment): ?>
                 <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:18px;">
-                    <form method="post" action="<?= BASE_URL ?>order/<?= $paymentMethod === 'payhere' ? 'retryPayhere' : 'retryKoko' ?>" style="margin:0;">
+                    <form method="post" action="<?= BASE_URL ?>order/<?= $paymentMethod === 'payhere' ? 'retryPayhere' : ($paymentMethod === 'koko' ? 'retryKoko' : 'retryMintpay') ?>" style="margin:0;">
                         <?= csrf_input() ?>
                         <input type="hidden" name="order_number" value="<?= htmlspecialchars($order['order_number']) ?>">
                         <input type="hidden" name="email" value="<?= htmlspecialchars($lookup_email ?? ($order['email'] ?? '')) ?>">

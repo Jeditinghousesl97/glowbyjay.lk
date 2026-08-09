@@ -9,6 +9,7 @@ require_once 'helpers/OrderEmailService.php';
 require_once 'helpers/OrderSmsService.php';
 require_once 'helpers/StockAlertService.php';
 require_once 'helpers/KokoGateway.php';
+require_once 'helpers/MintpayGateway.php';
 require_once 'helpers/ImageHelper.php';
 require_once 'helpers/RecaptchaHelper.php';
 require_once 'helpers/RateLimitHelper.php';
@@ -394,7 +395,7 @@ class OrderController extends BaseController
         $paymentStatus = strtolower(trim((string) ($order['payment_status'] ?? 'pending')));
         $orderStatus = strtolower(trim((string) ($order['order_status'] ?? 'pending')));
 
-        if (!in_array($paymentMethod, ['payhere', 'koko'], true)) {
+        if (!in_array($paymentMethod, ['payhere', 'koko', 'mintpay'], true)) {
             return false;
         }
 
@@ -558,7 +559,7 @@ class OrderController extends BaseController
             return true;
         }
 
-        if (in_array($paymentMethod, ['payhere', 'koko', 'bank_transfer'], true)) {
+        if (in_array($paymentMethod, ['payhere', 'koko', 'mintpay', 'bank_transfer'], true)) {
             return $paymentStatus === 'paid';
         }
 
@@ -713,6 +714,184 @@ class OrderController extends BaseController
         ]);
 
         require 'views/customer/koko_redirect.php';
+    }
+
+    private function beginMintpayCheckout(array $items, array $settings, array $customer, $source, $redirectTarget)
+    {
+        $shippingQuote = $this->buildShippingQuote($items, $settings, $customer['district']);
+        if (!$shippingQuote['has_rate']) {
+            $_SESSION['order_error'] = 'Please select a valid district to calculate delivery.';
+            $this->redirect($redirectTarget);
+        }
+
+        $order = $this->orderModel->createFromItems($customer, $items, $settings, [
+            'subtotal_amount' => $shippingQuote['subtotal'],
+            'shipping_fee' => $shippingQuote['shipping_fee'],
+            'handling_fee' => 0,
+            'chargeable_weight_grams' => $shippingQuote['chargeable_weight_grams'],
+            'payment_method' => 'mintpay',
+            'payment_gateway' => 'mintpay',
+            'payment_status' => 'pending',
+            'order_status' => 'pending',
+            'transaction_type' => 'mintpay_order_created',
+            'transaction_status_code' => 'PENDING',
+            'transaction_payload' => [
+                'customer' => $customer,
+                'items_count' => count($items),
+                'source' => $source
+            ]
+        ]);
+
+        if (!$order) {
+            $_SESSION['order_error'] = 'Unable to create your order right now.';
+            $this->redirect($redirectTarget);
+        }
+
+        $_SESSION['pending_order_number'] = $order['order_number'];
+        $fullOrder = $this->orderModel->getByOrderNumberWithItems($order['order_number']);
+        if ($fullOrder) {
+            $this->notifyCustomerOrderEvent($fullOrder, 'order_placed');
+            $order = $fullOrder;
+        }
+
+        $orderNumber = urlencode((string) ($order['order_number'] ?? ''));
+        $successUrl = SeoHelper::absoluteUrl(BASE_URL . 'order/mintpayReturn?order=' . $orderNumber);
+        $failUrl = SeoHelper::absoluteUrl(BASE_URL . 'order/mintpayFail?order=' . $orderNumber);
+
+        try {
+            $result = MintpayGateway::createPurchase($order, $settings, $successUrl, $failUrl);
+            $purchaseId = (string) $result['purchase_id'];
+            $this->orderModel->recordTransaction(
+                (int) $order['id'],
+                'mintpay',
+                'mintpay_checkout_created',
+                $purchaseId,
+                'CREATED',
+                (float) ($order['total_amount'] ?? 0),
+                $order['currency'] ?? 'LKR',
+                $result['response']
+            );
+            $this->orderModel->updatePaymentStatus(
+                (string) $order['order_number'],
+                'pending',
+                $purchaseId,
+                'CREATED',
+                'Mintpay checkout created.'
+            );
+            header('Location: ' . $result['checkout_link'], true, 302);
+            exit;
+        } catch (Exception $e) {
+            $this->logMintpayEvent('checkout_create_failed', [
+                'order_id' => $order['id'] ?? null,
+                'order_number' => $order['order_number'] ?? '',
+                'source' => $source,
+                'message' => $e->getMessage()
+            ]);
+            $_SESSION['order_error'] = 'Mintpay checkout is not ready right now. Please contact the shop owner.';
+            $this->redirect($redirectTarget);
+        }
+    }
+
+    private function logMintpayEvent($event, array $context = [])
+    {
+        $logDir = ROOT_PATH . 'storage/logs/';
+        if (!is_dir($logDir)) mkdir($logDir, 0775, true);
+        file_put_contents(
+            $logDir . 'mintpay.log',
+            json_encode(['time' => date('c'), 'event' => $event, 'ip' => $_SERVER['REMOTE_ADDR'] ?? '', 'context' => $context], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . PHP_EOL,
+            FILE_APPEND | LOCK_EX
+        );
+    }
+
+    private function applyMintpayPaymentResult(array $order, $paymentStatus, $purchaseId, $statusRaw, $message, array $payload, $transactionType)
+    {
+        $paymentStatus = trim((string) $paymentStatus);
+        $purchaseId = trim((string) $purchaseId);
+        $statusRaw = trim((string) $statusRaw);
+        $message = trim((string) $message);
+
+        if (($order['payment_status'] ?? '') === $paymentStatus && ($order['gateway_payment_id'] ?? '') === $purchaseId) {
+            return $order;
+        }
+
+        $this->orderModel->recordTransaction(
+            (int) $order['id'],
+            'mintpay',
+            $transactionType,
+            $purchaseId !== '' ? $purchaseId : null,
+            $statusRaw !== '' ? $statusRaw : null,
+            (float) ($order['total_amount'] ?? 0),
+            $order['currency'] ?? 'LKR',
+            $payload
+        );
+        $this->orderModel->updatePaymentStatus(
+            (string) $order['order_number'],
+            $paymentStatus,
+            $purchaseId !== '' ? $purchaseId : ($order['gateway_payment_id'] ?? null),
+            $statusRaw !== '' ? $statusRaw : null,
+            $message !== '' ? $message : null
+        );
+
+        if ($paymentStatus === 'paid' && (($order['order_status'] ?? 'pending') === 'pending')) {
+            $this->orderModel->updateOrderStatus((string) $order['order_number'], 'processing');
+        }
+
+        $updatedOrder = $this->syncOrderStockState((string) $order['order_number']);
+        if ($updatedOrder) {
+            if ($paymentStatus === 'paid') $this->notifyCustomerOrderEvent($updatedOrder, 'payment_completed');
+            elseif ($paymentStatus === 'failed') $this->notifyCustomerOrderEvent($updatedOrder, 'payment_failed');
+            return $updatedOrder;
+        }
+        return $this->orderModel->getById((int) $order['id']);
+    }
+
+    private function refreshMintpayOrderStatus(array $order, array $settings, $source)
+    {
+        $purchaseId = trim((string) ($order['gateway_payment_id'] ?? ''));
+        if ($purchaseId === '' || !MintpayGateway::isConfigured($settings)) return $order;
+
+        try {
+            $response = MintpayGateway::fetchStatus($settings, $purchaseId);
+            $data = isset($response['data']) && is_array($response['data']) ? $response['data'] : [];
+            $statusRaw = trim((string) ($data['status'] ?? ''));
+            $paymentStatus = MintpayGateway::normalizeStatus($statusRaw);
+            $gatewayOrderId = trim((string) ($data['order_id'] ?? ''));
+            if ($gatewayOrderId !== '' && $gatewayOrderId !== (string) ($order['order_number'] ?? '')) {
+                $this->logMintpayEvent('status_order_mismatch', ['order_number' => $order['order_number'] ?? '', 'received_order_id' => $gatewayOrderId]);
+                return $order;
+            }
+            if ($paymentStatus !== 'pending') {
+                return $this->applyMintpayPaymentResult(
+                    $order,
+                    $paymentStatus,
+                    $purchaseId,
+                    $statusRaw,
+                    'Mintpay payment status: ' . ($statusRaw !== '' ? $statusRaw : 'Unknown'),
+                    $response,
+                    $source
+                );
+            }
+        } catch (Exception $e) {
+            $this->logMintpayEvent('status_request_failed', ['order_number' => $order['order_number'] ?? '', 'message' => $e->getMessage()]);
+        }
+        return $order;
+    }
+
+    private function renderMintpayStatusPage(array $order, array $settings, $statusType)
+    {
+        $seo = SeoHelper::defaultSeo($settings, [
+            'seo_title' => SeoHelper::pageTitle('Mintpay Payment Status', $settings),
+            'seo_description' => 'Check the latest status of your Mintpay payment.',
+            'seo_canonical' => SeoHelper::absoluteUrl(BASE_URL . 'order/mintpayReturn?order=' . urlencode((string) ($order['order_number'] ?? ''))),
+            'seo_robots' => 'noindex,nofollow'
+        ]);
+        $this->view('customer/payment_status', [
+            'title' => 'Mintpay Payment Status', 'settings' => $settings, 'order' => $order,
+            'status_type' => $statusType, 'gateway_name' => 'Mintpay',
+            'seo_title' => $seo['seo_title'], 'seo_description' => $seo['seo_description'],
+            'seo_canonical' => $seo['seo_canonical'], 'seo_image' => $seo['seo_image'],
+            'seo_type' => $seo['seo_type'], 'seo_robots' => $seo['seo_robots'], 'seo_json_ld' => $seo['seo_json_ld']
+        ]);
     }
 
     private function resolveKokoOrderFromRequest($orderIdRaw)
@@ -1182,7 +1361,7 @@ class OrderController extends BaseController
         $paymentMethod = strtolower((string) ($order['payment_method'] ?? ''));
         $paymentStatus = strtolower((string) ($order['payment_status'] ?? 'pending'));
 
-        if ($order && in_array($paymentMethod, ['payhere', 'koko', 'bank_transfer'], true) && $paymentStatus !== 'paid') {
+        if ($order && in_array($paymentMethod, ['payhere', 'koko', 'mintpay', 'bank_transfer'], true) && $paymentStatus !== 'paid') {
             $gatewayLabel = strtoupper((string) ($order['payment_gateway'] ?: $paymentMethod));
             $manualMessage = $gatewayLabel . ' payment recorded manually by shop owner.';
 
@@ -1305,6 +1484,20 @@ class OrderController extends BaseController
         }
 
         $this->renderPayhereRedirect($order, $settings, 'cart_payhere');
+    }
+
+    public function startMintpay()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') $this->redirect('cart');
+        $settings = $this->settingModel->getAllPairs();
+        $this->guardCheckoutRequest($settings, 'cart');
+        $cart = $this->buildCartItemsWithDeliveryData($_SESSION['cart'] ?? []);
+        if (empty($cart)) { $_SESSION['order_error'] = 'Your cart is empty.'; $this->redirect('cart'); }
+        $this->validateCartStockOrRedirect($cart, 'cart');
+        if (!MintpayGateway::isConfigured($settings)) { $_SESSION['order_error'] = 'Mintpay is not configured for this shop yet.'; $this->redirect('cart'); }
+        $customer = $this->buildCustomerFromRequest();
+        if (!$customer) { $_SESSION['order_error'] = 'Please fill in all required payment fields.'; $this->redirect('cart'); }
+        $this->beginMintpayCheckout($cart, $settings, $customer, 'cart_mintpay', 'cart');
     }
 
     public function startKoko()
@@ -1505,6 +1698,45 @@ class OrderController extends BaseController
         }
     }
 
+    public function retryMintpay()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') $this->redirect('order/myOrders');
+        $settings = $this->settingModel->getAllPairs();
+        $orderNumber = trim((string) ($_POST['order_number'] ?? ''));
+        $email = trim((string) ($_POST['email'] ?? ''));
+        $phone = trim((string) ($_POST['phone'] ?? ''));
+        $order = $this->orderModel->getByOrderNumberWithItems($orderNumber);
+
+        if (!$order || !$this->customerMatchesOrder($order, $email, $phone)) {
+            $_SESSION['order_error'] = 'We could not verify that payment retry request.';
+            $this->redirectToMyOrdersLookup($email, $phone, $orderNumber);
+        }
+        if (!$this->isRetryableCustomerPaymentOrder($order) || ($order['payment_method'] ?? '') !== 'mintpay') {
+            $_SESSION['order_error'] = 'This Mintpay order is not available for payment retry.';
+            $this->redirectToMyOrdersLookup($email, $phone, $orderNumber);
+        }
+        if (!MintpayGateway::isConfigured($settings)) {
+            $_SESSION['order_error'] = 'Mintpay is not configured for this shop right now.';
+            $this->redirectToMyOrdersLookup($email, $phone, $orderNumber);
+        }
+        $this->validateExistingOrderItemsOrRedirect($order, $email, $phone);
+        $_SESSION['pending_order_number'] = $order['order_number'];
+        $encodedOrder = urlencode((string) $order['order_number']);
+        $successUrl = SeoHelper::absoluteUrl(BASE_URL . 'order/mintpayReturn?order=' . $encodedOrder);
+        $failUrl = SeoHelper::absoluteUrl(BASE_URL . 'order/mintpayFail?order=' . $encodedOrder);
+        try {
+            $result = MintpayGateway::createPurchase($order, $settings, $successUrl, $failUrl);
+            $this->orderModel->recordTransaction((int) $order['id'], 'mintpay', 'mintpay_retry_created', $result['purchase_id'], 'CREATED', (float) $order['total_amount'], $order['currency'] ?? 'LKR', $result['response']);
+            $this->orderModel->updatePaymentStatus($order['order_number'], 'pending', $result['purchase_id'], 'CREATED', 'Mintpay checkout recreated.');
+            header('Location: ' . $result['checkout_link'], true, 302);
+            exit;
+        } catch (Exception $e) {
+            $this->logMintpayEvent('retry_create_failed', ['order_number' => $orderNumber, 'message' => $e->getMessage()]);
+            $_SESSION['order_error'] = 'Mintpay checkout is not ready right now. Please try again later.';
+            $this->redirectToMyOrdersLookup($email, $phone, $orderNumber);
+        }
+    }
+
     public function startCod()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -1691,6 +1923,26 @@ class OrderController extends BaseController
         }
 
         $this->renderPayhereRedirect($order, $settings, 'single_payhere');
+    }
+
+    public function startMintpaySingle()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') $this->redirect('cart');
+        $settings = $this->settingModel->getAllPairs();
+        $productId = (int) ($_POST['product_id'] ?? 0);
+        $singleRedirect = $productId > 0 ? 'shop/product/' . $productId : 'shop';
+        $this->guardCheckoutRequest($settings, $singleRedirect);
+        if (!MintpayGateway::isConfigured($settings)) { $_SESSION['order_error'] = 'Mintpay is not configured for this shop yet.'; $this->redirect($singleRedirect); }
+        $qty = max(1, (int) ($_POST['quantity'] ?? 1));
+        $variantText = trim((string) ($_POST['variants'] ?? ''));
+        $variantKey = trim((string) ($_POST['variant_key'] ?? ''));
+        $validation = $this->productModel->validatePurchase($productId, $qty, $variantKey);
+        if (empty($validation['ok'])) { $_SESSION['order_error'] = $validation['message'] ?? 'This product is not available.'; $this->redirect($singleRedirect); }
+        [$product, $items] = $this->buildSingleProductItems($productId, $qty, $variantText, $variantKey);
+        if (!$product || !$items) { $_SESSION['order_error'] = 'The selected product could not be found.'; $this->redirect('cart'); }
+        $customer = $this->buildCustomerFromRequest();
+        if (!$customer) { $_SESSION['order_error'] = 'Please fill in all required payment fields.'; $this->redirect($singleRedirect); }
+        $this->beginMintpayCheckout($items, $settings, $customer, 'single_mintpay', $singleRedirect);
     }
 
     public function startKokoSingle()
@@ -2132,6 +2384,29 @@ class OrderController extends BaseController
         ]);
     }
 
+    public function mintpayReturn()
+    {
+        $this->handleMintpayReturn('return');
+    }
+
+    public function mintpayFail()
+    {
+        $this->handleMintpayReturn('fail');
+    }
+
+    private function handleMintpayReturn($statusType)
+    {
+        $settings = $this->settingModel->getAllPairs();
+        $orderNumber = trim((string) ($_GET['order'] ?? ($_SESSION['pending_order_number'] ?? '')));
+        $order = $orderNumber !== '' ? $this->orderModel->getByOrderNumber($orderNumber) : null;
+        if (!$order || ($order['payment_gateway'] ?? '') !== 'mintpay') $this->redirect('cart');
+
+        $order = $this->refreshMintpayOrderStatus($order, $settings, $statusType === 'return' ? 'mintpay_return_status' : 'mintpay_fail_status');
+        if (($order['payment_status'] ?? 'pending') === 'paid' && !empty($_SESSION['cart'])) $_SESSION['cart'] = [];
+        unset($_SESSION['pending_order_number']);
+        $this->renderMintpayStatusPage($order, $settings, $statusType === 'return' ? 'return' : 'fail');
+    }
+
     public function kokoResponse()
     {
         $settings = $this->settingModel->getAllPairs();
@@ -2401,5 +2676,3 @@ class OrderController extends BaseController
         ]);
     }
 }
-
-

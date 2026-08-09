@@ -100,7 +100,7 @@
                         </button>
                     </form>
                 <?php endif; ?>
-                <?php if (in_array(($order['payment_method'] ?? ''), ['payhere', 'koko', 'bank_transfer'], true) && ($order['payment_status'] ?? 'pending') !== 'paid'): ?>
+                <?php if (in_array(($order['payment_method'] ?? ''), ['payhere', 'koko', 'mintpay', 'bank_transfer'], true) && ($order['payment_status'] ?? 'pending') !== 'paid'): ?>
                     <form action="<?= BASE_URL ?>order/markGatewayPaymentRecorded/<?= urlencode($order['order_number']) ?>" method="POST" onsubmit="return confirm('Record this payment as completed manually?');">
                         <?= csrf_input() ?>
                         <button type="submit" onclick="showGlobalLoader()" style="border:none; background:#0b6cd1; color:#fff; padding:12px 18px; border-radius:999px; font-weight:700; cursor:pointer;">
