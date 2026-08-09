@@ -190,6 +190,31 @@ class OrderController extends BaseController
         $this->dispatchSmsSendAsync($order, $eventKey);
     }
 
+    /**
+     * Notify the customer only when a gateway payment moves into a final state.
+     * Gateway return/notify endpoints can be called more than once, so this
+     * prevents duplicate email/SMS notifications for the same status.
+     */
+    private function notifyPaymentStatusChange(array $previousOrder, array $updatedOrder, $paymentStatus)
+    {
+        $paymentStatus = strtolower(trim((string) $paymentStatus));
+        $previousStatus = strtolower(trim((string) ($previousOrder['payment_status'] ?? '')));
+
+        $events = [
+            'paid' => 'payment_completed',
+            'cancelled' => 'payment_cancelled',
+            'failed' => 'payment_failed',
+            'verification_failed' => 'payment_failed',
+            'chargedback' => 'payment_failed'
+        ];
+
+        if (!isset($events[$paymentStatus]) || $previousStatus === $paymentStatus) {
+            return;
+        }
+
+        $this->notifyCustomerOrderEvent($updatedOrder, $events[$paymentStatus]);
+    }
+
     public function processSmsQueue()
     {
         $token = (string) ($_GET['token'] ?? '');
@@ -768,7 +793,6 @@ class OrderController extends BaseController
         $_SESSION['pending_order_number'] = $order['order_number'];
         $fullOrder = $this->orderModel->getByOrderNumberWithItems($order['order_number']);
         if ($fullOrder) {
-            $this->notifyCustomerOrderEvent($fullOrder, 'order_placed');
             $order = $fullOrder;
         }
 
@@ -856,8 +880,7 @@ class OrderController extends BaseController
 
         $updatedOrder = $this->syncOrderStockState((string) $order['order_number']);
         if ($updatedOrder) {
-            if ($paymentStatus === 'paid') $this->notifyCustomerOrderEvent($updatedOrder, 'payment_completed');
-            elseif ($paymentStatus === 'failed') $this->notifyCustomerOrderEvent($updatedOrder, 'payment_failed');
+            $this->notifyPaymentStatusChange($order, $updatedOrder, $paymentStatus);
             return $updatedOrder;
         }
         return $this->orderModel->getById((int) $order['id']);
@@ -996,13 +1019,7 @@ class OrderController extends BaseController
 
         $updatedOrder = $this->syncOrderStockState((string) $order['order_number']);
         if ($updatedOrder) {
-            if ($paymentStatus === 'paid') {
-                $this->notifyCustomerOrderEvent($updatedOrder, 'payment_completed');
-            } elseif ($paymentStatus === 'cancelled') {
-                $this->notifyCustomerOrderEvent($updatedOrder, 'payment_cancelled');
-            } elseif ($paymentStatus === 'failed' || $paymentStatus === 'verification_failed') {
-                $this->notifyCustomerOrderEvent($updatedOrder, 'payment_failed');
-            }
+            $this->notifyPaymentStatusChange($order, $updatedOrder, $paymentStatus);
             return $updatedOrder;
         }
 
@@ -1497,9 +1514,6 @@ class OrderController extends BaseController
         }
         $_SESSION['pending_order_number'] = $order['order_number'];
         $fullOrder = $this->syncOrderStockState($order['order_number']);
-        if ($fullOrder) {
-            $this->notifyCustomerOrderEvent($fullOrder, 'order_placed');
-        }
 
         $this->renderPayhereRedirect($order, $settings, 'cart_payhere');
     }
@@ -1577,7 +1591,6 @@ class OrderController extends BaseController
         $_SESSION['pending_order_number'] = $order['order_number'];
         $fullOrder = $this->orderModel->getByOrderNumberWithItems($order['order_number']);
         if ($fullOrder) {
-            $this->notifyCustomerOrderEvent($fullOrder, 'order_placed');
             $order = $fullOrder;
         }
 
@@ -1936,9 +1949,6 @@ class OrderController extends BaseController
         }
         $_SESSION['pending_order_number'] = $order['order_number'];
         $fullOrder = $this->syncOrderStockState($order['order_number']);
-        if ($fullOrder) {
-            $this->notifyCustomerOrderEvent($fullOrder, 'order_placed');
-        }
 
         $this->renderPayhereRedirect($order, $settings, 'single_payhere');
     }
@@ -2033,7 +2043,6 @@ class OrderController extends BaseController
         $_SESSION['pending_order_number'] = $order['order_number'];
         $fullOrder = $this->syncOrderStockState($order['order_number']);
         if ($fullOrder) {
-            $this->notifyCustomerOrderEvent($fullOrder, 'order_placed');
             $order = $fullOrder;
         }
 
@@ -2304,13 +2313,7 @@ class OrderController extends BaseController
 
         $updatedOrder = $this->syncOrderStockState($orderNumber);
         if ($updatedOrder) {
-            if ($status === 'paid') {
-                $this->notifyCustomerOrderEvent($updatedOrder, 'payment_completed');
-            } elseif ($status === 'cancelled') {
-                $this->notifyCustomerOrderEvent($updatedOrder, 'payment_cancelled');
-            } elseif ($status === 'failed' || $status === 'verification_failed' || $status === 'chargedback') {
-                $this->notifyCustomerOrderEvent($updatedOrder, 'payment_failed');
-            }
+            $this->notifyPaymentStatusChange($order, $updatedOrder, $status);
         }
 
         $this->logPayhereEvent('notify_processed', [
