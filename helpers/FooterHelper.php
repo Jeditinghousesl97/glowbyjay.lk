@@ -80,7 +80,7 @@ class FooterHelper
         $definitions = [
             'payhere_enabled' => [
                 'label' => 'PayHere',
-                'file' => 'payhere.png',
+                'file' => 'payhere2.png',
             ],
             'koko_enabled' => [
                 'label' => 'KOKO',

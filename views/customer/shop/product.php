@@ -88,10 +88,13 @@ if ($codEnabled) {
     $paymentModeLogos[] = ['label' => 'COD', 'src' => $baseUrl . 'assets/icons/payment-gateways/cod.png', 'alt' => 'Cash on delivery'];
 }
 if ($payhereReady) {
-    $paymentModeLogos[] = ['label' => 'Card Payments', 'src' => $baseUrl . 'assets/icons/payment-gateways/payhere.png', 'alt' => 'Card Payments'];
+    $paymentModeLogos[] = ['label' => 'Card Payments', 'src' => $baseUrl . 'assets/icons/payment-gateways/payhere2.png', 'alt' => 'Card Payments'];
 }
 if ($kokoEnabled) {
     $paymentModeLogos[] = ['label' => 'KOKO Payments', 'src' => $baseUrl . 'assets/icons/payment-gateways/koko.png', 'alt' => 'KOKO Payments'];
+}
+if ($mintpayEnabled) {
+    $paymentModeLogos[] = ['label' => 'Mintpay', 'src' => $baseUrl . 'assets/icons/payment-gateways/mintpay.png', 'alt' => 'Mintpay'];
 }
 if ($bankTransferEnabled) {
     $paymentModeLogos[] = ['label' => 'Bank Transfer', 'src' => $baseUrl . 'assets/icons/payment-gateways/bank.png', 'alt' => 'Bank transfer'];
