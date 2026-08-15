@@ -1458,7 +1458,7 @@ if (!function_exists('customer_layout_start')) {
             <button type="button" class="site-promo-popup-close" data-site-promo-close aria-label="Close promo popup">&times;</button>
         </div>
     <?php endif; ?>
-    <?php if ($entrancePopupEnabled && $entrancePopupImageUrl !== ''): ?>
+    <?php if ($isHomeRoute && $entrancePopupEnabled && $entrancePopupImageUrl !== ''): ?>
         <div
             class="site-entrance-popup"
             data-site-entrance-popup
