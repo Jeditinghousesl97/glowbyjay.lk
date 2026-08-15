@@ -78,9 +78,9 @@ $kokoReady = class_exists('KokoGateway') && KokoGateway::isConfigured($settings)
 $recaptchaCheckoutEnabled = RecaptchaHelper::shouldProtectCheckout($settings);
 $recaptchaSiteKey = $recaptchaCheckoutEnabled ? RecaptchaHelper::siteKey($settings) : '';
 $modes = [];
-if ($payhereEnabled) $modes[] = ['key' => 'payhere', 'label' => 'Card Payments', 'icon' => 'fa-solid fa-credit-card', 'configured' => $payhereReady];
-if ($kokoEnabled) $modes[] = ['key' => 'koko', 'label' => 'KOKO Payments', 'icon' => 'fa-solid fa-wallet', 'configured' => $kokoReady];
-if ($mintpayEnabled) $modes[] = ['key' => 'mintpay', 'label' => 'Mintpay', 'icon' => 'fa-solid fa-credit-card', 'configured' => $mintpayReady];
+if ($payhereEnabled) $modes[] = ['key' => 'payhere', 'label' => 'Card Payments', 'icon' => 'fa-solid fa-credit-card', 'logo' => $baseUrl . 'assets/icons/payment-gateways/payhere2.png', 'configured' => $payhereReady];
+if ($kokoEnabled) $modes[] = ['key' => 'koko', 'label' => 'KOKO Payments', 'icon' => 'fa-solid fa-wallet', 'logo' => $baseUrl . 'assets/icons/payment-gateways/koko.png', 'configured' => $kokoReady];
+if ($mintpayEnabled) $modes[] = ['key' => 'mintpay', 'label' => 'Mintpay', 'icon' => 'fa-solid fa-credit-card', 'logo' => $baseUrl . 'assets/icons/payment-gateways/mintpay.png', 'configured' => $mintpayReady];
 if (!empty($settings['whatsapp_ordering_enabled']) && $whatsappLink !== '') $modes[] = ['key' => 'whatsapp', 'label' => 'WhatsApp', 'icon' => 'fa-brands fa-whatsapp'];
 if (!empty($settings['cod_enabled'])) $modes[] = ['key' => 'cod', 'label' => 'Cash on Delivery', 'icon' => 'fa-solid fa-truck-fast'];
 if (!empty($settings['bank_transfer_enabled']) && trim((string)($settings['bank_transfer_details'] ?? '')) !== '') $modes[] = ['key' => 'bank_transfer', 'label' => 'Bank Transfer', 'icon' => 'fa-solid fa-building-columns'];
@@ -204,6 +204,7 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
         flex-shrink:0;
         box-shadow:inset 0 0 0 1px rgba(31,31,31,.04)
     }
+    .cart-page .payment-method-icon img.payment-method-gateway-logo{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
     .cart-page .payment-method-card.payhere{border-color:#d4af37;background:linear-gradient(135deg,#b68a2d 0%,#d4af37 52%,#a8791d 100%);color:#111111}
     .cart-page .payment-method-card.payhere::before{background:#d4af37}
     .cart-page .payment-method-card.payhere .payment-method-icon{background:rgba(255,255,255,.34);color:#111111}
@@ -414,7 +415,11 @@ if (!$modes) $modes[] = ['key' => 'cod', 'label' => 'Checkout', 'icon' => 'fa-so
                                     data-pay-group="<?= in_array($mode['key'], ['koko', 'mintpay'], true) ? 'payNow payLater' : (in_array($mode['key'], ['payhere', 'bank_transfer'], true) ? 'payNow' : 'payLater') ?>"
                                     <?= $cartHasBlockedItems ? 'disabled aria-disabled="true"' : '' ?>>
                                     <span class="payment-method-icon" aria-hidden="true">
-                                        <i class="<?= htmlspecialchars($mode['icon']) ?>"></i>
+                                        <?php if (!empty($mode['logo'])): ?>
+                                            <img class="payment-method-gateway-logo" src="<?= htmlspecialchars($mode['logo']) ?>" alt="">
+                                        <?php else: ?>
+                                            <i class="<?= htmlspecialchars($mode['icon']) ?>"></i>
+                                        <?php endif; ?>
                                     </span>
                                     <span class="payment-method-copy">
                                         <strong><?= htmlspecialchars($mode['label']) ?></strong>
