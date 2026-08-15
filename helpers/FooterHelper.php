@@ -86,6 +86,10 @@ class FooterHelper
                 'label' => 'KOKO',
                 'file' => 'koko.png',
             ],
+            'mintpay_enabled' => [
+                'label' => 'Mintpay',
+                'file' => 'mintpay.png',
+            ],
             'cod_enabled' => [
                 'label' => 'Cash on Delivery',
                 'file' => 'cod.png',
