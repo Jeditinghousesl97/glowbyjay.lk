@@ -825,7 +825,7 @@ customer_layout_start([
             <div class="field"><label for="ordNote">Special Note</label><textarea id="ordNote" placeholder="Special Note"></textarea></div>
             <?php if ($bankTransferEnabled): ?>
                 <div id="bankTransferDetailsImageWrap" style="display:none;margin-top:6px;">
-                    <img src="<?= htmlspecialchars($baseUrl . 'assets/bank-details.jpg') ?>" alt="Bank transfer details" style="display:block;width:100%;height:auto;border:1px solid rgba(28,27,27,.12);">
+                    <img src="<?= htmlspecialchars($baseUrl . 'assets/bank-details-new.png') ?>" alt="Bank transfer details" style="display:block;width:100%;height:auto;border:1px solid rgba(28,27,27,.12);">
                 </div>
             <?php endif; ?>
             <div class="totals-box">
